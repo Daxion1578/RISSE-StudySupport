@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>支援士合格ロードマップ</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7;
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --grid: #e1e0d9;
+    --border: rgba(11,11,11,0.10);
+    --accent: #2a78d6;      /* データ・強調（青） */
+    --accent-soft: #cde2fb;
+    --good: #0ca30c;        /* 完了 */
+    --good-text: #006300;
+    --warn: #fab219;        /* 注意 */
+    --crit: #d03b3b;        /* 遅れ・弱点 */
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --page: #0d0d0d;
+      --surface: #1a1a19;
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --grid: #2c2c2a;
+      --border: rgba(255,255,255,0.10);
+      --accent: #3987e5;
+      --accent-soft: #104281;
+      --good-text: #0ca30c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: var(--page);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--grid);
+    padding: 12px 16px 0;
+  }
+  header h1 { font-size: 18px; margin: 0 0 8px; }
+  header h1 small { font-weight: normal; color: var(--muted); font-size: 12px; margin-left: 8px; }
+  nav { display: flex; gap: 2px; flex-wrap: wrap; }
+  nav button {
+    border: none; background: none; color: var(--ink-2);
+    padding: 8px 14px; font-size: 14px; cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+  nav button.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: bold; }
+  main { max-width: 860px; margin: 0 auto; padding: 16px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px; margin-bottom: 16px;
+  }
+  .card h2 { font-size: 16px; margin: 0 0 10px; }
+  .card h3 { font-size: 14px; margin: 16px 0 6px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .tile .v { font-size: 26px; font-weight: bold; }
+  .tile .l { font-size: 12px; color: var(--ink-2); }
+  .tile .s { font-size: 11px; color: var(--muted); }
+  .muted { color: var(--muted); font-size: 12px; }
+  .small { font-size: 13px; }
+  button.primary {
+    background: var(--accent); color: #fff; border: none; border-radius: 8px;
+    padding: 10px 18px; font-size: 15px; cursor: pointer;
+  }
+  button.ghost {
+    background: none; border: 1px solid var(--grid); color: var(--ink-2);
+    border-radius: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer;
+  }
+  button.danger { border-color: var(--crit); color: var(--crit); }
+  /* 進捗バー */
+  .bar-track { background: var(--grid); border-radius: 4px; height: 10px; overflow: hidden; }
+  .bar-fill { background: var(--accent); height: 100%; border-radius: 4px 0 0 4px; }
+  /* 診断結果の分野別バー */
+  .score-row { display: grid; grid-template-columns: 11em 1fr 4.5em; gap: 10px; align-items: center; margin: 6px 0; font-size: 13px; }
+  .score-val { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+  .badge {
+    display: inline-block; font-size: 11px; border-radius: 4px; padding: 1px 7px; margin-left: 6px;
+    border: 1px solid currentColor;
+  }
+  .badge.weak { color: var(--crit); }
+  .badge.strong { color: var(--good-text); }
+  .badge.rank { color: var(--accent); border: none; background: var(--accent-soft); }
+  /* 単元リスト */
+  .unit { display: flex; align-items: flex-start; gap: 10px; padding: 7px 4px; border-bottom: 1px solid var(--grid); font-size: 14px; }
+  .unit:last-child { border-bottom: none; }
+  .unit input[type=checkbox] { width: 18px; height: 18px; margin-top: 4px; accent-color: var(--good); cursor: pointer; }
+  .unit .u-name { flex: 1; }
+  .unit .u-meta { font-size: 11px; color: var(--muted); }
+  .unit.done .u-name { color: var(--muted); text-decoration: line-through; }
+  .unit.overdue .u-name::after { content: " ⚠遅れ"; color: var(--crit); font-size: 11px; }
+  .week { border-left: 3px solid var(--grid); padding-left: 14px; margin: 14px 0; }
+  .week.current { border-left-color: var(--accent); }
+  .week.past-open { border-left-color: var(--crit); }
+  .week h3 { margin: 0 0 4px; }
+  .week .w-label { font-size: 12px; color: var(--muted); }
+  .phase-title { font-size: 13px; color: var(--accent); font-weight: bold; margin: 20px 0 0; }
+  /* 診断テスト */
+  .q-card { margin-bottom: 14px; }
+  .q-card .q-no { font-size: 12px; color: var(--muted); }
+  .choice { display: block; padding: 8px 10px; border: 1px solid var(--grid); border-radius: 8px; margin: 6px 0; cursor: pointer; font-size: 14px; }
+  .choice:hover { border-color: var(--accent); }
+  .choice input { margin-right: 8px; accent-color: var(--accent); }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { border: 1px solid var(--grid); padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: var(--page); }
+  .tbl-wrap { overflow-x: auto; }
+  input[type=date], input[type=number], select, textarea {
+    background: var(--surface); color: var(--ink); border: 1px solid var(--grid);
+    border-radius: 6px; padding: 6px 8px; font-size: 14px;
+  }
+  textarea { width: 100%; font-family: monospace; font-size: 12px; }
+  .alert { border-left: 3px solid var(--crit); padding: 8px 12px; background: var(--page); border-radius: 0 8px 8px 0; margin-bottom: 12px; font-size: 14px; }
+  .notice { border-left: 3px solid var(--accent); padding: 8px 12px; background: var(--page); border-radius: 0 8px 8px 0; margin-bottom: 12px; font-size: 14px; }
+  .status-chip { font-size: 11px; padding: 1px 8px; border-radius: 10px; white-space: nowrap; }
+  .status-chip.done { background: var(--good); color: #fff; }
+  .status-chip.todo { background: var(--grid); color: var(--ink-2); }
+</style>
+</head>
+<body>
+<header>
+  <h1>支援士合格ロードマップ <small>情報処理安全確保支援士 学習支援</small></h1>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+
+<script>
+"use strict";
+
+/* =========================================================
+   データ定義
+   - 単元マスタ UNITS: ロードマップは必ず全単元を割り当てる（漏れゼロ原則）
+   - trend: S/A/B は docs/trend-analysis.md の分析結果に対応
+   - hours: 初学者想定の目安学習時間
+   ========================================================= */
+
+const DOMAINS = [
+  { id: "d1", name: "IT・ネットワーク基礎", cats: ["A"] },
+  { id: "d2", name: "暗号と認証",           cats: ["B", "C"] },
+  { id: "d3", name: "攻撃手法と脅威",       cats: ["D"] },
+  { id: "d4", name: "Web・システム防御",    cats: ["E", "F"] },
+  { id: "d5", name: "管理・運用・法規",     cats: ["G", "H"] },
+];
+
+const CATS = {
+  A: "IT・ネットワーク基礎",
+  B: "暗号技術",
+  C: "認証とアクセス制御",
+  D: "攻撃手法",
+  E: "Web・アプリセキュリティ",
+  F: "ネットワークセキュリティ",
+  G: "セキュリティ管理・運用",
+  H: "法規・制度",
+  I: "試験演習",
+};
+
+const PHASES = [
+  "Phase1 基礎固め（IT・ネットワーク）",
+  "Phase2 セキュリティの土台（暗号・認証）",
+  "Phase3 攻撃と防御の技術",
+  "Phase4 運用・管理とトレンド分野",
+  "Phase5 法規・制度",
+  "Phase6 試験演習・総仕上げ",
+];
+
+// phase: 0-5（PHASES の添字）。配列順がそのまま学習順序になる。
+const UNITS = [
+  // Phase1: IT・ネットワーク基礎
+  { id:"a1", cat:"A", phase:0, trend:"B", hours:4, name:"コンピュータとOSの基礎", desc:"プロセス・ファイル・権限・仮想化。攻撃と防御を理解する土台" },
+  { id:"a2", cat:"A", phase:0, trend:"A", hours:6, name:"TCP/IPとIPアドレス", desc:"IP・TCP/UDP・ポート番号・NAT。全分野の前提知識" },
+  { id:"a3", cat:"A", phase:0, trend:"S", hours:5, name:"DNSの仕組み", desc:"名前解決・権威/キャッシュサーバー。科目B頻出（ドメイン名変更 R6秋）" },
+  { id:"a4", cat:"A", phase:0, trend:"S", hours:5, name:"HTTPとWebの仕組み", desc:"リクエスト/レスポンス・Cookie・同一オリジン。Webセキュリティの前提" },
+  { id:"a5", cat:"A", phase:0, trend:"A", hours:4, name:"電子メールの仕組み", desc:"SMTP/POP/IMAP・メールヘッダー。メールセキュリティの前提" },
+  { id:"a6", cat:"A", phase:0, trend:"B", hours:4, name:"ネットワーク機器とLAN", desc:"スイッチ・ルーター・VLAN・無線LANの基本構成" },
+  // Phase2: 暗号技術
+  { id:"b1", cat:"B", phase:1, trend:"S", hours:6, name:"共通鍵暗号と公開鍵暗号", desc:"AES・RSA・楕円曲線・鍵配送問題・ハイブリッド暗号" },
+  { id:"b2", cat:"B", phase:1, trend:"S", hours:4, name:"ハッシュ関数とMAC", desc:"SHA-2/3・一方向性・衝突・HMAC。科目A定番" },
+  { id:"b3", cat:"B", phase:1, trend:"S", hours:6, name:"デジタル署名とPKI・証明書", desc:"署名検証・CA・証明書チェーン・失効(CRL/OCSP)" },
+  { id:"b4", cat:"B", phase:1, trend:"S", hours:6, name:"TLSの仕組み", desc:"ハンドシェイク・サーバー証明書・TLS1.3。科目Bで頻繁に登場" },
+  { id:"b5", cat:"B", phase:1, trend:"B", hours:3, name:"暗号技術の応用と危殆化", desc:"乱数・鍵管理・暗号スイート・耐量子・暗号資産の基礎（R7秋出題）" },
+  // Phase2: 認証とアクセス制御
+  { id:"c1", cat:"C", phase:1, trend:"A", hours:4, name:"パスワードと多要素認証・FIDO", desc:"認証の3要素・ワンタイムパスワード・パスキー" },
+  { id:"c2", cat:"C", phase:1, trend:"S", hours:6, name:"SSOと認証連携（SAML/OAuth/OIDC）", desc:"科目A頻出（SAML・OAuth2.0）。SaaS問題の前提知識" },
+  { id:"c3", cat:"C", phase:1, trend:"A", hours:4, name:"アクセス制御と特権ID管理", desc:"最小権限・RBAC・特権アカウントの保護" },
+  // Phase3: 攻撃手法
+  { id:"d1u", cat:"D", phase:2, trend:"S", hours:5, name:"マルウェアとランサムウェア", desc:"感染経路・C&C・二重恐喝・EDR。科目B定番シナリオ" },
+  { id:"d2u", cat:"D", phase:2, trend:"A", hours:4, name:"標的型攻撃とソーシャルエンジニアリング", desc:"標的型メール・水飲み場・BEC・攻撃の段階(サイバーキルチェーン)" },
+  { id:"d3u", cat:"D", phase:2, trend:"A", hours:3, name:"パスワードへの攻撃", desc:"総当たり・辞書・パスワードリスト攻撃と対策" },
+  { id:"d4u", cat:"D", phase:2, trend:"B", hours:3, name:"DoS/DDoS攻撃", desc:"リフレクション型(DRDoS)・対策。科目Aで出題実績" },
+  { id:"d5u", cat:"D", phase:2, trend:"A", hours:4, name:"盗聴・中間者攻撃・なりすまし", desc:"ARPスプーフィング・偽AP・セッション乗っ取り" },
+  { id:"d6u", cat:"D", phase:2, trend:"B", hours:4, name:"脆弱性を悪用する攻撃", desc:"バッファオーバーフロー・ゼロデイ・エクスプロイト" },
+  // Phase3: Web・アプリセキュリティ
+  { id:"e1", cat:"E", phase:2, trend:"S", hours:5, name:"クロスサイトスクリプティング(XSS)", desc:"反射型/格納型/DOM型・エスケープ・CSP" },
+  { id:"e2", cat:"E", phase:2, trend:"S", hours:4, name:"SQLインジェクション", desc:"原理とプレースホルダーによる対策。実際の漏えい事例の定番" },
+  { id:"e3", cat:"E", phase:2, trend:"S", hours:4, name:"CSRF・SSRF・クリックジャッキング", desc:"リクエスト強要系攻撃の区別と対策" },
+  { id:"e4", cat:"E", phase:2, trend:"S", hours:4, name:"セッション管理と認可の欠陥", desc:"セッションID・Cookie属性・権限昇格・IDOR" },
+  { id:"e5", cat:"E", phase:2, trend:"S", hours:6, name:"セキュアプログラミングと開発工程", desc:"設計レビュー・静的解析・脆弱性診断。R7春「スマホアプリ開発」等" },
+  { id:"e6", cat:"E", phase:2, trend:"A", hours:4, name:"スマホアプリ・APIのセキュリティ", desc:"API認可・シークレット管理・アプリ内保存データ" },
+  // Phase3-4: ネットワークセキュリティ
+  { id:"f1", cat:"F", phase:2, trend:"A", hours:5, name:"ファイアウォールとネットワーク設計", desc:"DMZ・パケットフィルタリング・セグメント分割" },
+  { id:"f2", cat:"F", phase:2, trend:"A", hours:4, name:"IDS/IPS/WAF", desc:"検知方式・シグネチャ・フォールスポジティブ・配置場所" },
+  { id:"f3", cat:"F", phase:2, trend:"A", hours:5, name:"VPNとリモートアクセス・ゼロトラスト", desc:"IPsec/TLS-VPN・テレワーク・ZTNAの考え方" },
+  { id:"f4", cat:"F", phase:3, trend:"S", hours:5, name:"メールセキュリティ(SPF/DKIM/DMARC)", desc:"送信ドメイン認証。科目Bで繰り返し出題される定番" },
+  { id:"f5", cat:"F", phase:3, trend:"S", hours:4, name:"DNSセキュリティ", desc:"キャッシュポイズニング・DNSSEC・サブドメインテイクオーバー" },
+  { id:"f6", cat:"F", phase:3, trend:"A", hours:4, name:"プロキシとログによる検知", desc:"フォワード/リバースプロキシ・ログから攻撃を読む練習" },
+  { id:"f7", cat:"F", phase:3, trend:"B", hours:3, name:"無線LANセキュリティ", desc:"WPA2/WPA3・エンタープライズ認証・偽AP対策" },
+  // Phase4: セキュリティ管理・運用（トレンド重点）
+  { id:"g1", cat:"G", phase:3, trend:"A", hours:4, name:"情報セキュリティマネジメントとISMS", desc:"CIA・ポリシー・ISMS(ISO27001)・PDCA" },
+  { id:"g2", cat:"G", phase:3, trend:"A", hours:4, name:"リスクアセスメント", desc:"資産・脅威・脆弱性の洗い出しとリスク対応の選択肢" },
+  { id:"g3", cat:"G", phase:3, trend:"S", hours:6, name:"インシデント対応とCSIRT", desc:"検知→初動→封じ込め→復旧→再発防止。R6秋 問1の題材" },
+  { id:"g4", cat:"G", phase:3, trend:"S", hours:6, name:"脆弱性管理とIT資産管理", desc:"CVE/CVSS・パッチ適用判断・資産台帳。R7春に2問出た最重点分野" },
+  { id:"g5", cat:"G", phase:3, trend:"A", hours:4, name:"セキュリティ監視とSIEM/SOC", desc:"ログ集約・相関分析・アラート対応" },
+  { id:"g6", cat:"G", phase:3, trend:"S", hours:6, name:"クラウド・SaaSのセキュリティ", desc:"責任共有モデル・設定ミス・ID管理。R7秋 問1の題材" },
+  { id:"g7", cat:"G", phase:3, trend:"S", hours:4, name:"サプライチェーンと委託先管理", desc:"委託先評価・契約・ソフトウェア部品(SBOM)。R7春 問1の題材" },
+  { id:"g8", cat:"G", phase:3, trend:"A", hours:3, name:"デジタルフォレンジックス", desc:"証拠保全・タイムライン分析。科目Aで出題実績" },
+  { id:"g9", cat:"G", phase:3, trend:"A", hours:4, name:"OT・IoTセキュリティ", desc:"制御システム・工場のセキュリティ。R7秋「製造業」の題材" },
+  { id:"g10", cat:"G", phase:3, trend:"B", hours:3, name:"物理・人的セキュリティと教育", desc:"入退室管理・クリアデスク・訓練" },
+  // Phase5: 法規・制度
+  { id:"h1", cat:"H", phase:4, trend:"A", hours:4, name:"サイバーセキュリティ関連法規", desc:"サイバーセキュリティ基本法・不正アクセス禁止法・刑法・電子署名法" },
+  { id:"h2", cat:"H", phase:4, trend:"A", hours:3, name:"個人情報保護法とプライバシー", desc:"個人情報の定義・漏えい時の報告義務・仮名加工情報" },
+  { id:"h3", cat:"H", phase:4, trend:"A", hours:4, name:"基準・ガイドライン", desc:"NIST CSF・CIS Controls・ISMAP・PCI DSS。科目Aで出題実績" },
+  { id:"h4", cat:"H", phase:4, trend:"B", hours:2, name:"支援士制度と倫理", desc:"支援士の義務・罰則・登録制度" },
+  { id:"h5", cat:"H", phase:4, trend:"B", hours:2, name:"周辺法規（知財・労働ほか）", desc:"著作権・派遣/請負・下請法などの頻出ポイントのみ" },
+  // Phase6: 試験演習
+  { id:"i1", cat:"I", phase:5, trend:"S", hours:6, name:"科目A過去問演習①（直近2回分）", desc:"まず2回分を解いて出題感覚をつかむ。正答率を記録する" },
+  { id:"i2", cat:"I", phase:5, trend:"S", hours:8, name:"科目A過去問演習②（さらに4回分）", desc:"過去問再出題率約5割。計6回分で8割正答を目指す" },
+  { id:"i3", cat:"I", phase:5, trend:"S", hours:6, name:"科目B長文問題の読み方トレーニング", desc:"設問先読み・登場人物と構成図の整理・記述の型を学ぶ" },
+  { id:"i4", cat:"I", phase:5, trend:"S", hours:10, name:"科目B過去問演習①（技術系テーマ）", desc:"Web・NW・認証系の過去問3〜4問を時間を計って解く" },
+  { id:"i5", cat:"I", phase:5, trend:"S", hours:10, name:"科目B過去問演習②（管理・運用系テーマ）", desc:"インシデント対応・脆弱性管理・クラウド系の過去問3〜4問" },
+  { id:"i6", cat:"I", phase:5, trend:"S", hours:8, name:"総仕上げ・弱点復習・模擬演習", desc:"間違えた問題の再演習と本番形式の通し演習" },
+];
+
+/* 診断テスト（オリジナル問題・25問）
+   level: 1=入門 2=基本 3=応用。answer は choices の添字 */
+const QUESTIONS = [
+  // d1: IT・ネットワーク基礎
+  { id:"q1", domain:"d1", level:1, q:"Webサイトの閲覧で、ブラウザがWebサーバーを特定するために使う情報の組み合わせとして最も適切なのはどれか。",
+    choices:["IPアドレスとポート番号","MACアドレスとホスト名","メールアドレスとURL","シリアル番号とドメイン名"], answer:0,
+    expl:"通信相手のコンピュータはIPアドレスで、その中のサービス（Webなら通常443/80）はポート番号で特定します。" },
+  { id:"q2", domain:"d1", level:1, q:"DNSの主な役割はどれか。",
+    choices:["通信内容を暗号化する","ドメイン名とIPアドレスを対応付ける","メールの送信者を認証する","不正な通信を遮断する"], answer:1,
+    expl:"DNSは「www.example.jp」のような名前をIPアドレスに変換（名前解決）する仕組みです。" },
+  { id:"q3", domain:"d1", level:2, q:"URLが https:// で始まるサイトについて、正しい説明はどれか。",
+    choices:["サイトの内容が国に審査されている","通信が暗号化され、接続先サーバーの証明書を検証できる","ウイルスが存在しないことが保証される","パスワードが不要になる"], answer:1,
+    expl:"HTTPSはTLSによる通信で、暗号化とサーバー認証を提供します。サイト内容の安全性まで保証するものではありません。" },
+  { id:"q4", domain:"d1", level:2, q:"電子メールの送信（メールサーバーへの受け渡しやサーバー間転送）に使われるプロトコルはどれか。",
+    choices:["FTP","SMTP","SNMP","NTP"], answer:1,
+    expl:"送信・転送はSMTP、受信はPOP3やIMAPを使います。" },
+  { id:"q5", domain:"d1", level:2, q:"社内LANのPCがプライベートIPアドレスのままインターネット上のサーバーと通信できるのは、主にどの技術によるか。",
+    choices:["VLAN","NAT(NAPT)","DHCP","ARP"], answer:1,
+    expl:"NAT(NAPT)がプライベートアドレスをグローバルアドレスに変換します。DHCPはアドレスの自動割当てです。" },
+  // d2: 暗号と認証
+  { id:"q6", domain:"d2", level:2, q:"公開鍵暗号が共通鍵暗号と比べて解決している主な課題はどれか。",
+    choices:["暗号化処理の高速化","鍵を安全に相手へ渡す鍵配送の問題","暗号文のサイズ削減","パスワードの使い回し"], answer:1,
+    expl:"共通鍵暗号は鍵の受け渡しが課題です。公開鍵暗号は公開鍵を配って秘密鍵は渡さないため、鍵配送問題を解決します。処理はむしろ低速です。" },
+  { id:"q7", domain:"d2", level:2, q:"ハッシュ関数の性質として正しいものはどれか。",
+    choices:["ハッシュ値から元のデータを復元できる","同じデータからは毎回異なるハッシュ値が得られる","ハッシュ値から元のデータを求めることは困難である","ハッシュ値は元のデータより必ず長くなる"], answer:2,
+    expl:"一方向性（ハッシュ値から元データを求められない）がハッシュ関数の重要な性質です。改ざん検知などに使われます。" },
+  { id:"q8", domain:"d2", level:3, q:"デジタル署名によって確認できることの組み合わせとして最も適切なのはどれか。",
+    choices:["データの機密性と可用性","作成者の本人性とデータが改ざんされていないこと","通信経路の匿名性","データの保存場所"], answer:1,
+    expl:"署名は秘密鍵を持つ本人しか作れず（本人性・否認防止）、データが変わると検証に失敗する（完全性）ため、この2つを確認できます。" },
+  { id:"q9", domain:"d2", level:3, q:"サーバー証明書に関する説明として正しいものはどれか。",
+    choices:["サーバー管理者が自分で発行すれば世界中のブラウザで信頼される","認証局(CA)が署名し、ブラウザは信頼するCAの証明書チェーンで検証する","証明書は一度発行されると無効化できない","証明書には秘密鍵が含まれている"], answer:1,
+    expl:"証明書はCAの署名により信頼が担保されます。自己署名証明書は既定では信頼されず、失効の仕組み(CRL/OCSP)もあります。" },
+  { id:"q10", domain:"d2", level:2, q:"多要素認証として成立する組み合わせはどれか。",
+    choices:["パスワードと秘密の質問","パスワードとスマートフォンの認証アプリ","指紋と顔認証","2つの異なるパスワード"], answer:1,
+    expl:"知識（パスワード）＋所持（スマホ）のように異なる要素を組み合わせる必要があります。秘密の質問は同じ「知識」要素です。" },
+  // d3: 攻撃手法と脅威
+  { id:"q11", domain:"d3", level:1, q:"ランサムウェアの典型的な手口はどれか。",
+    choices:["データを暗号化し、復号と引き換えに金銭を要求する","Webサイトの見た目を改ざんする","大量のメールを送りつけて回線を混雑させる","無線LANのパスワードを解読する"], answer:0,
+    expl:"ランサムウェアはデータの暗号化（近年は窃取した情報の暴露予告も併用＝二重恐喝）で身代金を要求します。" },
+  { id:"q12", domain:"d3", level:1, q:"フィッシングの説明として最も適切なのはどれか。",
+    choices:["ネットワークの脆弱な箇所を機械的に探し回る行為","実在の組織を装ったメールやサイトで認証情報などをだまし取る行為","サーバーに大量のリクエストを送り停止させる行為","無線通信を傍受する行為"], answer:1,
+    expl:"フィッシングは偽装によって利用者自身に情報を入力させる、人をだます攻撃です。" },
+  { id:"q13", domain:"d3", level:2, q:"標的型攻撃メールの特徴として最も適切なのはどれか。",
+    choices:["不特定多数に同じ文面が大量送信される","受信者の業務や取引先を調べた、本物らしい文面で特定組織に送られる","件名が必ず英語である","添付ファイルは必ず実行形式(.exe)である"], answer:1,
+    expl:"標的型攻撃は特定の組織を狙い、業務に関係ありそうな自然な文面で開封させるのが特徴です。" },
+  { id:"q14", domain:"d3", level:2, q:"DDoS攻撃の説明として正しいものはどれか。",
+    choices:["1台のPCからパスワードを繰り返し試す攻撃","多数の機器から一斉に大量の通信を送りサービスを妨害する攻撃","データベースから情報を盗み出す攻撃","メールの送信元を偽装する攻撃"], answer:1,
+    expl:"DDoSは分散した多数の踏み台（ボットネット等）から一斉に負荷をかけ、サービスを利用不能にします。" },
+  { id:"q15", domain:"d3", level:3, q:"パスワードリスト攻撃が成立してしまう主な原因はどれか。",
+    choices:["パスワードが短すぎること","複数のサービスで同じID・パスワードを使い回していること","パスワードを定期的に変更していないこと","パスワードに記号を含めていないこと"], answer:1,
+    expl:"パスワードリスト攻撃は、あるサービスから漏えいしたID・パスワードの組を他のサービスで試す攻撃で、使い回しが原因で成立します。" },
+  // d4: Web・システム防御
+  { id:"q16", domain:"d4", level:3, q:"SQLインジェクションの最も根本的な対策はどれか。",
+    choices:["通信をTLSで暗号化する","プレースホルダー（バインド機構）を使ってSQL文を組み立てる","パスワードを複雑にする","Webサーバーを最新のOSで動かす"], answer:1,
+    expl:"ユーザー入力をSQL文の構造と分離するプレースホルダーの使用が根本対策です。TLSは通信の保護であり、この攻撃は防げません。" },
+  { id:"q17", domain:"d4", level:2, q:"クロスサイトスクリプティング(XSS)はどのような攻撃か。",
+    choices:["Webページに悪意のあるスクリプトを埋め込み、閲覧者のブラウザで実行させる","サーバーのOSコマンドを不正に実行する","DNSの応答を偽装する","無線LANの通信を傍受する"], answer:0,
+    expl:"XSSは入力値の出力時エスケープ漏れなどを突いて、閲覧者のブラウザ上でスクリプトを実行させる攻撃です。" },
+  { id:"q18", domain:"d4", level:3, q:"CSRF（クロスサイトリクエストフォージェリ）の説明として最も適切なのはどれか。",
+    choices:["ログイン中の利用者に、意図しないリクエストを送信させて処理を実行させる攻撃","サーバーの脆弱性を突いて管理者権限を奪う攻撃","偽のアクセスポイントで通信を傍受する攻撃","データベースの内容を直接書き換える攻撃"], answer:0,
+    expl:"CSRFはログイン済みの利用者を罠サイト経由で操り、本人になりすました処理（購入・設定変更など）を実行させます。対策はトークン検証などです。" },
+  { id:"q19", domain:"d4", level:1, q:"ファイアウォールの基本的な機能はどれか。",
+    choices:["ウイルスを駆除する","設定したルールに基づいて通信を許可・遮断する","データを自動でバックアップする","パスワードを管理する"], answer:1,
+    expl:"ファイアウォールは送信元/宛先アドレスやポート番号などのルールで通信を制御します。" },
+  { id:"q20", domain:"d4", level:3, q:"WAF（Web Application Firewall）が主に守る対象はどれか。",
+    choices:["社内LANのファイル共有","WebアプリケーションへのSQLインジェクションやXSSなどの攻撃","メールサーバーへの不正中継","無線LANの盗聴"], answer:1,
+    expl:"WAFはWebアプリケーション層の攻撃パターンを検知・遮断します。ネットワーク層のFWとは守備範囲が異なります。" },
+  // d5: 管理・運用・法規
+  { id:"q21", domain:"d5", level:2, q:"情報セキュリティの3要素（CIA）の組み合わせとして正しいものはどれか。",
+    choices:["機密性・完全性・可用性","秘匿性・安全性・信頼性","認証・認可・監査","予防・検知・対応"], answer:0,
+    expl:"機密性(Confidentiality)・完全性(Integrity)・可用性(Availability)が情報セキュリティの3要素です。" },
+  { id:"q22", domain:"d5", level:2, q:"リスクアセスメントの基本的な進め方として最も適切なのはどれか。",
+    choices:["最新のセキュリティ製品から導入を決める","情報資産を洗い出し、脅威と脆弱性からリスクの大きさを評価して対応を決める","全社員のPCを毎日検査する","過去に事故がなければ対策は不要と判断する"], answer:1,
+    expl:"資産の特定→脅威・脆弱性の分析→リスク評価→対応（低減・回避・移転・受容）の流れが基本です。" },
+  { id:"q23", domain:"d5", level:2, q:"CSIRTの役割として最も適切なのはどれか。",
+    choices:["社内システムの開発を行う","セキュリティインシデントの受付・対応・再発防止を担う","会計監査を実施する","採用面接を行う"], answer:1,
+    expl:"CSIRT(Computer Security Incident Response Team)はインシデント対応の中心となる組織です。" },
+  { id:"q24", domain:"d5", level:3, q:"不正アクセス禁止法で禁止されている行為はどれか。",
+    choices:["自分のPCのパスワードを忘れること","他人のID・パスワードを無断で使ってシステムにログインすること","会社のPCで私用メールを送ること","フリーWi-Fiを利用すること"], answer:1,
+    expl:"他人の識別符号の不正利用やセキュリティホールを突く不正ログイン、フィッシングによる識別符号の取得などが禁止されています。" },
+  { id:"q25", domain:"d5", level:3, q:"個人情報保護法における個人情報の説明として正しいものはどれか。",
+    choices:["企業の財務情報も個人情報に含まれる","生存する個人を識別できる情報（他の情報と容易に照合して識別できるものを含む）","匿名化すればどんな情報でも自由に売買できる","紙の書類は個人情報保護法の対象外である"], answer:1,
+    expl:"個人情報は生存する個人を識別できる情報で、紙媒体も対象です。漏えい時には個人情報保護委員会への報告義務があります。" },
+];
+
+/* 科目B 出題テーマ実績（傾向タブで表示。docs/trend-analysis.md と同期） */
+const PAST_THEMES = [
+  { exam:"令和7年秋", themes:["コンサル業務で利用するSaaS","暗号資産交換業のセキュリティ","情報システムのセキュリティ強化","製造業におけるセキュリティ管理"] },
+  { exam:"令和7年春", themes:["サプライチェーンのリスク対策","脆弱性管理","スマートフォン向けアプリ開発","IT資産管理及び脆弱性管理"] },
+  { exam:"令和6年秋", themes:["インシデントレスポンス","ドメイン名変更（DNS・メール）","クレジットカード情報の漏えい（Web）","セキュリティ診断"] },
+];
+
+const EXAM_PRESETS = [
+  { id:"kouki2027", name:"後期試験（科目A: 2027/2/20〜3/2、科目B: 2027/3/16〜28）", dateA:"2027-02-20", dateB:"2027-03-16" },
+  { id:"zenki2026", name:"前期試験（2026年11月頃 ※日程は要確認）", dateA:"2026-11-01", dateB:"2026-11-15" },
+  { id:"custom",   name:"カスタム（日付を自分で設定）", dateA:null, dateB:null },
+];
+
+/* =========================================================
+   状態管理（localStorage）
+   ========================================================= */
+const LS_KEY = "sc-study-v1";
+
+function defaultState() {
+  return {
+    settings: { examPreset:"kouki2027", dateA:"2027-02-20", dateB:"2027-03-16", hoursPerWeek:9 },
+    diagnosis: null,   // { finishedAt, answers:{qid:idx|-1}, scores:{d1:{correct,total}, ...} }
+    progress: {},      // unitId -> { done:true, doneAt:"ISO" }
+    log: [],           // { ts, type, text }
+  };
+}
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return defaultState();
+    const s = JSON.parse(raw);
+    return Object.assign(defaultState(), s);
+  } catch (e) { return defaultState(); }
+}
+function saveState() { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+function addLog(type, text) {
+  state.log.unshift({ ts: new Date().toISOString(), type, text });
+  if (state.log.length > 500) state.log.length = 500;
+}
+
+/* =========================================================
+   日付ユーティリティ
+   ========================================================= */
+function toDate(s) { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); }
+function fmtDate(d) { return `${d.getMonth()+1}/${d.getDate()}`; }
+function fmtDateFull(d) { return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`; }
+function mondayOf(d) {
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const day = (x.getDay() + 6) % 7; // 月曜=0
+  x.setDate(x.getDate() - day);
+  return x;
+}
+function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function daysUntil(dateStr) {
+  const now = new Date(); const t = toDate(dateStr);
+  return Math.ceil((t - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
+}
+
+/* =========================================================
+   ロードマップ生成
+   - 全単元を必ずどこかの週に割り当てる（漏れゼロ原則）
+   - 診断結果の弱い分野は時間を増やし、得意分野は減らす
+   ========================================================= */
+function unitDomain(unit) {
+  const d = DOMAINS.find(dm => dm.cats.includes(unit.cat));
+  return d ? d.id : null;
+}
+function domainScorePct(domainId) {
+  if (!state.diagnosis) return null;
+  const s = state.diagnosis.scores[domainId];
+  if (!s || s.total === 0) return null;
+  return Math.round(100 * s.correct / s.total);
+}
+function unitAdjustedHours(unit) {
+  const dm = unitDomain(unit);
+  const pct = dm ? domainScorePct(dm) : null;
+  if (pct === null) return unit.hours;
+  if (pct < 40) return Math.round(unit.hours * 1.25);
+  if (pct >= 80) return Math.max(1, Math.round(unit.hours * 0.75));
+  return unit.hours;
+}
+
+function computeRoadmap() {
+  const start = mondayOf(new Date());
+  const examB = toDate(state.settings.dateB);
+  const weeks = [];
+  let cursor = new Date(start);
+  while (cursor < examB) {
+    weeks.push({ start: new Date(cursor), end: addDays(cursor, 6), units: [], hours: 0 });
+    cursor = addDays(cursor, 7);
+  }
+  if (weeks.length === 0) weeks.push({ start, end: addDays(start, 6), units: [], hours: 0 });
+
+  const capacity = state.settings.hoursPerWeek;
+  const ordered = [...UNITS].sort((a, b) => a.phase - b.phase || UNITS.indexOf(a) - UNITS.indexOf(b));
+
+  let wi = 0;
+  let overflow = false;
+  for (const u of ordered) {
+    const h = unitAdjustedHours(u);
+    // 今の週に入り切らなければ次の週へ（最終週に達したら詰め込む＝漏れは絶対に出さない）
+    while (wi < weeks.length - 1 && weeks[wi].hours + h > capacity && weeks[wi].units.length > 0) wi++;
+    weeks[wi].units.push({ unit: u, hours: h });
+    weeks[wi].hours += h;
+    if (wi === weeks.length - 1 && weeks[wi].hours > capacity) overflow = true;
+  }
+
+  const totalHours = ordered.reduce((s, u) => s + unitAdjustedHours(u), 0);
+  const neededPerWeek = Math.ceil(totalHours / weeks.length * 10) / 10;
+  return { weeks, totalHours, neededPerWeek, overflow, capacity };
+}
+
+function isDone(unitId) { return !!(state.progress[unitId] && state.progress[unitId].done); }
+
+function toggleUnit(unitId) {
+  const u = UNITS.find(x => x.id === unitId);
+  if (isDone(unitId)) {
+    delete state.progress[unitId];
+    addLog("undo", `「${u.name}」を未学習に戻した`);
+  } else {
+    state.progress[unitId] = { done: true, doneAt: new Date().toISOString() };
+    addLog("done", `「${u.name}」を学習完了`);
+  }
+  saveState();
+  render();
+}
+
+/* 現在週・遅れ（未消化）判定 */
+function roadmapStatus(rm) {
+  const today = new Date();
+  let currentIdx = rm.weeks.findIndex(w => today >= w.start && today <= addDays(w.end, 0.99));
+  if (currentIdx === -1) currentIdx = today < rm.weeks[0].start ? 0 : rm.weeks.length - 1;
+  const overdue = [];
+  rm.weeks.forEach((w, i) => {
+    if (i < currentIdx) w.units.forEach(x => { if (!isDone(x.unit.id)) overdue.push(x.unit); });
+  });
+  return { currentIdx, overdue };
+}
+
+/* =========================================================
+   画面描画
+   ========================================================= */
+const TABS = [
+  { id:"home", name:"ホーム" },
+  { id:"diag", name:"レベル診断" },
+  { id:"roadmap", name:"ロードマップ" },
+  { id:"units", name:"単元マップ" },
+  { id:"log", name:"学習記録" },
+  { id:"trend", name:"出題傾向" },
+  { id:"config", name:"設定" },
+];
+let activeTab = "home";
+let diagInProgress = false;
+
+function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function render() {
+  const nav = document.getElementById("nav");
+  nav.innerHTML = TABS.map(t =>
+    `<button class="${t.id===activeTab?"active":""}" onclick="switchTab('${t.id}')">${t.name}</button>`).join("");
+  const main = document.getElementById("main");
+  const fn = { home:renderHome, diag:renderDiag, roadmap:renderRoadmap, units:renderUnits, log:renderLog, trend:renderTrend, config:renderConfig }[activeTab];
+  main.innerHTML = fn();
+}
+function switchTab(id) { activeTab = id; diagInProgress = false; render(); window.scrollTo(0,0); }
+
+/* ---------- ホーム ---------- */
+function renderHome() {
+  const rm = computeRoadmap();
+  const st = roadmapStatus(rm);
+  const doneCount = UNITS.filter(u => isDone(u.id)).length;
+  const dB = daysUntil(state.settings.dateB);
+  const dA = daysUntil(state.settings.dateA);
+  const pct = Math.round(100 * doneCount / UNITS.length);
+
+  let html = "";
+
+  if (!state.diagnosis) {
+    html += `<div class="notice"><b>最初にレベル診断を受けてください。</b> 診断結果に合わせて、弱い分野に時間を厚く配分したロードマップを自動生成します。
+      <div style="margin-top:8px"><button class="primary" onclick="startDiag()">レベル診断を始める（25問・約15分）</button></div></div>`;
+  }
+
+  html += `<div class="tiles">
+    <div class="tile"><div class="v">${dB}</div><div class="l">科目B試験まで（日）</div><div class="s">${state.settings.dateB} 開始</div></div>
+    <div class="tile"><div class="v">${dA}</div><div class="l">科目A試験まで（日）</div><div class="s">${state.settings.dateA} 開始</div></div>
+    <div class="tile"><div class="v">${doneCount}<span style="font-size:14px;color:var(--muted)"> / ${UNITS.length}</span></div><div class="l">消化した単元</div><div class="s">カバレッジ ${pct}%</div></div>
+    <div class="tile"><div class="v">${rm.neededPerWeek}<span style="font-size:14px;color:var(--muted)">h</span></div><div class="l">必要な週あたり学習時間</div><div class="s">設定: 週${rm.capacity}h</div></div>
+  </div>`;
+
+  html += `<div class="card"><h2>全体進捗</h2>
+    <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+    <div class="muted" style="margin-top:4px">${doneCount}/${UNITS.length} 単元完了（全単元がロードマップに割り当て済み。未完了の単元は必ず今後の週に残っています）</div></div>`;
+
+  if (st.overdue.length > 0) {
+    html += `<div class="alert"><b>未消化の単元が ${st.overdue.length} 件あります（予定週を過ぎています）。</b><br>
+      ${st.overdue.slice(0,8).map(u => esc(u.name)).join(" ／ ")}${st.overdue.length>8?" ほか":""}<br>
+      <span class="muted">今週分と並行して少しずつ消化するか、設定で週あたり時間を増やしてください。漏れとして記録され続けます。</span></div>`;
+  }
+
+  const cw = rm.weeks[st.currentIdx];
+  if (cw) {
+    html += `<div class="card"><h2>今週の学習（${fmtDate(cw.start)}〜${fmtDate(cw.end)}・目安${cw.hours}h）</h2>`;
+    if (cw.units.length === 0) {
+      html += `<div class="muted">今週の割当てはありません（未消化分の解消・復習に充ててください）。</div>`;
+    } else {
+      html += cw.units.map(x => unitRow(x.unit, x.hours, false)).join("");
+    }
+    html += `</div>`;
+  }
+
+  if (state.diagnosis) {
+    html += `<div class="card"><h2>診断結果（分野別正答率）</h2>${scoreBars()}
+      <div class="muted" style="margin-top:6px">診断日: ${fmtDateFull(new Date(state.diagnosis.finishedAt))}　<button class="ghost" onclick="startDiag()">再診断する</button></div></div>`;
+  }
+
+  const recent = state.log.slice(0, 5);
+  if (recent.length) {
+    html += `<div class="card"><h2>最近の記録</h2>` +
+      recent.map(l => `<div class="small">${fmtDateFull(new Date(l.ts))}　${esc(l.text)}</div>`).join("") +
+      `<div style="margin-top:6px"><button class="ghost" onclick="switchTab('log')">すべて見る</button></div></div>`;
+  }
+  return html;
+}
+
+function unitRow(u, hours, showCat) {
+  const done = isDone(u.id);
+  return `<div class="unit ${done?"done":""}">
+    <input type="checkbox" ${done?"checked":""} onchange="toggleUnit('${u.id}')" aria-label="${esc(u.name)}を完了にする">
+    <div class="u-name">${esc(u.name)} <span class="badge rank">${u.trend}</span>
+      <div class="u-meta">${showCat?CATS[u.cat]+"・":""}目安${hours!=null?hours:u.hours}h　${esc(u.desc)}</div>
+    </div>
+  </div>`;
+}
+
+function scoreBars() {
+  return DOMAINS.map(dm => {
+    const pct = domainScorePct(dm.id);
+    if (pct === null) return "";
+    const badge = pct < 40 ? `<span class="badge weak">弱点 ✕</span>` : pct >= 80 ? `<span class="badge strong">得意 ✓</span>` : "";
+    return `<div class="score-row">
+      <div>${dm.name}${badge}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <div class="score-val">${pct}%</div>
+    </div>`;
+  }).join("");
+}
+
+/* ---------- レベル診断 ---------- */
+function startDiag() { activeTab = "diag"; diagInProgress = true; render(); window.scrollTo(0,0); }
+
+function renderDiag() {
+  if (!diagInProgress && state.diagnosis) {
+    return `<div class="card"><h2>レベル診断 結果</h2>${scoreBars()}
+      <h3>診断の見方</h3>
+      <div class="small">正答率40%未満の分野は「弱点」として、ロードマップで学習時間を1.25倍に増やしています。80%以上の分野は0.75倍に圧縮し、その分を弱点に回しています。</div>
+      <div style="margin-top:10px"><button class="primary" onclick="startDiag()">もう一度診断する</button>
+      <button class="ghost" onclick="switchTab('roadmap')">ロードマップを見る</button></div></div>` + diagAnswerReview();
+  }
+  if (!diagInProgress) {
+    return `<div class="card"><h2>レベル診断（25問）</h2>
+      <p class="small">5分野×5問のオリジナル問題であなたの現在地を測ります。制限時間はありません。<b>わからない問題は勘で答えず「わからない」を選んでください</b>（正確な弱点分析のため）。</p>
+      <button class="primary" onclick="startDiag()">診断を始める</button></div>`;
+  }
+  let html = `<div class="card"><h2>レベル診断</h2>
+    <p class="small">全25問。わからない問題は「わからない」を選択してください。</p></div><form id="diagForm">`;
+  QUESTIONS.forEach((q, i) => {
+    html += `<div class="card q-card"><div class="q-no">問${i+1} ／ ${DOMAINS.find(d=>d.id===q.domain).name}</div>
+      <div style="margin:4px 0 8px">${esc(q.q)}</div>`;
+    q.choices.forEach((c, ci) => {
+      html += `<label class="choice"><input type="radio" name="${q.id}" value="${ci}">${esc(c)}</label>`;
+    });
+    html += `<label class="choice"><input type="radio" name="${q.id}" value="-1">わからない</label></div>`;
+  });
+  html += `</form><div class="card"><button class="primary" onclick="finishDiag()">採点する</button>
+    <div class="muted" style="margin-top:6px">未回答の問題は「わからない」として扱います。</div></div>`;
+  return html;
+}
+
+function finishDiag() {
+  const form = document.getElementById("diagForm");
+  const answers = {};
+  const scores = {};
+  DOMAINS.forEach(d => scores[d.id] = { correct: 0, total: 0 });
+  QUESTIONS.forEach(q => {
+    const sel = form.querySelector(`input[name="${q.id}"]:checked`);
+    const v = sel ? Number(sel.value) : -1;
+    answers[q.id] = v;
+    scores[q.domain].total++;
+    if (v === q.answer) scores[q.domain].correct++;
+  });
+  state.diagnosis = { finishedAt: new Date().toISOString(), answers, scores };
+  const summary = DOMAINS.map(d => `${d.name}${Math.round(100*scores[d.id].correct/scores[d.id].total)}%`).join("、");
+  addLog("diag", `レベル診断を実施（${summary}）`);
+  saveState();
+  diagInProgress = false;
+  render();
+  window.scrollTo(0,0);
+}
+
+function diagAnswerReview() {
+  if (!state.diagnosis) return "";
+  let html = `<div class="card"><h2>解答と解説</h2>`;
+  QUESTIONS.forEach((q, i) => {
+    const v = state.diagnosis.answers[q.id];
+    const ok = v === q.answer;
+    const mark = ok ? `<span style="color:var(--good-text)">○</span>` : `<span style="color:var(--crit)">✕</span>`;
+    html += `<div style="border-bottom:1px solid var(--grid);padding:8px 0" class="small">
+      <b>問${i+1}</b> ${mark} ${esc(q.q)}<br>
+      正解: ${esc(q.choices[q.answer])}${!ok && v >= 0 ? `<br>あなたの解答: ${esc(q.choices[v])}` : v === -1 ? "<br>（わからないを選択）" : ""}<br>
+      <span class="muted">${esc(q.expl)}</span></div>`;
+  });
+  return html + `</div>`;
+}
+
+/* ---------- ロードマップ ---------- */
+function renderRoadmap() {
+  const rm = computeRoadmap();
+  const st = roadmapStatus(rm);
+  let html = `<div class="card"><h2>合格ロードマップ</h2>
+    <div class="small">目標: 科目A ${state.settings.dateA}〜 ／ 科目B ${state.settings.dateB}〜（設定タブで変更可）<br>
+    総学習時間の目安: <b>${rm.totalHours}時間</b> ／ 残り${rm.weeks.length}週 → 週あたり<b>${rm.neededPerWeek}時間</b>必要（現在の設定: 週${rm.capacity}時間）</div>`;
+  if (rm.neededPerWeek > rm.capacity) {
+    html += `<div class="alert" style="margin-top:10px">設定の週${rm.capacity}時間では全単元が期間内に収まりません。設定で週あたり時間を<b>${rm.neededPerWeek}時間以上</b>に増やすか、学習ペースを上げてください。<b>単元は絶対に削りません</b>（漏れゼロ原則）。終盤の週に超過分が詰まれています。</div>`;
+  }
+  if (!state.diagnosis) {
+    html += `<div class="notice" style="margin-top:10px">レベル診断が未実施のため、標準時間で配分しています。<button class="ghost" onclick="startDiag()">診断を受ける</button></div>`;
+  }
+  html += `<div class="muted" style="margin-top:6px">単元の時間はレベル診断の結果で自動調整されます（弱点分野×1.25、得意分野×0.75）。チェックを入れると学習記録に自動で残ります。</div></div>`;
+
+  let lastPhase = -1;
+  rm.weeks.forEach((w, i) => {
+    const cls = i === st.currentIdx ? "current" : (i < st.currentIdx && w.units.some(x => !isDone(x.unit.id)) ? "past-open" : "");
+    const phaseOfWeek = w.units.length ? w.units[0].unit.phase : null;
+    if (phaseOfWeek !== null && phaseOfWeek !== lastPhase) {
+      html += `<div class="phase-title">${PHASES[phaseOfWeek]}</div>`;
+      lastPhase = phaseOfWeek;
+    }
+    html += `<div class="week ${cls}"><h3>第${i+1}週 <span class="w-label">${fmtDate(w.start)}〜${fmtDate(w.end)}${i===st.currentIdx?"（今週）":""}・目安${w.hours}h</span></h3>`;
+    if (w.units.length === 0) {
+      html += `<div class="muted small">予備週（遅れの吸収・復習用）</div>`;
+    } else {
+      html += w.units.map(x => {
+        const overdue = i < st.currentIdx && !isDone(x.unit.id);
+        return `<div class="${overdue?"unit overdue":"unit"} ${isDone(x.unit.id)?"done":""}" style="border-bottom:1px solid var(--grid)">
+          <input type="checkbox" ${isDone(x.unit.id)?"checked":""} onchange="toggleUnit('${x.unit.id}')">
+          <div class="u-name">${esc(x.unit.name)} <span class="badge rank">${x.unit.trend}</span>
+            <div class="u-meta">${x.hours}h　${esc(x.unit.desc)}</div></div>
+        </div>`;
+      }).join("");
+    }
+    html += `</div>`;
+  });
+  return html;
+}
+
+/* ---------- 単元マップ（カバレッジ） ---------- */
+function renderUnits() {
+  const doneCount = UNITS.filter(u => isDone(u.id)).length;
+  let html = `<div class="card"><h2>単元マップ（全${UNITS.length}単元のカバレッジ）</h2>
+    <div class="small">試験範囲を網羅した全単元の一覧です。<b>すべての単元がロードマップのいずれかの週に割り当てられています</b>。ここが全部「済」になれば学習漏れはありません。</div>
+    <div style="margin-top:8px" class="bar-track"><div class="bar-fill" style="width:${Math.round(100*doneCount/UNITS.length)}%"></div></div>
+    <div class="muted">${doneCount} / ${UNITS.length} 単元完了</div></div>`;
+
+  for (const catId of Object.keys(CATS)) {
+    const units = UNITS.filter(u => u.cat === catId);
+    if (!units.length) continue;
+    const d = units.filter(u => isDone(u.id)).length;
+    html += `<div class="card"><h2>${CATS[catId]} <span class="muted">(${d}/${units.length})</span></h2>`;
+    html += units.map(u => {
+      const done = isDone(u.id);
+      const doneAt = done ? fmtDateFull(new Date(state.progress[u.id].doneAt)) : "";
+      return `<div class="unit ${done?"done":""}">
+        <input type="checkbox" ${done?"checked":""} onchange="toggleUnit('${u.id}')">
+        <div class="u-name">${esc(u.name)} <span class="badge rank">${u.trend}</span>
+          <div class="u-meta">目安${u.hours}h　${esc(u.desc)}</div></div>
+        <span class="status-chip ${done?"done":"todo"}">${done?"✓ "+doneAt:"未学習"}</span>
+      </div>`;
+    }).join("");
+    html += `</div>`;
+  }
+  html += `<div class="card muted small">重要度ランク: <span class="badge rank">S</span>=直近の試験で繰り返し出題される最重点分野、<span class="badge rank">A</span>=頻出、<span class="badge rank">B</span>=基礎・相対的に出題少。根拠は「出題傾向」タブ参照。</div>`;
+  return html;
+}
+
+/* ---------- 学習記録 ---------- */
+function renderLog() {
+  let html = `<div class="card"><h2>学習記録</h2>
+    <div class="small">単元の完了・診断の実施が自動で記録されます。「何を勉強したか」はこのタブと単元マップでいつでも確認できます。</div></div>`;
+  if (!state.log.length) return html + `<div class="card muted">まだ記録がありません。</div>`;
+  html += `<div class="card"><div class="tbl-wrap"><table><tr><th style="width:11em">日時</th><th>内容</th></tr>`;
+  html += state.log.map(l => {
+    const d = new Date(l.ts);
+    return `<tr><td>${fmtDateFull(d)} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}</td><td>${esc(l.text)}</td></tr>`;
+  }).join("");
+  return html + `</table></div></div>`;
+}
+
+/* ---------- 出題傾向 ---------- */
+function renderTrend() {
+  let html = `<div class="card"><h2>出題傾向分析（ロードマップの根拠）</h2>
+    <div class="small">このアプリの単元の重要度ランク（S/A/B）と時間配分は、以下の実際の出題実績と試験制度の分析に基づいています。詳細はリポジトリの docs/trend-analysis.md 参照。</div></div>`;
+
+  html += `<div class="card"><h2>試験制度（2026年度〜の重要変更）</h2><div class="small">
+    <ul>
+      <li><b>CBT方式に移行</b>。従来の春期・秋期は「前期・後期」に変わりました（2027年4月の春期試験はありません）</li>
+      <li>科目名変更: 午前I→科目A-1、午前II→科目A-2、午後→科目B</li>
+      <li>既定の目標＝<b>後期試験</b>: 申込 2027/1/27〜2/27、科目A 2027/2/20〜3/2、科目B 2027/3/16〜28</li>
+      <li>2026年度の出題範囲は変更なし（2027年度以降に科目Aの体系再編の方向性あり）</li>
+    </ul></div></div>`;
+
+  html += `<div class="card"><h2>科目B（旧午後）の出題テーマ実績</h2><div class="tbl-wrap"><table>
+    <tr><th>実施回</th><th>問1</th><th>問2</th><th>問3</th><th>問4</th></tr>`;
+  html += PAST_THEMES.map(p => `<tr><td>${p.exam}</td>${p.themes.map(t=>`<td>${esc(t)}</td>`).join("")}</tr>`).join("");
+  html += `</table></div>
+    <h3>読み取れるトレンド</h3><div class="small"><ul>
+      <li><b>脆弱性管理・IT資産管理</b>が令和7年春に2問出題 → 最重点（Sランク）</li>
+      <li><b>クラウド・SaaS、サプライチェーン、インシデント対応</b>が定番化 → Sランク</li>
+      <li>Web・DNS・メールなどの技術系テーマも毎回どこかに登場 → Sランク</li>
+      <li>開発・インフラ・NWが混ざる<b>融合問題</b>が増加 → 特定分野の丸暗記ではなく横断理解が必要</li>
+      <li>新技術は台頭から2〜3年で出題される（例: 暗号資産 R7秋）</li>
+    </ul></div></div>`;
+
+  html += `<div class="card"><h2>科目A-2（旧午前II）の傾向</h2><div class="small"><ul>
+    <li>25問中、セキュリティ約17問＋ネットワーク約3問。残りはDB・開発・監査など</li>
+    <li><b>過去問からの再出題が約4〜5割</b>。特に3〜8回前の問題が再出題されやすい</li>
+    <li>→ ロードマップ終盤に「科目A過去問演習」を計6回分（計14時間）確保しています</li>
+  </ul></div></div>`;
+
+  html += `<div class="card"><h2>情報源</h2><div class="small"><ul>
+    <li><a href="https://www.sc-siken.com/" target="_blank" rel="noopener">情報処理安全確保支援士ドットコム（過去問・テーマ実績）</a></li>
+    <li><a href="https://www.tac-school.co.jp/kouza_joho/joho_cbt_2026.html" target="_blank" rel="noopener">TAC: 令和8年度 CBT実施概要・日程</a></li>
+    <li><a href="https://www.itec.co.jp/examination/ap_koudo_sc-cbt.html" target="_blank" rel="noopener">アイテック: 制度変更の解説</a></li>
+    <li><a href="https://www.ipa.go.jp/shiken/" target="_blank" rel="noopener">IPA 情報処理技術者試験（公式・最新日程は必ずここで確認）</a></li>
+  </ul></div></div>`;
+  return html;
+}
+
+/* ---------- 設定 ---------- */
+function renderConfig() {
+  const s = state.settings;
+  let html = `<div class="card"><h2>目標試験</h2>
+    <select id="cfgPreset" onchange="onPresetChange()">` +
+    EXAM_PRESETS.map(p => `<option value="${p.id}" ${s.examPreset===p.id?"selected":""}>${esc(p.name)}</option>`).join("") +
+    `</select>
+    <div style="margin-top:10px" class="small">
+      科目A開始日: <input type="date" id="cfgDateA" value="${s.dateA}" ${s.examPreset!=="custom"?"disabled":""}>
+      科目B開始日: <input type="date" id="cfgDateB" value="${s.dateB}" ${s.examPreset!=="custom"?"disabled":""}>
+    </div>
+    <div class="muted" style="margin-top:6px">CBTは期間内で受験日を選べます。開始日を基準に逆算しています。正式日程はIPA公式サイトで必ず確認してください。</div></div>`;
+
+  html += `<div class="card"><h2>学習ペース</h2>
+    週あたりの学習時間: <input type="number" id="cfgHours" min="3" max="40" value="${s.hoursPerWeek}" style="width:5em"> 時間
+    <div class="muted" style="margin-top:6px">平日1時間＋休日2時間ずつなら週9時間です。</div>
+    <div style="margin-top:10px"><button class="primary" onclick="saveConfig()">設定を保存してロードマップを再計算</button></div></div>`;
+
+  html += `<div class="card"><h2>データのバックアップ</h2>
+    <div class="small">学習データはこのブラウザ内（localStorage）だけに保存されます。端末変更・ブラウザ履歴削除で消えるため、定期的にエクスポートしてください。</div>
+    <div style="margin-top:8px">
+      <button class="ghost" onclick="exportData()">エクスポート（ファイル保存）</button>
+      <button class="ghost" onclick="document.getElementById('importFile').click()">インポート</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+    <textarea id="exportArea" rows="4" style="margin-top:8px" placeholder="エクスポートするとここにもJSONが表示されます（コピー保存用）"></textarea></div>`;
+
+  html += `<div class="card"><h2>データの初期化</h2>
+    <button class="ghost danger" onclick="resetData()">すべての学習データを削除</button>
+    <div class="muted" style="margin-top:6px">診断結果・進捗・記録がすべて消えます。元に戻せません。</div></div>`;
+  return html;
+}
+
+function onPresetChange() {
+  const id = document.getElementById("cfgPreset").value;
+  const p = EXAM_PRESETS.find(x => x.id === id);
+  const a = document.getElementById("cfgDateA"), b = document.getElementById("cfgDateB");
+  if (p.dateA) { a.value = p.dateA; b.value = p.dateB; }
+  a.disabled = b.disabled = (id !== "custom");
+}
+function saveConfig() {
+  const preset = document.getElementById("cfgPreset").value;
+  const dateA = document.getElementById("cfgDateA").value;
+  const dateB = document.getElementById("cfgDateB").value;
+  const hours = Math.max(3, Math.min(40, Number(document.getElementById("cfgHours").value) || 9));
+  if (!dateA || !dateB) { alert("試験日を入力してください"); return; }
+  state.settings = { examPreset: preset, dateA, dateB, hoursPerWeek: hours };
+  addLog("config", `設定変更（目標: 科目A ${dateA} / 科目B ${dateB}、週${hours}h）`);
+  saveState();
+  activeTab = "roadmap";
+  render();
+}
+function exportData() {
+  const json = JSON.stringify(state, null, 2);
+  document.getElementById("exportArea").value = json;
+  const blob = new Blob([json], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `sc-study-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importData(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const s = JSON.parse(reader.result);
+      if (!s.settings || !("progress" in s)) throw new Error("形式が違います");
+      state = Object.assign(defaultState(), s);
+      addLog("import", "バックアップからデータを復元");
+      saveState();
+      render();
+      alert("インポートしました");
+    } catch (e) { alert("インポートに失敗しました: " + e.message); }
+  };
+  reader.readAsText(file);
+}
+function resetData() {
+  if (!confirm("本当にすべての学習データを削除しますか？")) return;
+  localStorage.removeItem(LS_KEY);
+  state = defaultState();
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
