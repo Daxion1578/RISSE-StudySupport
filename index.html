@@ -5,95 +5,114 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>支援士合格ロードマップ</title>
 <style>
+  /* ハッカー風ダークテーマ（端末/SOCダッシュボード調）。このアプリはダーク単一テーマで統一する */
   :root {
-    color-scheme: light;
-    --page: #f9f9f7;
-    --surface: #fcfcfb;
-    --ink: #0b0b0b;
-    --ink-2: #52514e;
-    --muted: #898781;
-    --grid: #e1e0d9;
-    --border: rgba(11,11,11,0.10);
-    --accent: #2a78d6;      /* データ・強調（青） */
-    --accent-soft: #cde2fb;
-    --good: #0ca30c;        /* 完了 */
-    --good-text: #006300;
-    --warn: #fab219;        /* 注意 */
-    --crit: #d03b3b;        /* 遅れ・弱点 */
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      color-scheme: dark;
-      --page: #0d0d0d;
-      --surface: #1a1a19;
-      --ink: #ffffff;
-      --ink-2: #c3c2b7;
-      --muted: #898781;
-      --grid: #2c2c2a;
-      --border: rgba(255,255,255,0.10);
-      --accent: #3987e5;
-      --accent-soft: #104281;
-      --good-text: #0ca30c;
-    }
+    color-scheme: dark;
+    --page: #070b09;
+    --surface: #0d1411;
+    --ink: #cdeeda;
+    --ink-2: #8fb8a2;
+    --muted: #5f8070;
+    --grid: #1c2b23;
+    --border: #24473a;
+    --accent: #00e07a;                     /* ネオングリーン（データ・強調） */
+    --accent-dim: #00a85c;
+    --accent-soft: rgba(0,224,122,0.12);
+    --cyan: #35d5e5;                       /* 情報・リンク */
+    --good: #00e07a;                       /* 完了 */
+    --good-text: #35e08a;
+    --warn: #fab219;                       /* 注意 */
+    --crit: #ff5f56;                       /* 遅れ・弱点 */
+    --glow: 0 0 8px rgba(0,224,122,0.4);
+    --mono: ui-monospace, "Cascadia Code", "SF Mono", Consolas, Menlo, "Courier New", monospace;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    font-family: var(--mono), "Hiragino Sans", "Yu Gothic UI", sans-serif;
     background: var(--page);
     color: var(--ink);
-    line-height: 1.6;
+    line-height: 1.7;
   }
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--grid);
-    padding: 12px 16px 0;
+  /* CRT風スキャンライン（薄く） */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.22) 0 1px, transparent 1px 3px);
+    opacity: 0.25;
   }
-  header h1 { font-size: 18px; margin: 0 0 8px; }
-  header h1 small { font-weight: normal; color: var(--muted); font-size: 12px; margin-left: 8px; }
-  nav { display: flex; gap: 2px; flex-wrap: wrap; }
+  ::selection { background: var(--accent); color: #04130b; }
+  a { color: var(--cyan); }
+  header { background: #050807; border-bottom: 1px solid var(--border); padding: 0 0 0; }
+  .term-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-bottom: 1px solid var(--grid);
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot.r { background: #ff5f56; } .dot.y { background: #ffbd2e; } .dot.g { background: #27c93f; }
+  .term-title { color: var(--muted); font-size: 12px; margin-left: 8px; letter-spacing: 0.06em; }
+  header h1 {
+    font-size: 15px; font-weight: normal; margin: 0; padding: 12px 16px 8px;
+    color: var(--ink);
+  }
+  header h1 .prompt { color: var(--cyan); }
+  header h1 .cmd { color: var(--accent); text-shadow: var(--glow); }
+  .cursor { color: var(--accent); animation: blink 1.1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  nav { display: flex; gap: 2px; flex-wrap: wrap; padding: 0 8px; }
   nav button {
     border: none; background: none; color: var(--ink-2);
-    padding: 8px 14px; font-size: 14px; cursor: pointer;
-    border-bottom: 2px solid transparent;
+    padding: 8px 12px; font-size: 13px; cursor: pointer; font-family: inherit;
+    border-bottom: 2px solid transparent; letter-spacing: 0.03em;
   }
-  nav button.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: bold; }
+  nav button::before { content: "./"; color: var(--muted); }
+  nav button.active {
+    color: var(--accent); border-bottom-color: var(--accent);
+    font-weight: bold; text-shadow: var(--glow);
+  }
+  nav button.active::before { color: var(--accent); }
   main { max-width: 860px; margin: 0 auto; padding: 16px; }
   .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 16px 18px; margin-bottom: 16px;
+    background: linear-gradient(180deg, rgba(0,224,122,0.03), transparent 40%), var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px; padding: 16px 18px; margin-bottom: 16px;
   }
-  .card h2 { font-size: 16px; margin: 0 0 10px; }
-  .card h3 { font-size: 14px; margin: 16px 0 6px; }
+  .card h2 { font-size: 15px; margin: 0 0 10px; letter-spacing: 0.04em; }
+  .card h2::before { content: "> "; color: var(--accent); text-shadow: var(--glow); }
+  .card h3 { font-size: 13px; margin: 16px 0 6px; color: var(--ink-2); }
+  .card h3::before { content: "# "; color: var(--muted); }
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
-  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
-  .tile .v { font-size: 26px; font-weight: bold; }
+  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+  .tile .v { font-size: 26px; font-weight: bold; color: var(--accent); text-shadow: var(--glow); font-variant-numeric: tabular-nums; }
   .tile .l { font-size: 12px; color: var(--ink-2); }
   .tile .s { font-size: 11px; color: var(--muted); }
   .muted { color: var(--muted); font-size: 12px; }
   .small { font-size: 13px; }
   button.primary {
-    background: var(--accent); color: #fff; border: none; border-radius: 8px;
-    padding: 10px 18px; font-size: 15px; cursor: pointer;
+    background: var(--accent); color: #04130b; border: none; border-radius: 4px;
+    padding: 10px 18px; font-size: 14px; font-weight: bold; cursor: pointer; font-family: inherit;
+    box-shadow: 0 0 14px rgba(0,224,122,0.35);
   }
+  button.primary:hover { background: var(--good-text); }
   button.ghost {
-    background: none; border: 1px solid var(--grid); color: var(--ink-2);
-    border-radius: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer;
+    background: none; border: 1px solid var(--border); color: var(--ink-2);
+    border-radius: 4px; padding: 6px 12px; font-size: 13px; cursor: pointer; font-family: inherit;
   }
+  button.ghost:hover { border-color: var(--accent); color: var(--accent); }
   button.danger { border-color: var(--crit); color: var(--crit); }
+  button.danger:hover { border-color: var(--crit); color: var(--crit); background: rgba(255,95,86,0.1); }
   /* 進捗バー */
-  .bar-track { background: var(--grid); border-radius: 4px; height: 10px; overflow: hidden; }
-  .bar-fill { background: var(--accent); height: 100%; border-radius: 4px 0 0 4px; }
+  .bar-track { background: #10201a; border: 1px solid var(--grid); border-radius: 3px; height: 12px; overflow: hidden; }
+  .bar-fill { background: linear-gradient(90deg, var(--accent-dim), var(--accent)); height: 100%; box-shadow: 0 0 10px rgba(0,224,122,0.5); }
   /* 診断結果の分野別バー */
   .score-row { display: grid; grid-template-columns: 11em 1fr 4.5em; gap: 10px; align-items: center; margin: 6px 0; font-size: 13px; }
   .score-val { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
   .badge {
-    display: inline-block; font-size: 11px; border-radius: 4px; padding: 1px 7px; margin-left: 6px;
+    display: inline-block; font-size: 11px; border-radius: 3px; padding: 1px 7px; margin-left: 6px;
     border: 1px solid currentColor;
   }
   .badge.weak { color: var(--crit); }
   .badge.strong { color: var(--good-text); }
-  .badge.rank { color: var(--accent); border: none; background: var(--accent-soft); }
+  .badge.rank { color: var(--accent); border: 1px solid var(--border); background: var(--accent-soft); }
   /* 単元リスト */
   .unit { display: flex; align-items: flex-start; gap: 10px; padding: 7px 4px; border-bottom: 1px solid var(--grid); font-size: 14px; }
   .unit:last-child { border-bottom: none; }
@@ -111,28 +130,34 @@
   /* 診断テスト */
   .q-card { margin-bottom: 14px; }
   .q-card .q-no { font-size: 12px; color: var(--muted); }
-  .choice { display: block; padding: 8px 10px; border: 1px solid var(--grid); border-radius: 8px; margin: 6px 0; cursor: pointer; font-size: 14px; }
-  .choice:hover { border-color: var(--accent); }
+  .choice { display: block; padding: 8px 10px; border: 1px solid var(--grid); border-radius: 4px; margin: 6px 0; cursor: pointer; font-size: 14px; }
+  .choice:hover { border-color: var(--accent); background: var(--accent-soft); }
   .choice input { margin-right: 8px; accent-color: var(--accent); }
   table { border-collapse: collapse; width: 100%; font-size: 13px; }
   th, td { border: 1px solid var(--grid); padding: 6px 8px; text-align: left; vertical-align: top; }
-  th { background: var(--page); }
+  th { background: #0a100d; color: var(--ink-2); }
   .tbl-wrap { overflow-x: auto; }
   input[type=date], input[type=number], select, textarea {
-    background: var(--surface); color: var(--ink); border: 1px solid var(--grid);
-    border-radius: 6px; padding: 6px 8px; font-size: 14px;
+    background: #0a100d; color: var(--ink); border: 1px solid var(--border);
+    border-radius: 4px; padding: 6px 8px; font-size: 14px; font-family: inherit;
   }
-  textarea { width: 100%; font-family: monospace; font-size: 12px; }
-  .alert { border-left: 3px solid var(--crit); padding: 8px 12px; background: var(--page); border-radius: 0 8px 8px 0; margin-bottom: 12px; font-size: 14px; }
-  .notice { border-left: 3px solid var(--accent); padding: 8px 12px; background: var(--page); border-radius: 0 8px 8px 0; margin-bottom: 12px; font-size: 14px; }
-  .status-chip { font-size: 11px; padding: 1px 8px; border-radius: 10px; white-space: nowrap; }
-  .status-chip.done { background: var(--good); color: #fff; }
-  .status-chip.todo { background: var(--grid); color: var(--ink-2); }
+  textarea { width: 100%; font-size: 12px; }
+  .alert { border-left: 3px solid var(--crit); padding: 8px 12px; background: rgba(255,95,86,0.08); border-radius: 0 6px 6px 0; margin-bottom: 12px; font-size: 14px; }
+  .alert::before { content: "[ALERT] "; color: var(--crit); font-weight: bold; font-size: 11px; }
+  .notice { border-left: 3px solid var(--cyan); padding: 8px 12px; background: rgba(53,213,229,0.07); border-radius: 0 6px 6px 0; margin-bottom: 12px; font-size: 14px; }
+  .notice::before { content: "[INFO] "; color: var(--cyan); font-weight: bold; font-size: 11px; }
+  .status-chip { font-size: 11px; padding: 1px 8px; border-radius: 3px; white-space: nowrap; border: 1px solid; }
+  .status-chip.done { border-color: var(--good); color: var(--good); background: var(--accent-soft); }
+  .status-chip.todo { border-color: var(--grid); color: var(--muted); background: transparent; }
 </style>
 </head>
 <body>
 <header>
-  <h1>支援士合格ロードマップ <small>情報処理安全確保支援士 学習支援</small></h1>
+  <div class="term-bar">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="term-title">sc-study — 情報処理安全確保支援士 学習支援</span>
+  </div>
+  <h1><span class="prompt">root@sc-study:~$</span> <span class="cmd">./合格ロードマップ</span> --exam RISSE --mode 学習中<span class="cursor">▊</span></h1>
   <nav id="nav"></nav>
 </header>
 <main id="main"></main>
