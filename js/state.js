@@ -10,9 +10,12 @@ function defaultState() {
     settings: { examPreset:"kouki2027", dateA:"2027-02-20", dateB:"2027-03-16", hoursPerWeek:9, updatedAt:0 },
     diagnosis: null,   // { finishedAt, answers:{qid:idx|-1}, scores:{d1:{correct,total}, ...} }
     progress: {},      // unitId -> { done:true/false, at:"ISO" }（取り消しも記録に残す。旧形式 {done:true, doneAt} も読める）
+    drill: {},         // 過去問ドリル: qid -> { attempts: [{at:"ISO", ok:true}] }（直近20件まで）
+    examB: {},         // 科目B演習: key -> { answer, score, note, at:"ISO" }
     log: [],           // { ts, type, text }
   };
 }
+const DRILL_ATTEMPTS_CAP = 20;
 
 let state = loadState();
 
@@ -78,6 +81,20 @@ function mergeStates(a, b) {
     if (seen.has(k)) return false;
     seen.add(k); return true;
   }).sort((x, y) => y.ts.localeCompare(x.ts)).slice(0, 500);
+  // ドリル履歴: 問題ごとにattemptsを日時で和集合（両端末で解いても消えない）
+  const qids = new Set([...Object.keys(a.drill || {}), ...Object.keys(b.drill || {})]);
+  qids.forEach(qid => {
+    const map = new Map();
+    [...((a.drill || {})[qid]?.attempts || []), ...((b.drill || {})[qid]?.attempts || [])]
+      .forEach(t => map.set(t.at, t));
+    out.drill[qid] = { attempts: [...map.values()].sort((x, y) => x.at.localeCompare(y.at)).slice(-DRILL_ATTEMPTS_CAP) };
+  });
+  // 科目B演習: キーごとに新しい方が勝つ
+  const bkeys = new Set([...Object.keys(a.examB || {}), ...Object.keys(b.examB || {})]);
+  bkeys.forEach(k => {
+    const ea = (a.examB || {})[k], eb = (b.examB || {})[k];
+    out.examB[k] = !ea ? eb : !eb ? ea : ((ea.at || "") >= (eb.at || "") ? ea : eb);
+  });
   return out;
 }
 

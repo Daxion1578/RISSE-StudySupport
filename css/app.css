@@ -204,3 +204,16 @@
     .card.reveal { opacity: 1; transform: none; transition: none; }
     button.primary, button.ghost, .tile { transition: none; }
   }
+
+/* ドリルの選択肢ボタン */
+button.choice.is-btn {
+  display: block; width: 100%; text-align: left;
+  color: var(--ink); font-size: 14px; line-height: 1.7;
+}
+.choice.correct { border-color: var(--emerald); background: rgba(52,211,153,0.13); }
+.choice.wrong { border-color: var(--crit); background: rgba(251,113,133,0.10); }
+button.choice[disabled] { cursor: default; }
+button.choice[disabled]:hover { border-color: var(--grid); background: rgba(255,255,255,0.02); }
+button.choice.correct[disabled]:hover { border-color: var(--emerald); background: rgba(52,211,153,0.13); }
+button.choice.wrong[disabled]:hover { border-color: var(--crit); background: rgba(251,113,133,0.10); }
+.kana { color: var(--indigo); font-weight: 700; margin-right: 8px; }

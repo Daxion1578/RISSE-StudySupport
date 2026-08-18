@@ -103,6 +103,7 @@ function renderHome() {
     <div class="tile"><div class="v">${dB}</div><div class="l">科目B試験まで（日）</div><div class="s">${state.settings.dateB} 開始</div></div>
     <div class="tile"><div class="v">${dA}</div><div class="l">科目A試験まで（日）</div><div class="s">${state.settings.dateA} 開始</div></div>
     <div class="tile"><div class="v">${doneCount}<span style="font-size:14px;color:var(--muted)"> / ${UNITS.length}</span></div><div class="l">消化した単元</div><div class="s">カバレッジ ${pct}%</div></div>
+    <div class="tile"><div class="v">${drillHomePct()}</div><div class="l">ドリル通算正答率</div><div class="s">目標: 80%以上</div></div>
     <div class="tile"><div class="v">${rm.neededPerWeek}<span style="font-size:14px;color:var(--muted)">h</span></div><div class="l">必要な週あたり学習時間</div><div class="s">設定: 週${rm.capacity}h</div></div>
   </div>`;
 
@@ -272,6 +273,14 @@ function renderRoadmap() {
   return html;
 }
 
+/* ホームのドリル正答率タイル（ドリル未実施なら "--"） */
+function drillHomePct() {
+  if (typeof drillQStats !== "function") return "--";
+  let t = 0, ok = 0;
+  (window.QUESTIONS_A || []).forEach(q => { const s = drillQStats(q.id); t += s.tries; ok += s.ok; });
+  return t ? Math.round(100 * ok / t) + `<span style="font-size:14px;color:var(--muted)">%</span>` : "--";
+}
+
 /* ---------- 単元マップ（カバレッジ） ---------- */
 function renderUnits() {
   const doneCount = UNITS.filter(u => isDone(u.id)).length;
@@ -288,10 +297,16 @@ function renderUnits() {
     html += units.map(u => {
       const done = isDone(u.id);
       const doneAt = done ? fmtDateFull(new Date(doneTime(u.id))) : "";
+      const hasMat = window.MATERIALS && window.MATERIALS[u.id];
+      const ds = typeof drillUnitStats === "function" ? drillUnitStats(u.id) : { tries: 0 };
+      const drillInfo = ds.tries ? `　ドリル正答率 ${Math.round(100 * ds.acc)}%（${ds.tries}回）` : "";
+      const nameHtml = hasMat
+        ? `<a href="javascript:void(0)" onclick="openMaterial('${u.id}')" style="color:var(--indigo);text-decoration:none">${esc(u.name)}</a>`
+        : esc(u.name);
       return `<div class="unit ${done?"done":""}">
         <input type="checkbox" ${done?"checked":""} onchange="toggleUnit('${u.id}')">
-        <div class="u-name">${esc(u.name)} <span class="badge rank">${u.trend}</span>
-          <div class="u-meta">目安${u.hours}h　${esc(u.desc)}</div></div>
+        <div class="u-name">${nameHtml} <span class="badge rank">${u.trend}</span>
+          <div class="u-meta">目安${u.hours}h　${esc(u.desc)}${drillInfo}</div></div>
         <span class="status-chip ${done?"done":"todo"}">${done?"✓ "+doneAt:"未学習"}</span>
       </div>`;
     }).join("");
