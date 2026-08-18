@@ -51,7 +51,7 @@ Object.assign(window.MATERIALS, {
       },
       {
         heading: "試験ではこう出る",
-        body: '<p>科目Aでは「発生可能性が低く影響も小さいリスクへの対応として適切なものはどれか」のような四択で、保有（受容）を選ばせる問題が定番です。科目Bでは、シナリオ中の資産・脅威・脆弱性を読み取らせたり、「このリスクにはどの対応（低減/保有/回避/移転）が適切か、理由とともに答えよ」という記述が出題されます。コストと被害のバランスで判断理由を書けるようにしておきましょう。単に「低減すべき」と書くのではなく、「対策コストに対して想定被害額が大きいため低減が妥当」のように、判断の根拠となる比較を示すことで記述の説得力が増します。</p>'
+        body: '<p>科目Aでは「発生可能性が低く影響も小さいリスクへの対応として適切なものはどれか」のような四択で、保有（受容）を選ばせる問題が定番です。科目Bでは、シナリオ中の資産・脅威・脆弱性を読み取らせたり、「このリスクにはどの対応（低減/保有/回避/移転）が適切か、理由とともに答えよ」という記述が出題されます。コストと被害のバランスで判断理由を書けるようにしておきましょう。単に「低減すべき」と書くのではなく、「対策コストに対して想定被害額が大きいため低減が妥当」のように、判断の根拠となる比較を示すことで記述の説得力が増します。逆に対策コストが被害額を大きく上回る場合は、保有を選ぶ判断も正解になり得る点を覚えておきましょう。</p>'
       }
     ],
     terms: [
@@ -124,7 +124,7 @@ Object.assign(window.MATERIALS, {
       },
       {
         heading: "試験ではこう出る",
-        body: '<p>科目Aでは、CVE・CVSSの用語の意味や、CVSS値が高い脆弱性への対応として適切な選択肢を選ぶ問題が出ます。科目Bでは、複数の脆弱性情報とCVSS値、自社の資産構成が示され「どの脆弱性から優先的に対応すべきか、理由とともに述べよ」という記述が頻出です。CVSS値の高さだけでなく「該当資産が公開サーバかどうか」「攻撃コードが出回っているか」を根拠に含めて答えることが高得点のポイントです。</p>'
+        body: '<p>科目Aでは、CVE・CVSSの用語の意味や、CVSS値が高い脆弱性への対応として適切な選択肢を選ぶ問題が出ます。科目Bでは、複数の脆弱性情報とCVSS値、自社の資産構成が示され「どの脆弱性から優先的に対応すべきか、理由とともに述べよ」という記述が頻出です。CVSS値の高さだけでなく「該当資産が公開サーバかどうか」「攻撃コードが出回っているか」を根拠に含めて答えることが高得点のポイントです。設問の資産構成図やネットワーク構成図を読み飛ばさず、優先度判断の根拠として使う練習をしておくと得点につながります。</p>'
       }
     ],
     terms: [
@@ -148,7 +148,7 @@ Object.assign(window.MATERIALS, {
       },
       {
         heading: "SIEMとSOCの役割",
-        body: '<p><b>SIEM</b>（Security Information and Event Management）は、ログを集約・正規化し、あらかじめ定めたルールや相関分析によって不審な兆候を検知し、アラートを発報するシステムです。<b>SOC</b>（Security Operation Center）はそのアラートを24時間体制で監視・分析する人と組織を指します。SOCのアナリストはアラートが本当に攻撃なのか誤検知（フォールスポジティブ）なのかをトリアージし、深刻なものはCSIRTにエスカレーションします。</p>',
+        body: '<p><b>SIEM</b>（Security Information and Event Management）は、ログを集約・正規化し、あらかじめ定めたルールや相関分析によって不審な兆候を検知し、アラートを発報するシステムです。<b>SOC</b>（Security Operation Center）はそのアラートを24時間体制で監視・分析する人と組織を指します。SOCのアナリストはアラートが本当に攻撃なのか誤検知（フォールスポジティブ）なのかをトリアージし、深刻なものはCSIRTにエスカレーションします。自社で24時間体制のSOCを持つのはコストが大きいため、専門業者にSOC業務を委託する形態も広く使われており、その場合も自社側でエスカレーション後の対応判断ができる体制を残しておくことが重要です。</p>',
         svg: '<svg viewBox="0 0 640 220" width="100%" style="max-width:640px;height:auto"><rect x="10" y="80" width="140" height="60" rx="6" fill="none" stroke="var(--grid)"/><text x="80" y="106" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">各種ログ</text><text x="80" y="126" font-family="sans-serif" font-size="13" fill="var(--muted)" text-anchor="middle">(FW/IDS/端末)</text><rect x="185" y="80" width="140" height="60" rx="6" fill="none" stroke="var(--indigo)"/><text x="255" y="106" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">SIEM</text><text x="255" y="126" font-family="sans-serif" font-size="13" fill="var(--muted)" text-anchor="middle">(集約・相関分析)</text><rect x="360" y="80" width="140" height="60" rx="6" fill="none" stroke="var(--grid)"/><text x="430" y="115" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">アラート発報</text><rect x="535" y="80" width="100" height="60" rx="6" fill="none" stroke="var(--grid)"/><text x="585" y="106" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">SOC</text><text x="585" y="126" font-family="sans-serif" font-size="13" fill="var(--muted)" text-anchor="middle">対応</text><line x1="150" y1="110" x2="180" y2="110" stroke="var(--indigo)" stroke-width="2"/><polygon points="180,110 170,105 170,115" fill="var(--indigo)"/><line x1="325" y1="110" x2="355" y2="110" stroke="var(--indigo)" stroke-width="2"/><polygon points="355,110 345,105 345,115" fill="var(--indigo)"/><line x1="500" y1="110" x2="530" y2="110" stroke="var(--indigo)" stroke-width="2"/><polygon points="530,110 520,105 520,115" fill="var(--indigo)"/></svg>'
       },
       {
@@ -157,7 +157,7 @@ Object.assign(window.MATERIALS, {
       },
       {
         heading: "試験ではこう出る",
-        body: '<p>科目AではSIEM・SOCの役割の違いや、ログの相関分析の目的を問う四択が出題されます。科目Bでは、複数のログ（認証ログ・通信ログなど）が提示され「これらのログから読み取れる攻撃の兆候を述べよ」「なぜこの2つのログを組み合わせて判断する必要があるのか」を記述させる問題が頻出です。個々のログの意味を読み取る力と、それらをつなげて解釈する力の両方が問われます。</p>'
+        body: '<p>科目AではSIEM・SOCの役割の違いや、ログの相関分析の目的を問う四択が出題されます。科目Bでは、複数のログ（認証ログ・通信ログなど）が提示され「これらのログから読み取れる攻撃の兆候を述べよ」「なぜこの2つのログを組み合わせて判断する必要があるのか」を記述させる問題が頻出です。個々のログの意味を読み取る力と、それらをつなげて解釈する力の両方が問われます。図表として示されたログのタイムスタンプや送信元IPアドレスの一致・不一致に着目すると、相関のポイントを見つけやすくなります。</p>'
       }
     ],
     terms: [
@@ -176,12 +176,12 @@ Object.assign(window.MATERIALS, {
     sections: [
       {
         heading: "責任共有モデル",
-        body: '<p>クラウドサービスでは、セキュリティ対策を「クラウド事業者が担う範囲」と「利用者が担う範囲」に分けて考える<b>責任共有モデル</b>という考え方が基本になります。サービス形態がIaaS・PaaS・SaaSと利用者の管理範囲が狭くなるほど事業者が担う範囲は広がりますが、どの形態でも「データそのものの管理やアクセス権限の設定」は利用者側の責任として残り続けます。R7年秋 問1でもこの考え方が題材になりました。</p>',
+        body: '<p>クラウドサービスでは、セキュリティ対策を「クラウド事業者が担う範囲」と「利用者が担う範囲」に分けて考える<b>責任共有モデル</b>という考え方が基本になります。サービス形態がIaaS・PaaS・SaaSと利用者の管理範囲が狭くなるほど事業者が担う範囲は広がりますが、どの形態でも「データそのものの管理やアクセス権限の設定」は利用者側の責任として残り続けます。R7年秋 問1でもこの考え方が題材になりました。責任の境界線を誤解し「クラウド事業者が全部守ってくれる」と思い込んでいると、利用者側が本来対応すべき設定を放置してしまう危険があります。</p>',
         svg: '<svg viewBox="0 0 640 275" width="100%" style="max-width:640px;height:auto"><text x="75" y="34" font-family="sans-serif" font-size="13" fill="var(--muted)" text-anchor="middle"> </text><text x="201" y="34" font-family="sans-serif" font-size="13" fill="var(--ink)" text-anchor="middle">オンプレミス</text><text x="323" y="34" font-family="sans-serif" font-size="13" fill="var(--ink)" text-anchor="middle">IaaS</text><text x="445" y="34" font-family="sans-serif" font-size="13" fill="var(--ink)" text-anchor="middle">PaaS</text><text x="567" y="34" font-family="sans-serif" font-size="13" fill="var(--ink)" text-anchor="middle">SaaS</text><text x="15" y="72" font-family="sans-serif" font-size="13" fill="var(--ink)">データ/アカウント</text><rect x="140" y="45" width="122" height="45" fill="none" stroke="var(--grid)"/><rect x="262" y="45" width="122" height="45" fill="none" stroke="var(--grid)"/><rect x="384" y="45" width="122" height="45" fill="none" stroke="var(--grid)"/><rect x="506" y="45" width="122" height="45" fill="none" stroke="var(--grid)"/><text x="15" y="117" font-family="sans-serif" font-size="13" fill="var(--ink)">アプリケーション</text><rect x="140" y="90" width="122" height="45" fill="none" stroke="var(--grid)"/><rect x="262" y="90" width="122" height="45" fill="none" stroke="var(--grid)"/><rect x="384" y="90" width="122" height="45" fill="none" stroke="var(--grid)"/><rect x="506" y="90" width="122" height="45" fill="var(--indigo)" fill-opacity="0.18" stroke="var(--grid)"/><text x="15" y="162" font-family="sans-serif" font-size="13" fill="var(--ink)">OS/ミドルウェア</text><rect x="140" y="135" width="122" height="45" fill="none" stroke="var(--grid)"/><rect x="262" y="135" width="122" height="45" fill="none" stroke="var(--grid)"/><rect x="384" y="135" width="122" height="45" fill="var(--indigo)" fill-opacity="0.18" stroke="var(--grid)"/><rect x="506" y="135" width="122" height="45" fill="var(--indigo)" fill-opacity="0.18" stroke="var(--grid)"/><text x="15" y="207" font-family="sans-serif" font-size="13" fill="var(--ink)">仮想化/NW/HW</text><rect x="140" y="180" width="122" height="45" fill="none" stroke="var(--grid)"/><rect x="262" y="180" width="122" height="45" fill="var(--indigo)" fill-opacity="0.18" stroke="var(--grid)"/><rect x="384" y="180" width="122" height="45" fill="var(--indigo)" fill-opacity="0.18" stroke="var(--grid)"/><rect x="506" y="180" width="122" height="45" fill="var(--indigo)" fill-opacity="0.18" stroke="var(--grid)"/><rect x="20" y="240" width="20" height="14" fill="none" stroke="var(--grid)"/><text x="46" y="252" font-family="sans-serif" font-size="13" fill="var(--muted)">利用者の責任</text><rect x="180" y="240" width="20" height="14" fill="var(--indigo)" fill-opacity="0.18" stroke="var(--grid)"/><text x="206" y="252" font-family="sans-serif" font-size="13" fill="var(--muted)">事業者の責任</text></svg>'
       },
       {
         heading: "設定ミスが最大の原因",
-        body: '<p>クラウドでの情報漏えい事故の多くは、クラウド事業者側の欠陥ではなく、利用者側の設定ミス（ストレージを誤って公開設定にする、アクセス権限を広く設定しすぎるなど）が原因です。公開設定のミスは、攻撃者が手動で狙わなくても自動スキャンツールにより短時間で発見されてしまうため、初期設定の見直しと定期的な棚卸しが欠かせません。</p>',
+        body: '<p>クラウドでの情報漏えい事故の多くは、クラウド事業者側の欠陥ではなく、利用者側の設定ミス（ストレージを誤って公開設定にする、アクセス権限を広く設定しすぎるなど）が原因です。公開設定のミスは、攻撃者が手動で狙わなくても自動スキャンツールにより短時間で発見されてしまうため、初期設定の見直しと定期的な棚卸しが欠かせません。新規サービスの公開時だけでなく、既存環境も定期的に設定を棚卸しし、意図せず公開状態になっているリソースがないかを確認する運用が重要です。</p>',
         svg: '<svg viewBox="0 0 640 200" width="100%" style="max-width:640px;height:auto"><rect x="10" y="70" width="140" height="70" rx="6" fill="none" stroke="var(--grid)"/><text x="80" y="100" font-family="sans-serif" font-size="13" fill="var(--ink)" text-anchor="middle">①公開設定</text><text x="80" y="118" font-family="sans-serif" font-size="13" fill="var(--muted)" text-anchor="middle">ミス</text><rect x="175" y="70" width="140" height="70" rx="6" fill="none" stroke="var(--grid)"/><text x="245" y="100" font-family="sans-serif" font-size="13" fill="var(--ink)" text-anchor="middle">②スキャナが</text><text x="245" y="118" font-family="sans-serif" font-size="13" fill="var(--muted)" text-anchor="middle">検出</text><rect x="340" y="70" width="140" height="70" rx="6" fill="none" stroke="var(--grid)"/><text x="410" y="100" font-family="sans-serif" font-size="13" fill="var(--ink)" text-anchor="middle">③無認証で</text><text x="410" y="118" font-family="sans-serif" font-size="13" fill="var(--muted)" text-anchor="middle">データ取得</text><rect x="505" y="70" width="125" height="70" rx="6" fill="none" stroke="var(--crit)"/><text x="567" y="100" font-family="sans-serif" font-size="13" fill="var(--ink)" text-anchor="middle">④漏えい</text><text x="567" y="118" font-family="sans-serif" font-size="13" fill="var(--muted)" text-anchor="middle">公表</text><line x1="150" y1="105" x2="170" y2="105" stroke="var(--indigo)" stroke-width="2"/><polygon points="170,105 160,100 160,110" fill="var(--indigo)"/><line x1="315" y1="105" x2="335" y2="105" stroke="var(--indigo)" stroke-width="2"/><polygon points="335,105 325,100 325,110" fill="var(--indigo)"/><line x1="480" y1="105" x2="500" y2="105" stroke="var(--indigo)" stroke-width="2"/><polygon points="500,105 490,100 490,110" fill="var(--indigo)"/></svg>'
       },
       {
@@ -190,7 +190,7 @@ Object.assign(window.MATERIALS, {
       },
       {
         heading: "試験ではこう出る",
-        body: '<p>科目Aでは責任共有モデルの考え方や、IaaS/PaaS/SaaSでの責任分界点を問う四択が出題されます。科目Bでは、クラウド設定のミスによって情報が漏えいした事例が示され「この漏えいの直接的な原因は何か」「今後同様の事故を防ぐために利用者側が講じるべき対策を述べよ」という記述が頻出です。「クラウド事業者が悪い」ではなく利用者側の設定・運用の問題として捉えて答えるのがポイントです。</p>'
+        body: '<p>科目Aでは責任共有モデルの考え方や、IaaS/PaaS/SaaSでの責任分界点を問う四択が出題されます。科目Bでは、クラウド設定のミスによって情報が漏えいした事例が示され「この漏えいの直接的な原因は何か」「今後同様の事故を防ぐために利用者側が講じるべき対策を述べよ」という記述が頻出です。「クラウド事業者が悪い」ではなく利用者側の設定・運用の問題として捉えて答えるのがポイントです。「事業者側の障害」と「利用者側の設定ミス」を混同しないよう、問題文中のどちらの操作が原因かを丁寧に切り分けて読み取りましょう。</p>'
       }
     ],
     terms: [
@@ -214,17 +214,17 @@ Object.assign(window.MATERIALS, {
       },
       {
         heading: "委託先管理のライフサイクル",
-        body: '<p>委託先管理は、契約前の「選定時評価」（委託先のセキュリティ体制を確認する）、「契約」（機密保持・監査権限・事故時の責任分担を条項に盛り込む）、「運用監視」（定期的な報告や立入監査）、「事故対応・報告」という流れで行います。契約時に責任分担を明確にしておかないと、事故が起きた際に対応が後手に回ります。</p>',
+        body: '<p>委託先管理は、契約前の「選定時評価」（委託先のセキュリティ体制を確認する）、「契約」（機密保持・監査権限・事故時の責任分担を条項に盛り込む）、「運用監視」（定期的な報告や立入監査）、「事故対応・報告」という流れで行います。契約時に責任分担を明確にしておかないと、事故が起きた際に対応が後手に回ります。特に「事故が起きたとき、いつまでに、誰に、どのレベルの情報を報告するか」を契約書に明記しておかないと、委託先からの連絡が遅れて自社の報告義務（個人情報保護法など）を果たせなくなるおそれがあります。</p>',
         svg: '<svg viewBox="0 0 640 200" width="100%" style="max-width:640px;height:auto"><rect x="10" y="60" width="150" height="70" rx="6" fill="none" stroke="var(--grid)"/><text x="85" y="99" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">①選定時評価</text><rect x="180" y="60" width="150" height="70" rx="6" fill="none" stroke="var(--grid)"/><text x="255" y="99" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">②契約</text><rect x="350" y="60" width="150" height="70" rx="6" fill="none" stroke="var(--grid)"/><text x="425" y="99" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">③運用監視</text><rect x="520" y="60" width="115" height="70" rx="6" fill="none" stroke="var(--grid)"/><text x="577" y="90" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">④事故対応</text><text x="577" y="108" font-family="sans-serif" font-size="13" fill="var(--muted)" text-anchor="middle">・報告</text><line x1="160" y1="95" x2="175" y2="95" stroke="var(--indigo)" stroke-width="2"/><polygon points="175,95 165,90 165,100" fill="var(--indigo)"/><line x1="330" y1="95" x2="345" y2="95" stroke="var(--indigo)" stroke-width="2"/><polygon points="345,95 335,90 335,100" fill="var(--indigo)"/><line x1="500" y1="95" x2="515" y2="95" stroke="var(--indigo)" stroke-width="2"/><polygon points="515,95 505,90 505,100" fill="var(--indigo)"/></svg>'
       },
       {
         heading: "ソフトウェア部品表（SBOM）",
-        body: '<p><b>SBOM</b>（Software Bill of Materials、ソフトウェア部品表）は、自社の製品がどのOSSライブラリやコンポーネントで構成されているかを一覧化したものです。ある部品に脆弱性が発見されたとき、SBOMがあれば「自社のどの製品がその部品を使っているか」を即座に照合でき、影響範囲の特定と対応が迅速になります。SBOMがなければ、影響の有無を確認するだけで多くの時間がかかってしまいます。</p>',
+        body: '<p><b>SBOM</b>（Software Bill of Materials、ソフトウェア部品表）は、自社の製品がどのOSSライブラリやコンポーネントで構成されているかを一覧化したものです。ある部品に脆弱性が発見されたとき、SBOMがあれば「自社のどの製品がその部品を使っているか」を即座に照合でき、影響範囲の特定と対応が迅速になります。SBOMがなければ、影響の有無を確認するだけで多くの時間がかかってしまいます。近年は取引先からSBOMの提出を求められるケースも増えており、単なる社内の管理台帳を超えて取引条件の一部になりつつあります。</p>',
         svg: '<svg viewBox="0 0 640 260" width="100%" style="max-width:640px;height:auto"><rect x="10" y="20" width="180" height="50" rx="6" fill="none" stroke="var(--grid)"/><text x="100" y="50" font-family="sans-serif" font-size="13" fill="var(--ink)" text-anchor="middle">自社コード</text><rect x="230" y="20" width="180" height="50" rx="6" fill="none" stroke="var(--grid)"/><text x="320" y="50" font-family="sans-serif" font-size="13" fill="var(--ink)" text-anchor="middle">OSSライブラリA</text><rect x="450" y="20" width="180" height="50" rx="6" fill="none" stroke="var(--grid)"/><text x="540" y="50" font-family="sans-serif" font-size="13" fill="var(--ink)" text-anchor="middle">OSSライブラリB</text><rect x="170" y="110" width="300" height="50" rx="6" fill="none" stroke="var(--indigo)"/><text x="320" y="140" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">SBOMを作成・維持</text><rect x="130" y="190" width="380" height="50" rx="6" fill="none" stroke="var(--grid)"/><text x="320" y="220" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">脆弱性DBと突合し影響範囲を特定</text><line x1="100" y1="70" x2="270" y2="108" stroke="var(--grid)" stroke-width="2"/><line x1="320" y1="70" x2="320" y2="108" stroke="var(--grid)" stroke-width="2"/><line x1="540" y1="70" x2="370" y2="108" stroke="var(--grid)" stroke-width="2"/><line x1="320" y1="160" x2="320" y2="188" stroke="var(--indigo)" stroke-width="2"/><polygon points="320,188 314,178 326,178" fill="var(--indigo)"/></svg>'
       },
       {
         heading: "試験ではこう出る",
-        body: '<p>科目Aでは、サプライチェーン攻撃の手口やSBOMの目的を問う四択が出題されます。科目Bでは、委託先や利用しているOSSの脆弱性が起点となったインシデント事例が示され、「委託元として契約時にどのような条項を盛り込んでおくべきだったか」「SBOMがあれば今回の対応がどう変わったか」を記述させる問題が頻出です。自社の直接的な過失だけでなく、委託先・部品を含めた管理体制を問う視点が特徴です。</p>'
+        body: '<p>科目Aでは、サプライチェーン攻撃の手口やSBOMの目的を問う四択が出題されます。科目Bでは、委託先や利用しているOSSの脆弱性が起点となったインシデント事例が示され、「委託元として契約時にどのような条項を盛り込んでおくべきだったか」「SBOMがあれば今回の対応がどう変わったか」を記述させる問題が頻出です。自社の直接的な過失だけでなく、委託先・部品を含めた管理体制を問う視点が特徴です。「自社は攻撃していない」ことを前提にしても、管理責任を果たしていなければ評価されない、という視点で解答をまとめることが重要です。</p>'
       }
     ],
     terms: [
@@ -243,11 +243,11 @@ Object.assign(window.MATERIALS, {
     sections: [
       {
         heading: "証拠として通用させるために",
-        body: '<p><b>デジタルフォレンジックス</b>とは、インシデントや不正行為が起きた際に、機器やログに残るデータを法的な証拠として通用する形で収集・分析する技術と手続きのことです。単にログを見て原因を推測するだけでなく、「いつ・誰が・どのように」証拠を取り扱ったかを記録し、データが改ざんされていないことを証明できるようにする必要があります。社内での懲戒処分の根拠にしたり、警察への被害届や民事訴訟の証拠として使ったりする場面もあるため、技術部門だけでなく法務部門とも連携して手続きを進めることが望まれます。</p>'
+        body: '<p><b>デジタルフォレンジックス</b>とは、インシデントや不正行為が起きた際に、機器やログに残るデータを法的な証拠として通用する形で収集・分析する技術と手続きのことです。単にログを見て原因を推測するだけでなく、「いつ・誰が・どのように」証拠を取り扱ったかを記録し、データが改ざんされていないことを証明できるようにする必要があります。感覚的に「怪しいから調べる」だけでは不十分で、後から第三者が検証しても同じ結論に至れる客観性が求められます。社内での懲戒処分の根拠にしたり、警察への被害届や民事訴訟の証拠として使ったりする場面もあるため、技術部門だけでなく法務部門とも連携して手続きを進めることが望まれます。</p>'
       },
       {
         heading: "証拠保全からタイムライン分析まで",
-        body: '<p>フォレンジックスは一般に「証拠保全」（対象機器のディスクイメージをビット単位で複製し、ハッシュ値を記録して原本との同一性を保証する）、「分析」（複製データから操作の痕跡やファイルの作成・削除履歴を抽出する）、「タイムライン作成」（出来事を時系列に並べ侵入から被害拡大までの流れを再構成する）、「報告」（分析結果を証拠として提出できる形にまとめる）という手順で進めます。</p>',
+        body: '<p>フォレンジックスは一般に「証拠保全」（対象機器のディスクイメージをビット単位で複製し、ハッシュ値を記録して原本との同一性を保証する）、「分析」（複製データから操作の痕跡やファイルの作成・削除履歴を抽出する）、「タイムライン作成」（出来事を時系列に並べ侵入から被害拡大までの流れを再構成する）、「報告」（分析結果を証拠として提出できる形にまとめる）という手順で進めます。分析には専用ツールを用いることが多く、削除されたファイルの復元や、通信履歴・ログイン履歴の突き合わせなど、専門的な知識と経験が求められる作業です。</p>',
         svg: '<svg viewBox="0 0 640 180" width="100%" style="max-width:640px;height:auto"><rect x="10" y="55" width="150" height="60" rx="6" fill="none" stroke="var(--grid)"/><text x="85" y="90" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">①証拠保全</text><rect x="180" y="55" width="150" height="60" rx="6" fill="none" stroke="var(--grid)"/><text x="255" y="90" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">②分析</text><rect x="350" y="55" width="150" height="60" rx="6" fill="none" stroke="var(--grid)"/><text x="425" y="90" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">③タイムライン化</text><rect x="520" y="55" width="115" height="60" rx="6" fill="none" stroke="var(--grid)"/><text x="577" y="90" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">④報告</text><line x1="160" y1="85" x2="175" y2="85" stroke="var(--indigo)" stroke-width="2"/><polygon points="175,85 165,80 165,90" fill="var(--indigo)"/><line x1="330" y1="85" x2="345" y2="85" stroke="var(--indigo)" stroke-width="2"/><polygon points="345,85 335,80 335,90" fill="var(--indigo)"/><line x1="500" y1="85" x2="515" y2="85" stroke="var(--indigo)" stroke-width="2"/><polygon points="515,85 505,80 505,90" fill="var(--indigo)"/></svg>'
       },
       {
@@ -256,7 +256,7 @@ Object.assign(window.MATERIALS, {
       },
       {
         heading: "試験ではこう出る",
-        body: '<p>科目Aでは、証拠保全の際にハッシュ値を記録する目的や、chain of custodyの意味を問う四択が出題されます。科目Bでは、インシデント対応の記述問題の一部として「証拠保全の観点からこの対応の何が問題か」「なぜ原本のディスクではなく複製を分析に使うのか」を答えさせる形が典型です。インシデント対応（CSIRT）と合わせて出題されることが多い単元です。</p>'
+        body: '<p>科目Aでは、証拠保全の際にハッシュ値を記録する目的や、chain of custodyの意味を問う四択が出題されます。科目Bでは、インシデント対応の記述問題の一部として「証拠保全の観点からこの対応の何が問題か」「なぜ原本のディスクではなく複製を分析に使うのか」を答えさせる形が典型です。インシデント対応（CSIRT）と合わせて出題されることが多い単元です。「原因究明」と「証拠としての価値の保持」は両立させる必要があるという視点で解答することが求められます。</p>'
       }
     ],
     terms: [
@@ -282,12 +282,12 @@ Object.assign(window.MATERIALS, {
       },
       {
         heading: "IT/OTネットワークの分離",
-        body: '<p>IT/OTの境界を守る基本策は、両ネットワークを直接つなげず、間にDMZやゲートウェイを挟んで通信を必要最小限に制限することです。必要なデータ連携（生産実績の集計など）は、あらかじめ許可した方向・ポートのみに限定し、OT側からIT側への一方向的なデータ転送のみを許可するといった構成が代表的です。IoT機器も初期パスワードの変更やファームウェア更新が後回しにされがちな点が弱点です。</p>',
+        body: '<p>IT/OTの境界を守る基本策は、両ネットワークを直接つなげず、間にDMZやゲートウェイを挟んで通信を必要最小限に制限することです。必要なデータ連携（生産実績の集計など）は、あらかじめ許可した方向・ポートのみに限定し、OT側からIT側への一方向的なデータ転送のみを許可するといった構成が代表的です。IoT機器も初期パスワードの変更やファームウェア更新が後回しにされがちな点が弱点です。工場内に設置されたセンサーやカメラなどのIoT機器が、初期設定のまま外部から見える状態になっていて侵入口として悪用される事例も報告されており、資産の棚卸しと最低限の初期設定変更が基本対策になります。</p>',
         svg: '<svg viewBox="0 0 640 300" width="100%" style="max-width:640px;height:auto"><rect x="120" y="20" width="400" height="60" rx="6" fill="none" stroke="var(--grid)"/><text x="320" y="55" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">IT系ネットワーク（社内LAN・業務システム）</text><rect x="120" y="120" width="400" height="60" rx="6" fill="none" stroke="var(--indigo)"/><text x="320" y="155" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">DMZ・ゲートウェイ</text><rect x="120" y="220" width="400" height="60" rx="6" fill="none" stroke="var(--grid)"/><text x="320" y="255" font-family="sans-serif" font-size="14" fill="var(--ink)" text-anchor="middle">OT系ネットワーク（制御システム）</text><line x1="320" y1="80" x2="320" y2="117" stroke="var(--grid)" stroke-width="2"/><polygon points="320,117 314,107 326,107" fill="var(--grid)"/><line x1="320" y1="180" x2="320" y2="217" stroke="var(--grid)" stroke-width="2"/><polygon points="320,217 314,207 326,207" fill="var(--grid)"/><text x="530" y="103" font-family="sans-serif" font-size="13" fill="var(--muted)">許可された</text><text x="530" y="119" font-family="sans-serif" font-size="13" fill="var(--muted)">通信のみ</text></svg>'
       },
       {
         heading: "試験ではこう出る",
-        body: '<p>科目Aでは、OTでITと異なり可用性・安全性が優先される理由や、IT/OT分離の考え方を問う四択が出題されます。科目Bでは、工場や制御システムの構成図が示され「IT側で発生したマルウェア感染がOT側に波及するのを防ぐにはどうすべきか」「なぜOT側にすぐパッチを適用できないのか」を記述させる問題が頻出です。ITの常識をそのまま当てはめると誤りになりやすい単元です。</p>'
+        body: '<p>科目Aでは、OTでITと異なり可用性・安全性が優先される理由や、IT/OT分離の考え方を問う四択が出題されます。科目Bでは、工場や制御システムの構成図が示され「IT側で発生したマルウェア感染がOT側に波及するのを防ぐにはどうすべきか」「なぜOT側にすぐパッチを適用できないのか」を記述させる問題が頻出です。ITの常識をそのまま当てはめると誤りになりやすい単元です。「すぐパッチを当てればよい」という短絡的な解答は避け、可用性・安全性への影響を踏まえた対応を記述することが評価されます。</p>'
       }
     ],
     terms: [
@@ -322,7 +322,7 @@ Object.assign(window.MATERIALS, {
       },
       {
         heading: "試験ではこう出る",
-        body: '<p>科目Aでは、クリアデスクの意味や入退室管理の目的を問う基本的な四択が出題されます。科目Bでは、書類の放置や共連れ入室（許可された人の後についていく不正入室）などの事例が示され「この事例で見られた物理的な不備を指摘し、対策を述べよ」という記述が出ることがあります。技術的対策に偏らず、運用・教育面の対策も答えられるようにしておきましょう。</p>'
+        body: '<p>科目Aでは、クリアデスクの意味や入退室管理の目的を問う基本的な四択が出題されます。科目Bでは、書類の放置や共連れ入室（許可された人の後についていく不正入室）などの事例が示され「この事例で見られた物理的な不備を指摘し、対策を述べよ」という記述が出ることがあります。技術的対策に偏らず、運用・教育面の対策も答えられるようにしておきましょう。「なぜその不備が起きたか（ルールがなかったのか、ルールはあるが守られていなかったのか）」まで区別して答えると評価が高まります。</p>'
       }
     ],
     terms: [
