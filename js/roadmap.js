@@ -142,11 +142,18 @@ function renderHome() {
   return html;
 }
 
+/* 単元名は教材があればリンクにする（ホーム・ロードマップ共通） */
+function unitNameLink(u) {
+  return (window.MATERIALS && window.MATERIALS[u.id])
+    ? `<a href="javascript:void(0)" onclick="openMaterial('${u.id}')" style="color:var(--indigo);text-decoration:none">${esc(u.name)}</a>`
+    : esc(u.name);
+}
+
 function unitRow(u, hours, showCat) {
   const done = isDone(u.id);
   return `<div class="unit ${done?"done":""}">
     <input type="checkbox" ${done?"checked":""} onchange="toggleUnit('${u.id}')" aria-label="${esc(u.name)}を完了にする">
-    <div class="u-name">${esc(u.name)} <span class="badge rank">${u.trend}</span>
+    <div class="u-name">${unitNameLink(u)} <span class="badge rank">${u.trend}</span>
       <div class="u-meta">${showCat?CATS[u.cat]+"・":""}目安${hours!=null?hours:u.hours}h　${esc(u.desc)}</div>
     </div>
   </div>`;
@@ -263,7 +270,7 @@ function renderRoadmap() {
         const overdue = i < st.currentIdx && !isDone(x.unit.id);
         return `<div class="${overdue?"unit overdue":"unit"} ${isDone(x.unit.id)?"done":""}" style="border-bottom:1px solid var(--grid)">
           <input type="checkbox" ${isDone(x.unit.id)?"checked":""} onchange="toggleUnit('${x.unit.id}')">
-          <div class="u-name">${esc(x.unit.name)} <span class="badge rank">${x.unit.trend}</span>
+          <div class="u-name">${unitNameLink(x.unit)} <span class="badge rank">${x.unit.trend}</span>
             <div class="u-meta">${x.hours}h　${esc(x.unit.desc)}</div></div>
         </div>`;
       }).join("");
