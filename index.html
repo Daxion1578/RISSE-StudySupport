@@ -434,9 +434,9 @@ const LS_KEY = "sc-study-v1";
 
 function defaultState() {
   return {
-    settings: { examPreset:"kouki2027", dateA:"2027-02-20", dateB:"2027-03-16", hoursPerWeek:9 },
+    settings: { examPreset:"kouki2027", dateA:"2027-02-20", dateB:"2027-03-16", hoursPerWeek:9, updatedAt:0 },
     diagnosis: null,   // { finishedAt, answers:{qid:idx|-1}, scores:{d1:{correct,total}, ...} }
-    progress: {},      // unitId -> { done:true, doneAt:"ISO" }
+    progress: {},      // unitId -> { done:true/false, at:"ISO" }（取り消しも記録に残す。旧形式 {done:true, doneAt} も読める）
     log: [],           // { ts, type, text }
   };
 }
@@ -530,14 +530,16 @@ function computeRoadmap() {
 }
 
 function isDone(unitId) { return !!(state.progress[unitId] && state.progress[unitId].done); }
+function doneTime(unitId) { const p = state.progress[unitId]; return p ? (p.at || p.doneAt) : null; }
 
 function toggleUnit(unitId) {
   const u = UNITS.find(x => x.id === unitId);
   if (isDone(unitId)) {
-    delete state.progress[unitId];
+    // 消さずに「取り消した」記録を残す（端末間同期で新しい操作が勝てるようにするため）
+    state.progress[unitId] = { done: false, at: new Date().toISOString() };
     addLog("undo", `「${u.name}」を未学習に戻した`);
   } else {
-    state.progress[unitId] = { done: true, doneAt: new Date().toISOString() };
+    state.progress[unitId] = { done: true, at: new Date().toISOString() };
     addLog("done", `「${u.name}」を学習完了`);
   }
   saveState();
@@ -804,7 +806,7 @@ function renderUnits() {
     html += `<div class="card"><h2>${CATS[catId]} <span class="muted">(${d}/${units.length})</span></h2>`;
     html += units.map(u => {
       const done = isDone(u.id);
-      const doneAt = done ? fmtDateFull(new Date(state.progress[u.id].doneAt)) : "";
+      const doneAt = done ? fmtDateFull(new Date(doneTime(u.id))) : "";
       return `<div class="unit ${done?"done":""}">
         <input type="checkbox" ${done?"checked":""} onchange="toggleUnit('${u.id}')">
         <div class="u-name">${esc(u.name)} <span class="badge rank">${u.trend}</span>
@@ -889,6 +891,31 @@ function renderConfig() {
     <div class="muted" style="margin-top:6px">平日1時間＋休日2時間ずつなら週9時間です。</div>
     <div style="margin-top:10px"><button class="primary" onclick="saveConfig()">設定を保存してロードマップを再計算</button></div></div>`;
 
+  const sc = loadSyncCfg();
+  html += `<div class="card"><h2>クラウド同期（PC⇄スマホ）</h2>
+    <div class="small">GitHubの非公開Gistに学習データを保存し、複数の端末で共有します。初回だけ下の手順でトークンを作り、<b>すべての端末で同じトークン</b>を貼り付けてください。</div>
+    <details class="small" style="margin:8px 0"><summary style="cursor:pointer;color:var(--indigo)">トークンの作り方（初回のみ・約2分）</summary>
+      <ol style="margin:8px 0 0;padding-left:20px">
+        <li>GitHubにログイン → 右上アイコン → <b>Settings</b></li>
+        <li>左メニュー最下部 <b>Developer settings</b> → <b>Personal access tokens</b> → <b>Tokens (classic)</b></li>
+        <li><b>Generate new token (classic)</b> を押す（Note: <code>sc-study-sync</code>、Expiration: 1年など）</li>
+        <li>スコープは <b>gist だけ</b>にチェック → <b>Generate token</b></li>
+        <li>表示された <code>ghp_...</code> をコピーして下に貼り付け（この画面を閉じると二度と見られないので注意）</li>
+      </ol>
+      <div class="muted" style="margin-top:6px">トークンはこの端末のブラウザ内にだけ保存され、エクスポートファイルには含まれません。gist権限しか無いので、万一漏れてもリポジトリ等は操作されません。</div>
+    </details>
+    <div style="margin-top:8px">
+      <input type="password" id="syncToken" placeholder="${sc.token ? "トークン保存済み（変更する場合のみ入力）" : "ghp_... を貼り付け"}" style="width:min(340px,100%)">
+    </div>
+    <label class="small" style="display:block;margin:8px 0"><input type="checkbox" id="syncAuto" ${sc.auto !== false ? "checked" : ""}> アプリを開いたとき自動で同期する</label>
+    <div>
+      <button class="primary" onclick="saveSyncSettings()">保存して同期</button>
+      <button class="ghost" onclick="doSync(false)">今すぐ同期</button>
+      ${sc.token ? `<button class="ghost danger" onclick="clearSyncSettings()">この端末の同期設定を削除</button>` : ""}
+    </div>
+    <div id="syncStatus" class="muted" style="margin-top:8px">${sc.lastSync ? "最終同期: " + fmtDateFull(new Date(sc.lastSync)) + " " + new Date(sc.lastSync).toTimeString().slice(0,5) : "未同期"}</div>
+  </div>`;
+
   html += `<div class="card"><h2>データのバックアップ</h2>
     <div class="small">学習データはこのブラウザ内（localStorage）だけに保存されます。端末変更・ブラウザ履歴削除で消えるため、定期的にエクスポートしてください。</div>
     <div style="margin-top:8px">
@@ -917,7 +944,7 @@ function saveConfig() {
   const dateB = document.getElementById("cfgDateB").value;
   const hours = Math.max(3, Math.min(40, Number(document.getElementById("cfgHours").value) || 9));
   if (!dateA || !dateB) { alert("試験日を入力してください"); return; }
-  state.settings = { examPreset: preset, dateA, dateB, hoursPerWeek: hours };
+  state.settings = { examPreset: preset, dateA, dateB, hoursPerWeek: hours, updatedAt: Date.now() };
   addLog("config", `設定変更（目標: 科目A ${dateA} / 科目B ${dateB}、週${hours}h）`);
   saveState();
   activeTab = "roadmap";
@@ -957,7 +984,118 @@ function resetData() {
   render();
 }
 
+/* =========================================================
+   クラウド同期（GitHub Gist）
+   - 非公開Gistの sc-study-sync.json に学習データを保存し、PC・スマホで共有する
+   - トークンとGist IDは学習データとは別キーに保存（エクスポートには含めない）
+   - 衝突は「単元ごと・項目ごとに新しいタイムスタンプが勝つ」で自動解決
+   ========================================================= */
+const SYNC_KEY = "sc-study-sync-v1";
+const SYNC_FILE = "sc-study-sync.json";
+
+function loadSyncCfg() { try { return JSON.parse(localStorage.getItem(SYNC_KEY)) || {}; } catch (e) { return {}; } }
+function saveSyncCfg(c) { localStorage.setItem(SYNC_KEY, JSON.stringify(c)); }
+
+function entryTime(e) { return e ? (e.at || e.doneAt || "") : ""; }
+
+function mergeStates(a, b) {
+  const out = defaultState();
+  out.settings = ((a.settings.updatedAt || 0) >= (b.settings.updatedAt || 0)) ? a.settings : b.settings;
+  const da = a.diagnosis, db = b.diagnosis;
+  out.diagnosis = !da ? db : !db ? da : (da.finishedAt >= db.finishedAt ? da : db);
+  const ids = new Set([...Object.keys(a.progress), ...Object.keys(b.progress)]);
+  ids.forEach(id => {
+    const ea = a.progress[id], eb = b.progress[id];
+    out.progress[id] = !ea ? eb : !eb ? ea : (entryTime(ea) >= entryTime(eb) ? ea : eb);
+  });
+  const seen = new Set();
+  out.log = [...a.log, ...b.log].filter(l => {
+    const k = l.ts + "|" + l.text;
+    if (seen.has(k)) return false;
+    seen.add(k); return true;
+  }).sort((x, y) => y.ts.localeCompare(x.ts)).slice(0, 500);
+  return out;
+}
+
+async function ghFetch(cfg, path, opts = {}) {
+  const res = await fetch("https://api.github.com" + path, Object.assign({}, opts, {
+    headers: Object.assign({ "Authorization": "token " + cfg.token, "Accept": "application/vnd.github+json" }, opts.headers || {}),
+  }));
+  if (res.status === 401) throw new Error("トークンが無効です。作り直して貼り直してください");
+  if (!res.ok && res.status !== 404) throw new Error("GitHub APIエラー (" + res.status + ")");
+  return res;
+}
+
+function setSyncStatus(text) { const el = document.getElementById("syncStatus"); if (el) el.textContent = text; }
+
+let syncing = false;
+async function doSync(silent) {
+  const cfg = loadSyncCfg();
+  if (!cfg.token) { if (!silent) setSyncStatus("先にトークンを保存してください"); return; }
+  if (syncing) return;
+  syncing = true;
+  try {
+    setSyncStatus("同期中…");
+    // Gistを特定: 保存済みIDがなければ自分のGist一覧から探し、それでもなければ後で新規作成
+    if (!cfg.gistId) {
+      const list = await (await ghFetch(cfg, "/gists?per_page=100")).json();
+      const hit = Array.isArray(list) && list.find(g => g.files && g.files[SYNC_FILE]);
+      if (hit) { cfg.gistId = hit.id; saveSyncCfg(cfg); }
+    }
+    let remote = null;
+    if (cfg.gistId) {
+      const res = await ghFetch(cfg, "/gists/" + cfg.gistId);
+      if (res.status === 404) { cfg.gistId = null; saveSyncCfg(cfg); }
+      else {
+        const g = await res.json();
+        const f = g.files && g.files[SYNC_FILE];
+        if (f) {
+          const content = f.truncated ? await (await fetch(f.raw_url)).text() : f.content;
+          try { remote = Object.assign(defaultState(), JSON.parse(content)); } catch (e) { remote = null; }
+        }
+      }
+    }
+    const before = JSON.stringify(state);
+    if (remote) state = mergeStates(state, remote);
+    if (JSON.stringify(state) !== before) addLog("sync", "同期で他端末の記録を取り込み");
+    saveState();
+    const body = JSON.stringify({
+      description: "支援士学習アプリ（sc-study）の同期データ", public: false,
+      files: { [SYNC_FILE]: { content: JSON.stringify(state) } },
+    });
+    if (cfg.gistId) {
+      await ghFetch(cfg, "/gists/" + cfg.gistId, { method: "PATCH", body });
+    } else {
+      const g = await (await ghFetch(cfg, "/gists", { method: "POST", body })).json();
+      cfg.gistId = g.id; saveSyncCfg(cfg);
+    }
+    cfg.lastSync = new Date().toISOString(); saveSyncCfg(cfg);
+    if (activeTab !== "config" || !silent) render();
+    setSyncStatus("同期完了（" + fmtDateFull(new Date()) + " " + new Date().toTimeString().slice(0, 5) + "）");
+  } catch (e) {
+    setSyncStatus("同期失敗: " + e.message + (navigator.onLine === false ? "（オフラインの可能性）" : ""));
+  } finally { syncing = false; }
+}
+
+function saveSyncSettings() {
+  const t = document.getElementById("syncToken").value.trim();
+  const cfg = loadSyncCfg();
+  if (t) cfg.token = t;
+  cfg.auto = document.getElementById("syncAuto").checked;
+  saveSyncCfg(cfg);
+  render();
+  if (cfg.token) doSync(false);
+}
+function clearSyncSettings() {
+  if (!confirm("この端末の同期設定（トークン）を削除しますか？ Gist上のデータと学習データは残ります。")) return;
+  localStorage.removeItem(SYNC_KEY);
+  render();
+}
+
 render();
+
+// 起動時の自動同期（設定済みの場合のみ）
+(function () { const c = loadSyncCfg(); if (c.token && c.auto !== false) doSync(true); })();
 </script>
 </body>
 </html>
