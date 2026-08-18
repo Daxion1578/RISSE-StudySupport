@@ -29,6 +29,8 @@ function render() {
   const main = document.getElementById("main");
   const fn = { home:renderHome, diag:renderDiag, roadmap:renderRoadmap, drill:renderDrill, materials:renderMaterials, examb:renderExamB, glossary:renderGlossary, units:renderUnits, log:renderLog, trend:renderTrend, config:renderConfig }[activeTab];
   main.innerHTML = fn();
+  const tip = document.getElementById("termTip");
+  if (tip) tip.style.display = "none"; // 画面切替時に残ったツールチップを消す
   if (typeof annotateTerms === "function" && activeTab !== "glossary") { initTermTip(); annotateTerms(main); }
   if (animateNext) {
     animateNext = false;
@@ -43,7 +45,7 @@ function observeReveals() {
       entries.forEach(e => {
         if (e.isIntersecting) { e.target.classList.add("visible"); window.__revealObs.unobserve(e.target); }
       });
-    }, { threshold: 0.08 });
+    }, { threshold: 0 }); // 背の高いカードでも1pxでも見えたら表示する
   }
   document.querySelectorAll(".card.reveal:not(.visible)").forEach(el => window.__revealObs.observe(el));
 }
