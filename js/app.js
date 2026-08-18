@@ -10,6 +10,7 @@ const TABS = [
   { id:"drill", name:"ドリル" },
   { id:"materials", name:"教材" },
   { id:"examb", name:"科目B演習" },
+  { id:"glossary", name:"用語集" },
   { id:"units", name:"単元マップ" },
   { id:"log", name:"学習記録" },
   { id:"trend", name:"出題傾向" },
@@ -26,8 +27,9 @@ function render() {
   nav.innerHTML = TABS.map(t =>
     `<button class="${t.id===activeTab?"active":""}" onclick="switchTab('${t.id}')">${t.name}</button>`).join("");
   const main = document.getElementById("main");
-  const fn = { home:renderHome, diag:renderDiag, roadmap:renderRoadmap, drill:renderDrill, materials:renderMaterials, examb:renderExamB, units:renderUnits, log:renderLog, trend:renderTrend, config:renderConfig }[activeTab];
+  const fn = { home:renderHome, diag:renderDiag, roadmap:renderRoadmap, drill:renderDrill, materials:renderMaterials, examb:renderExamB, glossary:renderGlossary, units:renderUnits, log:renderLog, trend:renderTrend, config:renderConfig }[activeTab];
   main.innerHTML = fn();
+  if (typeof annotateTerms === "function" && activeTab !== "glossary") { initTermTip(); annotateTerms(main); }
   if (animateNext) {
     animateNext = false;
     main.querySelectorAll(".card").forEach(c => c.classList.add("reveal"));
