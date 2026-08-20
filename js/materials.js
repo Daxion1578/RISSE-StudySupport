@@ -71,7 +71,7 @@ function renderMaterialDetail(m) {
   const done = isDone(m.unitId);
   html += `<div style="margin-top:16px">
     <button class="primary" onclick="toggleUnit('${m.unitId}'); openMaterial('${m.unitId}')">${done ? "完了を取り消す" : "この単元を学習完了にする ✓"}</button>
-    <button class="ghost" onclick="switchTab('drill')">ドリルで演習する</button>
+    <button class="ghost" onclick="startDrillForUnit('${m.unitId}')">この単元のドリルを解く</button>
     <button class="ghost" onclick="closeMaterial()">一覧に戻る</button>
   </div></div>`;
   return html;

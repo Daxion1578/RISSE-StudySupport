@@ -305,8 +305,9 @@ function renderUnits() {
       const done = isDone(u.id);
       const doneAt = done ? fmtDateFull(new Date(doneTime(u.id))) : "";
       const hasMat = window.MATERIALS && window.MATERIALS[u.id];
+      const und = typeof understanding === "function" ? understanding(u.id) : null;
       const ds = typeof drillUnitStats === "function" ? drillUnitStats(u.id) : { tries: 0 };
-      const drillInfo = ds.tries ? `　ドリル正答率 ${Math.round(100 * ds.acc)}%（${ds.tries}回）` : "";
+      const drillInfo = und !== null ? `　理解度 ${und}%${ds.tries ? `（ドリル${ds.tries}回）` : ""}` : "";
       const nameHtml = hasMat
         ? `<a href="javascript:void(0)" onclick="openMaterial('${u.id}')" style="color:var(--indigo);text-decoration:none">${esc(u.name)}</a>`
         : esc(u.name);

@@ -4,10 +4,12 @@
    科目A-2（旧午前II）過去問ドリル
    - 問題データは data/questions-a/*.js が window.QUESTIONS_A に積む
    - 履歴は state.drill[qid].attempts に記録し、Gist同期される
-   - 弱点優先出題: 単元の重要度(trend) × 自分の正答率で重み付け
+   - 3つの演習モード:
+     ①クイック演習（弱点優先など） ②単元別ドリル ③本試験モード（1回分通し）
+   - 単元別理解度 = 教材完了20点 + 網羅率20点 + 各問の最新解答での正答率60点
    ========================================================= */
 
-let drillSession = null; // { qids, idx, chosen:null|number, correct:number, mode }
+let drillSession = null; // { qids, idx, chosen, correct, mode, unitId?, examLabel?, finished? }
 
 function drillQuestions() { return window.QUESTIONS_A || []; }
 function drillUnit(q) { return UNITS.find(u => u.id === q.unitId) || null; }
@@ -29,10 +31,9 @@ function drillWeight(q, mode) {
 }
 
 /* 重み付きランダム抽出（重複なし） */
-function drillPick(mode, cat, count) {
-  let pool = drillQuestions().filter(q => !cat || (drillUnit(q) || {}).cat === cat);
+function drillPickFrom(pool0, mode, count) {
   const picked = [];
-  pool = pool.map(q => ({ q, w: drillWeight(q, mode) }));
+  let pool = pool0.map(q => ({ q, w: drillWeight(q, mode) }));
   while (picked.length < count && pool.length > 0) {
     const total = pool.reduce((s, x) => s + x.w, 0);
     let r = Math.random() * total;
@@ -47,9 +48,42 @@ function drillPick(mode, cat, count) {
 function startDrill(mode) {
   const cat = document.getElementById("drillCat").value;
   const count = Number(document.getElementById("drillCount").value);
-  const qids = drillPick(mode, cat, count);
+  const pool = drillQuestions().filter(q => !cat || (drillUnit(q) || {}).cat === cat);
+  const qids = drillPickFrom(pool, mode, count);
   if (!qids.length) { alert("この条件に合う問題がありません"); return; }
   drillSession = { qids, idx: 0, chosen: null, correct: 0, mode };
+  render();
+  window.scrollTo(0, 0);
+}
+
+/* 単元別ドリル: その単元の過去問を弱点順に（最大15問） */
+function startDrillForUnit(unitId) {
+  const pool = drillQuestions().filter(q => q.unitId === unitId);
+  if (!pool.length) { alert("この単元の過去問はまだ収録されていません。教材と診断で学習してください。"); return; }
+  const qids = drillPickFrom(pool, "weak", Math.min(pool.length, 15));
+  drillSession = { qids, idx: 0, chosen: null, correct: 0, mode: "unit", unitId };
+  activeTab = "drill";
+  animateNext = true;
+  render();
+  window.scrollTo(0, 0);
+}
+
+/* 本試験モード: 1回分（25問）を問1から通しで解く */
+function examSessions() {
+  const map = new Map();
+  drillQuestions().forEach(q => {
+    const m = q.source.match(/出典: (.+?) 情報処理安全確保支援士試験/);
+    const label = m ? m[1] : "その他";
+    if (!map.has(label)) map.set(label, []);
+    map.get(label).push(q.id);
+  });
+  return [...map.entries()];
+}
+function startExamSession() {
+  const label = document.getElementById("examSession").value;
+  const hit = examSessions().find(x => x[0] === label);
+  if (!hit) return;
+  drillSession = { qids: hit[1].slice(), idx: 0, chosen: null, correct: 0, mode: "exam", examLabel: label };
   render();
   window.scrollTo(0, 0);
 }
@@ -73,7 +107,10 @@ function drillAnswer(choiceIdx) {
 function drillNext() {
   const s = drillSession;
   if (s.idx + 1 >= s.qids.length) {
-    addLog("drill", `科目A-2ドリル: ${s.qids.length}問中${s.correct}問正解`);
+    const what = s.mode === "exam" ? `本試験モード（${s.examLabel}）`
+      : s.mode === "unit" ? `単元別ドリル「${(UNITS.find(u => u.id === s.unitId) || {}).name}」`
+      : "科目A-2ドリル";
+    addLog("drill", `${what}: ${s.qids.length}問中${s.correct}問正解`);
     saveState();
     s.finished = true;
   } else {
@@ -86,7 +123,9 @@ function drillNext() {
 
 function endDrill() { drillSession = null; render(); }
 
-/* 単元別の成績（単元マップ・ホームからも使う） */
+/* ---------- 理解度・週次推移 ---------- */
+
+/* 単元別の成績（延べ回数ベース） */
 function drillUnitStats(unitId) {
   let tries = 0, ok = 0;
   drillQuestions().filter(q => q.unitId === unitId).forEach(q => {
@@ -96,61 +135,135 @@ function drillUnitStats(unitId) {
   return { tries, ok, acc: tries ? ok / tries : null };
 }
 
+/* 理解度(0-100): 教材完了20 + 網羅率20 + 各問の「最新解答」での正答率60。過去問が無い単元はnull */
+function understanding(unitId) {
+  const qs = drillQuestions().filter(q => q.unitId === unitId);
+  if (!qs.length) return null;
+  let answered = 0, latestOk = 0;
+  qs.forEach(q => {
+    const atts = (state.drill[q.id] || {}).attempts || [];
+    if (atts.length) { answered++; if (atts[atts.length - 1].ok) latestOk++; }
+  });
+  const coverage = answered / qs.length;
+  const acc = answered ? latestOk / answered : 0;
+  return Math.round((isDone(unitId) ? 20 : 0) + coverage * 20 + acc * 60);
+}
+
+/* 学習開始週の月曜（最初の解答履歴から自動判定） */
+function studyStartMonday() {
+  let min = null;
+  Object.values(state.drill).forEach(d => (d.attempts || []).forEach(t => {
+    if (!min || t.at < min) min = t.at;
+  }));
+  return min ? mondayOf(new Date(min)) : mondayOf(new Date());
+}
+
+/* 単元の週ごとの正答率推移: [{week:1, tries, pct}] */
+function unitWeeklyTrend(unitId) {
+  const start = studyStartMonday();
+  const byWeek = new Map();
+  drillQuestions().filter(q => q.unitId === unitId).forEach(q => {
+    ((state.drill[q.id] || {}).attempts || []).forEach(t => {
+      const w = Math.max(1, Math.floor((new Date(t.at) - start) / (7 * 86400000)) + 1);
+      if (!byWeek.has(w)) byWeek.set(w, { tries: 0, ok: 0 });
+      const s = byWeek.get(w); s.tries++; if (t.ok) s.ok++;
+    });
+  });
+  return [...byWeek.entries()].sort((a, b) => a[0] - b[0])
+    .map(([w, s]) => ({ week: w, tries: s.tries, pct: Math.round(100 * s.ok / s.tries) }));
+}
+
+function trendText(unitId) {
+  const tr = unitWeeklyTrend(unitId).slice(-4);
+  if (tr.length < 1) return "";
+  return "推移: " + tr.map(t => `${t.week}週目 ${t.pct}%`).join(" → ");
+}
+
+/* ---------- 画面 ---------- */
+
 const KANA = ["ア", "イ", "ウ", "エ"];
 
 function renderDrill() {
   const qs = drillQuestions();
-  let html = "";
   if (!qs.length) {
     return `<div class="card"><h2>科目A-2 過去問ドリル</h2>
       <div class="notice">問題データがまだ収録されていません。データ追加後に利用できます。</div></div>`;
   }
-  if (!drillSession) {
-    const answered = qs.filter(q => drillQStats(q.id).tries > 0);
-    const allTries = qs.reduce((s, q) => s + drillQStats(q.id).tries, 0);
-    const allOk = qs.reduce((s, q) => s + drillQStats(q.id).ok, 0);
-    const cats = [...new Set(qs.map(q => (drillUnit(q) || {}).cat).filter(Boolean))];
-    html += `<div class="card"><h2>科目A-2 過去問ドリル</h2>
-      <div class="small">IPA公表の過去問（出典付き）で演習します。間違えた問題・重要分野ほど優先的に出題されます。解答履歴は端末間で同期されます。</div>
-      <div class="tiles" style="margin-top:12px">
-        <div class="tile"><div class="v">${qs.length}</div><div class="l">収録問題数</div></div>
-        <div class="tile"><div class="v">${answered.length}<span style="font-size:14px;color:var(--muted)"> / ${qs.length}</span></div><div class="l">解答済みの問題</div></div>
-        <div class="tile"><div class="v">${allTries ? Math.round(100 * allOk / allTries) : "--"}<span style="font-size:14px;color:var(--muted)">%</span></div><div class="l">通算正答率</div><div class="s">目標: 80%以上</div></div>
-      </div>
-      <h3>出題設定</h3>
-      <div class="small" style="margin:6px 0">
-        分野: <select id="drillCat"><option value="">すべて</option>${["A","B","C","D","E","F","G","H"].map(c => `<option value="${c}">${CATS[c]}</option>`).join("")}</select>
-        問数: <select id="drillCount"><option>5</option><option selected>10</option><option>25</option></select>
-      </div>
-      <div style="margin-top:10px">
-        <button class="primary" onclick="startDrill('weak')">弱点優先で開始（推奨）</button>
-        <button class="ghost" onclick="startDrill('unseen')">未解答の問題から</button>
-        <button class="ghost" onclick="startDrill('random')">完全ランダム</button>
-      </div></div>`;
-    return html;
-  }
+  if (drillSession) return drillSession.finished ? renderDrillResult() : renderDrillQuestion();
 
-  const s = drillSession;
-  if (s.finished) {
-    const pct = Math.round(100 * s.correct / s.qids.length);
-    html += `<div class="card"><h2>ドリル結果</h2>
-      <div class="tiles"><div class="tile"><div class="v">${s.correct}<span style="font-size:14px;color:var(--muted)"> / ${s.qids.length}</span></div><div class="l">正解数（${pct}%）</div></div></div>`;
-    html += s.qids.map((qid, i) => {
-      const q = qs.find(x => x.id === qid);
-      const last = (state.drill[qid].attempts.slice(-1)[0] || {}).ok;
-      const u = drillUnit(q);
-      return `<div class="small" style="padding:4px 0;border-bottom:1px solid var(--grid)">
-        ${last ? "<span style='color:var(--emerald)'>○</span>" : "<span style='color:var(--crit)'>✕</span>"}
-        問${i + 1}　${esc(q.question.slice(0, 40))}…　<span class="muted">${u ? esc(u.name) : ""}</span></div>`;
+  const answered = qs.filter(q => drillQStats(q.id).tries > 0);
+  const allTries = qs.reduce((s, q) => s + drillQStats(q.id).tries, 0);
+  const allOk = qs.reduce((s, q) => s + drillQStats(q.id).ok, 0);
+
+  let html = `<div class="card"><h2>科目A-2 過去問ドリル</h2>
+    <div class="small">IPA公表の過去問（出典付き）で演習します。学習の流れ: <b>教材で知識収集 → 単元別ドリル → 本試験モードで総仕上げ</b>。解答履歴は端末間で同期され、単元別の理解度と週ごとの推移が自動で記録されます。</div>
+    <div class="tiles" style="margin-top:12px">
+      <div class="tile"><div class="v">${qs.length}</div><div class="l">収録問題数</div></div>
+      <div class="tile"><div class="v">${answered.length}<span style="font-size:14px;color:var(--muted)"> / ${qs.length}</span></div><div class="l">解答済みの問題</div></div>
+      <div class="tile"><div class="v">${allTries ? Math.round(100 * allOk / allTries) : "--"}<span style="font-size:14px;color:var(--muted)">%</span></div><div class="l">通算正答率</div><div class="s">目標: 80%以上</div></div>
+    </div></div>`;
+
+  // ①クイック演習
+  html += `<div class="card"><h2>クイック演習</h2>
+    <div class="small" style="margin:6px 0">
+      分野: <select id="drillCat"><option value="">すべて</option>${["A","B","C","D","E","F","G","H"].map(c => `<option value="${c}">${CATS[c]}</option>`).join("")}</select>
+      問数: <select id="drillCount"><option>5</option><option selected>10</option><option>25</option></select>
+    </div>
+    <div style="margin-top:10px">
+      <button class="primary" onclick="startDrill('weak')">弱点優先で開始（推奨）</button>
+      <button class="ghost" onclick="startDrill('unseen')">未解答の問題から</button>
+      <button class="ghost" onclick="startDrill('random')">完全ランダム</button>
+    </div></div>`;
+
+  // ②本試験モード
+  const sessions = examSessions();
+  html += `<div class="card"><h2>本試験モード（過去問1回分を通しで解く）</h2>
+    <div class="small">本番と同じ問1→問25の順で解きます。仕上げの実力測定に使ってください。</div>
+    <div style="margin-top:10px">
+      <select id="examSession">${sessions.map(([label, ids]) => `<option value="${esc(label)}">${esc(label)}（${ids.length}問）</option>`).join("")}</select>
+      <button class="primary" onclick="startExamSession()">開始</button>
+    </div></div>`;
+
+  // ③単元別ドリル（理解度つき）
+  html += `<div class="card"><h2>単元別ドリル（理解度）</h2>
+    <div class="small">理解度 = 教材の学習完了20点＋その単元の問題の網羅率20点＋各問題の最新解答での正答率60点。</div></div>`;
+  for (const catId of Object.keys(CATS)) {
+    if (catId === "I") continue;
+    const units = UNITS.filter(u => u.cat === catId);
+    if (!units.length) continue;
+    const avg = (() => {
+      const vals = units.map(u => understanding(u.id)).filter(v => v !== null);
+      return vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : null;
+    })();
+    html += `<div class="card"><details ${catId === "A" ? "open" : ""}><summary style="cursor:pointer;font-weight:600">${CATS[catId]}${avg !== null ? `　<span class="muted">平均理解度 ${avg}%</span>` : ""}</summary>`;
+    html += units.map(u => {
+      const pool = qs.filter(q => q.unitId === u.id);
+      const und = understanding(u.id);
+      const tr = trendText(u.id);
+      return `<div class="unit">
+        <div class="u-name">${unitNameLink(u)} <span class="badge rank">${u.trend}</span>
+          <div class="u-meta">過去問${pool.length}問${tr ? "　" + esc(tr) : ""}</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:4px;max-width:300px">
+            <div class="bar-track" style="flex:1"><div class="bar-fill" style="width:${und || 0}%"></div></div>
+            <span class="score-val">${und === null ? "—" : und + "%"}</span>
+          </div>
+        </div>
+        ${pool.length ? `<button class="ghost" onclick="startDrillForUnit('${u.id}')">解く</button>` : `<span class="muted small">問題なし</span>`}
+      </div>`;
     }).join("");
-    html += `<div style="margin-top:12px"><button class="primary" onclick="endDrill()">出題設定に戻る</button></div></div>`;
-    return html;
+    html += `</details></div>`;
   }
+  return html;
+}
 
+function renderDrillQuestion() {
+  const qs = drillQuestions();
+  const s = drillSession;
   const q = qs.find(x => x.id === s.qids[s.idx]);
   const u = drillUnit(q);
   const answered = s.chosen !== null;
-  html += `<div class="card"><div class="q-no">問${s.idx + 1} / ${s.qids.length}　${u ? esc(CATS[u.cat]) + "・" + esc(u.name) : ""} <span class="badge rank">${u ? u.trend : ""}</span></div>
+  const modeLabel = s.mode === "exam" ? esc(s.examLabel) + "・通し演習" : s.mode === "unit" ? "単元別ドリル" : "";
+  let html = `<div class="card"><div class="q-no">問${s.idx + 1} / ${s.qids.length}　${modeLabel ? modeLabel + "　" : ""}${u ? esc(CATS[u.cat]) + "・" + esc(u.name) : ""} <span class="badge rank">${u ? u.trend : ""}</span></div>
     <div style="margin:8px 0 12px;font-size:15px">${esc(q.question)}${q.modified ? ' <span class="muted">（一部改変）</span>' : ""}</div>`;
   html += q.choices.map((c, i) => {
     let cls = "choice is-btn";
@@ -171,5 +284,25 @@ function renderDrill() {
     html += `<div class="muted" style="margin-top:10px">${esc(q.source)}</div>`;
   }
   html += `<div style="margin-top:14px"><button class="ghost" onclick="endDrill()">中断する（履歴は保存済み）</button></div></div>`;
+  return html;
+}
+
+function renderDrillResult() {
+  const qs = drillQuestions();
+  const s = drillSession;
+  const pct = Math.round(100 * s.correct / s.qids.length);
+  let html = `<div class="card"><h2>${s.mode === "exam" ? "本試験モード 結果" : s.mode === "unit" ? "単元別ドリル 結果" : "ドリル結果"}</h2>
+    <div class="tiles"><div class="tile"><div class="v">${s.correct}<span style="font-size:14px;color:var(--muted)"> / ${s.qids.length}</span></div><div class="l">正解数（${pct}%）</div></div>
+    ${s.mode === "unit" ? `<div class="tile"><div class="v">${understanding(s.unitId) ?? "—"}<span style="font-size:14px;color:var(--muted)">%</span></div><div class="l">この単元の理解度</div></div>` : ""}</div>`;
+  html += s.qids.map((qid, i) => {
+    const q = qs.find(x => x.id === qid);
+    const last = ((state.drill[qid] || {}).attempts || []).slice(-1)[0] || {};
+    const u = drillUnit(q);
+    return `<div class="small" style="padding:4px 0;border-bottom:1px solid var(--grid)">
+      ${last.ok ? "<span style='color:var(--emerald)'>○</span>" : "<span style='color:var(--crit)'>✕</span>"}
+      問${i + 1}　${esc(q.question.slice(0, 40))}…　<span class="muted">${u ? esc(u.name) : ""}</span></div>`;
+  }).join("");
+  html += `<div style="margin-top:12px"><button class="primary" onclick="endDrill()">出題設定に戻る</button>
+    ${s.mode === "unit" ? `<button class="ghost" onclick="startDrillForUnit('${s.unitId}')">もう一度この単元を解く</button>` : ""}</div></div>`;
   return html;
 }
