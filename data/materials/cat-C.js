@@ -28,6 +28,10 @@ Object.assign(window.MATERIALS, {
         svg: "<svg viewBox=\"0 0 640 260\" width=\"100%\" style=\"max-width:640px;height:auto\"><rect x=\"30\" y=\"90\" width=\"160\" height=\"80\" rx=\"6\" fill=\"none\" stroke=\"var(--grid)\"/><text x=\"110\" y=\"120\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" fill=\"var(--ink)\">利用者の端末</text><text x=\"110\" y=\"140\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"13\" fill=\"var(--emerald)\">秘密鍵（保管）</text><rect x=\"450\" y=\"90\" width=\"160\" height=\"80\" rx=\"6\" fill=\"none\" stroke=\"var(--grid)\"/><text x=\"530\" y=\"120\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" fill=\"var(--ink)\">サービス</text><text x=\"530\" y=\"140\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"13\" fill=\"var(--indigo)\">公開鍵（登録済）</text><line x1=\"450\" y1=\"110\" x2=\"200\" y2=\"110\" stroke=\"var(--grid)\"/><polygon points=\"200,110 212,105 212,115\" fill=\"var(--grid)\"/><text x=\"325\" y=\"100\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"13\" fill=\"var(--muted)\">①チャレンジ送信</text><line x1=\"190\" y1=\"150\" x2=\"440\" y2=\"150\" stroke=\"var(--indigo)\"/><polygon points=\"440,150 428,145 428,155\" fill=\"var(--indigo)\"/><text x=\"325\" y=\"170\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"13\" fill=\"var(--muted)\">②秘密鍵で署名して返送</text><text x=\"325\" y=\"210\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"13\" fill=\"var(--emerald)\">サービスは公開鍵で署名を検証→本人確認</text></svg>"
       },
       {
+        heading: "過去問で問われた論点の総整理",
+        body: "<p><b>パスワードの理論的な組み合わせ数</b>　パスワードに使える文字の種類の数をM、文字数をnとすると、重複を許してn文字を並べる組み合わせの総数は<b>Mのn乗（M^n）</b>という式で表されます。使える文字の種類を増やすか、文字数を長くするかのどちらかを行うだけで、総当たり攻撃が試すべき組み合わせの数は指数関数的に増えます。桁数を1桁増やすだけでも突破にかかる時間は大きく伸びるため、「長さの確保」がパスワード強度の基本になります。</p><p><b>生体認証デバイスの特性</b>　指紋・虹彩・ICカードなど、認証に使うデバイスにはそれぞれ異なる特性があります。成人の虹彩の模様は乳幼児期以降ほとんど変化しないため、虹彩認証では一度登録すればその後の更新がほとんど不要です。指紋認証で広く使われる静電容量方式は指の皮膚の電気的な凹凸を検出する仕組みで、照明の影響をほとんど受けません。また、リーダーにかざすだけで通信できる非接触型ICカードは、カード内のコイルが起こす誘導起電力を電源として利用しています。</p><p><b>本人確認（Identity Proofing）</b>　米国NIST（国立標準技術研究所）のガイドラインSP 800-63-3では、システムに利用者を新規登録する段階で、写真付き身分証明書などと照合して「本当に本人であるか」を確かめる手続きを<b>Identity Proofing（身元確認）</b>と呼びます。これはログインのたびに行う日常的な認証とは異なり、登録時に一度だけ行われる手続きです。なお、FIDO認証やパスキーでは生体情報そのものが端末（認証器）の中だけで照合され、ネットワークには一切送信されません。ブラウザもWebサーバもIdPも生体情報自体は受け取らず、やり取りされるのは照合結果を示す署名済みの応答だけです。</p>"
+      },
+      {
         heading: "試験ではこう出る",
         body: "<p><b>科目A-2</b>では「多要素認証として正しい組み合わせはどれか」「ワンタイムパスワードの仕組み」「FIDOやパスキーがフィッシング耐性を持つ理由」を選択肢で問われます。「知識×知識」の組み合わせ（パスワードと秘密の質問）を多要素認証と誤認させるひっかけ問題が定番なので、要素の「種類」が異なるかどうかを必ず確認する癖をつけましょう。</p><p><b>科目B</b>では、パスワードリスト攻撃やフィッシング被害を受けた事例に対し「多要素認証を導入せよ」という対策記述や、「なぜFIDO認証はフィッシングに強いか、パスワードと比較して述べよ」という理由説明が問われます。秘密鍵が端末外に出ない点と、署名がドメインに紐づく点の2つを書ければ高得点が狙えます。</p>"
       }
@@ -43,7 +47,8 @@ Object.assign(window.MATERIALS, {
       { term: "SIMスワップ", desc: "攻撃者が携帯電話会社をだまして他人の電話番号を自分のSIMカードに乗り換えさせる手口。SMS認証を横取りするために使われる。" },
       { term: "FIDO", desc: "公開鍵暗号を用いてパスワードに依存しない認証を実現する標準規格。秘密鍵を端末の外に出さない設計でフィッシングに強い。" },
       { term: "パスキー", desc: "FIDOの仕組みを利用しやすく実装した認証情報。スマートフォンなどに保存され、複数端末の間で同期できる。" },
-      { term: "フィッシング耐性", desc: "偽サイトに誘導されても認証情報が盗まれたり不正利用されたりしない性質。FIDOはログイン先のドメインに署名を紐づけることで実現する。" }
+      { term: "フィッシング耐性", desc: "偽サイトに誘導されても認証情報が盗まれたり不正利用されたりしない性質。FIDOはログイン先のドメインに署名を紐づけることで実現する。" },
+      { term: "Identity Proofing（身元確認）", desc: "システムに利用者を新規登録する際、写真付き身分証明書などと照合して本人であることを確認する手続き。ログインのたびに行う認証とは別の、登録時のみの手続き。" }
     ]
   },
   c2: {
@@ -56,7 +61,7 @@ Object.assign(window.MATERIALS, {
       },
       {
         heading: "SAML：認証結果をそのまま渡す仕組み",
-        body: "<p><b>SAML（Security Assertion Markup Language）</b>は「この人はすでにログイン済みである」という<b>認証結果（アサーション）</b>を、IdPからSPへ安全に渡すための規格です。主に企業向けSaaSのSSOで使われます。流れとしては、利用者がSPにアクセスすると、SPはまだ未認証だと気付いてIdPへ利用者を誘導します。IdPで本人確認（ログイン）が済むと、IdPは「本人確認済み」という証明書のようなデータ（アサーション）を作り、これをSPへ渡します。</p><p>ここで重要なのが、このアサーションには<b>デジタル署名</b>が付けられている点です。署名があることで、SPは受け取ったアサーションが本当にIdPが作成したもので、途中で書き換えられていないことを検証できます。もし署名がなければ、悪意ある第三者が偽のアサーションを作ってなりすませてしまうため、この署名検証がSSOの安全性を支える土台になっています。</p>",
+        body: "<p><b>SAML（Security Assertion Markup Language）</b>は「この人はすでにログイン済みである」という<b>認証結果（アサーション）</b>を、IdPからSPへ安全に渡すための規格です。主に企業向けSaaSのSSOで使われます。流れとしては、利用者がSPにアクセスすると、SPはまだ未認証だと気付いてIdPへ利用者を誘導します。IdPで本人確認（ログイン）が済むと、IdPは「本人確認済み」という証明書のようなデータ（アサーション）を作り、これをSPへ渡します。</p><p>ここで重要なのが、このアサーションには<b>デジタル署名</b>が付けられている点です。署名があることで、SPは受け取ったアサーションが本当にIdPが作成したもので、途中で書き換えられていないことを検証できます。もし署名がなければ、悪意ある第三者が偽のアサーションを作ってなりすませてしまうため、この署名検証がSSOの安全性を支える土台になっています。</p><p>SAMLは、Webサイトなどを運営するオンラインビジネスパートナー間で認証・属性・認可の情報を安全にやり取りするための規格を策定する、標準化団体<b>OASIS</b>によって定められています。試験では「OASISが策定した、認証・属性・認可の情報を安全に交換するための規格は何か」という形で、SAMLそのものの名称を問う問題としても出題されます。</p>",
         svg: "<svg viewBox=\"0 0 640 280\" width=\"100%\" style=\"max-width:640px;height:auto\"><rect x=\"20\" y=\"110\" width=\"140\" height=\"60\" rx=\"6\" fill=\"none\" stroke=\"var(--grid)\"/><text x=\"90\" y=\"145\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" fill=\"var(--ink)\">利用者</text><rect x=\"250\" y=\"20\" width=\"140\" height=\"60\" rx=\"6\" fill=\"none\" stroke=\"var(--indigo)\"/><text x=\"320\" y=\"55\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" fill=\"var(--ink)\">IdP（認証）</text><rect x=\"480\" y=\"110\" width=\"140\" height=\"60\" rx=\"6\" fill=\"none\" stroke=\"var(--grid)\"/><text x=\"550\" y=\"145\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" fill=\"var(--ink)\">SP（SaaS）</text><line x1=\"160\" y1=\"130\" x2=\"480\" y2=\"130\" stroke=\"var(--grid)\"/><polygon points=\"480,130 468,125 468,135\" fill=\"var(--grid)\"/><text x=\"320\" y=\"118\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"13\" fill=\"var(--muted)\">①アクセス</text><line x1=\"160\" y1=\"150\" x2=\"270\" y2=\"80\" stroke=\"var(--grid)\"/><line x1=\"270\" y1=\"80\" x2=\"170\" y2=\"150\" stroke=\"var(--grid)\" stroke-dasharray=\"4\"/><text x=\"200\" y=\"100\" font-family=\"sans-serif\" font-size=\"13\" fill=\"var(--muted)\">②IdPで認証</text><line x1=\"390\" y1=\"70\" x2=\"540\" y2=\"110\" stroke=\"var(--emerald)\"/><polygon points=\"540,110 528,108 532,118\" fill=\"var(--emerald)\"/><text x=\"470\" y=\"85\" font-family=\"sans-serif\" font-size=\"13\" fill=\"var(--emerald)\">③署名付きアサーション</text><text x=\"320\" y=\"230\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"13\" fill=\"var(--muted)\">SPは署名を検証し、ログイン状態にする</text></svg>"
       },
       {
@@ -77,6 +82,7 @@ Object.assign(window.MATERIALS, {
       { term: "IdP（Identity Provider）", desc: "利用者の本人確認（認証）を行い、その結果を他のサービスに伝える役割を持つ主体。社内のID管理サービスなどが該当する。" },
       { term: "SP（Service Provider）", desc: "IdPから受け取った認証結果を信じて、利用者にログインを許可するサービス側。SaaSなどが該当する。" },
       { term: "SAML", desc: "認証結果（アサーション）をXML形式でIdPからSPへ伝える規格。デジタル署名により改ざんを検知できる。" },
+      { term: "OASIS", desc: "SAMLなど、組織間で認証・属性・認可の情報を安全に交換するための標準規格を策定する標準化団体。" },
       { term: "アサーション", desc: "SAMLにおいて「この利用者は認証済みである」ことを示す証明データ。IdPが作成しSPへ送られる。" },
       { term: "OAuth 2.0", desc: "パスワードそのものを渡すことなく、限定的な権限（スコープ）だけを他のアプリに許可するための認可の規格。認証の規格ではない。" },
       { term: "スコープ", desc: "OAuthにおいて、アプリに許可するアクセス範囲の指定。必要最小限に絞ることで漏えい時の被害を抑えられる。" },
@@ -107,6 +113,10 @@ Object.assign(window.MATERIALS, {
         svg: "<svg viewBox=\"0 0 640 240\" width=\"100%\" style=\"max-width:640px;height:auto\"><rect x=\"30\" y=\"90\" width=\"150\" height=\"60\" rx=\"6\" fill=\"none\" stroke=\"var(--grid)\"/><text x=\"105\" y=\"125\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" fill=\"var(--ink)\">管理者</text><rect x=\"245\" y=\"90\" width=\"150\" height=\"60\" rx=\"6\" fill=\"none\" stroke=\"var(--indigo)\"/><text x=\"320\" y=\"115\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" fill=\"var(--ink)\">PAM</text><text x=\"320\" y=\"135\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" fill=\"var(--muted)\">申請・記録・払出</text><rect x=\"460\" y=\"90\" width=\"150\" height=\"60\" rx=\"6\" fill=\"none\" stroke=\"var(--grid)\"/><text x=\"535\" y=\"125\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"14\" fill=\"var(--ink)\">対象サーバー</text><line x1=\"180\" y1=\"120\" x2=\"245\" y2=\"120\" stroke=\"var(--grid)\"/><polygon points=\"245,120 233,115 233,125\" fill=\"var(--grid)\"/><text x=\"212\" y=\"105\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" fill=\"var(--muted)\">申請</text><line x1=\"395\" y1=\"120\" x2=\"460\" y2=\"120\" stroke=\"var(--emerald)\"/><polygon points=\"460,120 448,115 448,125\" fill=\"var(--emerald)\"/><text x=\"428\" y=\"105\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"12\" fill=\"var(--muted)\">一時的に付与</text><text x=\"320\" y=\"190\" text-anchor=\"middle\" font-family=\"sans-serif\" font-size=\"13\" fill=\"var(--muted)\">操作ログはすべてPAMが記録・監視する</text></svg>"
       },
       {
+        heading: "過去問で問われた論点の総整理",
+        body: "<p><b>RADIUS/DiameterとAAAフレームワーク</b>　ネットワーク機器やVPNへのログインを一元管理する仕組みとして、<b>RADIUS</b>やその後継規格である<b>Diameter</b>が使われます。これらが提供する管理の枠組みは、利用者を確認する<b>Authentication（認証）</b>、権限を与える<b>Authorization（認可）</b>、そして「誰がいつ何をしたか」利用状況を記録する<b>Accounting（アカウンティング）</b>の3つで構成され、頭文字を取って<b>AAA</b>と呼ばれます。アカウンティングの記録は課金の根拠になるだけでなく、アカウンタビリティ（責任追跡性）を実現するための証跡としても重要です。</p><p><b>データベースの権限管理とGRANT文</b>　データベースでは、表（テーブル）の所有者がSQLの<b>GRANT文</b>を使って他の利用者に権限を付与します。たとえば「GRANT ALL PRIVILEGES ON A TO B WITH GRANT OPTION」という文は、利用者BにA表へのSELECT・UPDATE・INSERT・DELETEなどすべての操作権限を与えるだけでなく、<b>WITH GRANT OPTION</b>の指定によって、Bがそれらの権限をさらに他の利用者へ付与できる「付与権」まで一緒に与えます。付与権を安易に与えると権限がなし崩し的に広がり、最小権限の原則が崩れてしまう点に注意が必要です。</p><p><b>特権IDによる直接修正とシステム監査</b>　アプリケーションの画面を経由せず、特権IDを使って直接データベースのデータを追加・変更・削除する「直接修正」は、緊急対応でやむを得ず行われることがあります。この際にシステム監査で問題視されるのは、事前・事後の承認や作業終了後の特権ID無効化が無いことだけではありません。もし更新ログ上、直接修正による変更があたかも通常のアプリケーション機能を経由した更新であるかのように記録されていた場合、直接修正が行われた事実そのものが監査証跡から分からなくなってしまうため、これは特に重大な指摘事項となります。</p>"
+      },
+      {
         heading: "試験ではこう出る",
         body: "<p><b>科目A-2</b>では「RBACの説明として正しいものはどれか」「最小権限の原則の目的はどれか」のような用語理解問題や、DAC・MAC・RBACの分類を選ばせる問題が出ます。ロールに権限をまとめる方式と、利用者の属性で動的に判定する方式（ABAC）の違いを取り違えないようにしましょう。</p><p><b>科目B</b>では、退職者や異動者の権限が削除されずに残っていて不正アクセスにつながった事例や、共有の管理者アカウントが使われていて操作者を特定できなかった事例を題材に、「権限の棚卸しを定期的に行う」「特権IDをPAMで一元管理し個人ごとに紐づける」といった具体的な改善策の記述が求められます。「なぜ共有アカウントが問題か」を問われたら、アカウンタビリティ（責任追跡性）の欠如を理由として書けるようにしておきましょう。</p>"
       }
@@ -121,7 +131,11 @@ Object.assign(window.MATERIALS, {
       { term: "MAC（強制アクセス制御）", desc: "システム側があらかじめ定めたルールを一元的に強制し、所有者であっても勝手には変更できない方式。" },
       { term: "特権ID", desc: "システム管理者権限など、通常の利用者よりはるかに広範な操作が可能なアカウント。乗っ取られた際の被害が大きい。" },
       { term: "PAM（特権アクセス管理）", desc: "特権IDのパスワードを厳重に保管し、必要な時だけ一時的に払い出して操作を記録・監視する仕組みや製品。" },
-      { term: "アカウンタビリティ（責任追跡性）", desc: "誰がいつどの操作を行ったかを、後から記録によって特定できる性質。共有アカウントの利用はこれを損なう。" }
+      { term: "アカウンタビリティ（責任追跡性）", desc: "誰がいつどの操作を行ったかを、後から記録によって特定できる性質。共有アカウントの利用はこれを損なう。" },
+      { term: "AAA（Authentication/Authorization/Accounting）", desc: "認証・認可・アカウンティング（利用状況の記録）の3要素からなる管理の枠組み。RADIUSやDiameterが提供する。" },
+      { term: "アカウンティング（Accounting）", desc: "利用者がいつ何をしたかという利用状況を記録すること。課金の根拠やアカウンタビリティの証跡になる。" },
+      { term: "WITH GRANT OPTION（付与権）", desc: "SQLのGRANT文に付ける指定。与えられた権限を、さらに他の利用者へ付与できる権限まで一緒に渡すことになる。" },
+      { term: "直接修正", desc: "アプリケーションソフトウェアの機能を経由せず、特権IDを使ってデータベースのデータを追加・変更・削除すること。監査上の統制が特に重要になる。" }
     ]
   }
 });
