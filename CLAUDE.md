@@ -14,6 +14,8 @@
 - `docs/trend-analysis.md` — 出題傾向分析。ロードマップの重要度ランク（S/A/B）の根拠
 - 学習データは localStorage キー `sc-study-v1`。**構造を変えるときは必ず旧データからの移行処理を入れる**（ユーザーの学習履歴を消さない）
 - クラウド同期: GitHub Gist（非公開、ファイル名 `sc-study-sync.json`）。トークン・Gist IDは別キー `sc-study-sync-v1` に保存し、**エクスポートや同期データに絶対に含めない**
+- AI自動採点のClaude APIキーは別キー `sc-study-ai-v1`。同じく**エクスポート・同期・リポジトリに絶対に含めない**
+- ロードマップ配分（`computeRoadmap`）は best-fit 方式＋科目A試験日の2週間前を中間締切とする2段階配分。この性質（最終週への積み残し防止・科目A演習が試験前に完了）を壊す変更は不可
 - 進捗の取り消しは削除ではなく `{done:false, at}` の記録（tombstone）で表現する。端末間マージ（`mergeStates`）が「新しい操作が勝つ」で動くための前提。旧形式 `{done:true, doneAt}` も読めること
 
 ## 守るべき設計原則
