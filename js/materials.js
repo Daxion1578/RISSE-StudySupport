@@ -64,7 +64,7 @@ function renderMaterialDetail(m) {
 
   if (m.terms && m.terms.length) {
     html += `<h3>重要用語</h3><div class="tbl-wrap"><table>` +
-      m.terms.map(t => `<tr><th style="width:12em">${esc(t.term)}</th><td>${esc(t.desc)}</td></tr>`).join("") +
+      m.terms.map(t => `<tr><th style="width:12em">${esc(t.term)}${t.en ? `<div class="muted" style="font-weight:normal;font-size:11px">${esc(t.en)}</div>` : ""}</th><td>${esc(t.desc)}</td></tr>`).join("") +
       `</table></div>`;
   }
 

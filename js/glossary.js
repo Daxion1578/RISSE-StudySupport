@@ -17,11 +17,14 @@ function buildGlossary() {
   Object.values(window.MATERIALS || {}).forEach(m => (m.terms || []).forEach(t => {
     if (!t.term || !t.desc) return;
     if (!GLOSSARY[t.term] || GLOSSARY[t.term].desc.length < t.desc.length) {
-      GLOSSARY[t.term] = { desc: t.desc, unitId: m.unitId };
+      GLOSSARY[t.term] = { desc: t.desc, en: t.en || null, unitId: m.unitId };
     }
   }));
-  Object.entries(window.GLOSSARY_EXTRA || {}).forEach(([term, desc]) => {
-    GLOSSARY[term] = { desc, unitId: (GLOSSARY[term] || {}).unitId || null };
+  // GLOSSARY_EXTRA の値は 文字列 or { en, desc } の両形式に対応
+  Object.entries(window.GLOSSARY_EXTRA || {}).forEach(([term, v]) => {
+    const desc = typeof v === "string" ? v : v.desc;
+    const en = typeof v === "string" ? null : (v.en || null);
+    GLOSSARY[term] = { desc, en: en || (GLOSSARY[term] || {}).en || null, unitId: (GLOSSARY[term] || {}).unitId || null };
   });
   const terms = Object.keys(GLOSSARY).filter(t => t.length >= 2)
     .sort((a, b) => b.length - a.length)  // 長い用語を先に照合（「公開鍵暗号」を「公開鍵」より優先）
@@ -80,7 +83,7 @@ function initTermTip() {
     const g = GLOSSARY && GLOSSARY[term];
     if (!g) return;
     const unit = g.unitId ? UNITS.find(u => u.id === g.unitId) : null;
-    tip.innerHTML = `<b>${esc(term)}</b><br>${esc(g.desc)}` +
+    tip.innerHTML = `<b>${esc(term)}</b>${g.en ? `<span class="tip-en">${esc(g.en)}</span>` : ""}<br>${esc(g.desc)}` +
       (unit ? `<div class="tip-src">関連単元: ${esc(unit.name)}</div>` : "");
     tip.style.display = "block";
     const r = el.getBoundingClientRect();
@@ -119,8 +122,8 @@ function renderGlossary() {
       oninput="glossaryFilter(this.value)"></div></div>`;
   html += `<div class="card">` + entries.map(([term, g]) => {
     const unit = g.unitId ? UNITS.find(u => u.id === g.unitId) : null;
-    return `<div class="glos-row unit" data-k="${esc((term + " " + g.desc).toLowerCase())}">
-      <div class="u-name"><b style="color:var(--indigo)">${esc(term)}</b>
+    return `<div class="glos-row unit" data-k="${esc((term + " " + (g.en || "") + " " + g.desc).toLowerCase())}">
+      <div class="u-name"><b style="color:var(--indigo)">${esc(term)}</b>${g.en ? ` <span class="muted" style="font-size:12px">${esc(g.en)}</span>` : ""}
         <div class="u-meta" style="font-size:12.5px;color:var(--ink-2)">${esc(g.desc)}</div>
         ${unit ? `<div class="u-meta"><a href="javascript:void(0)" onclick="openMaterial('${unit.id}')" style="color:var(--muted)">→ 教材: ${esc(unit.name)}</a></div>` : ""}
       </div></div>`;
