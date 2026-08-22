@@ -50,7 +50,7 @@ const UNITS = [
   { id:"b2", cat:"B", phase:1, trend:"S", hours:4, name:"ハッシュ関数とMAC", desc:"SHA-2/3・一方向性・衝突・HMAC。科目A定番" },
   { id:"b3", cat:"B", phase:1, trend:"S", hours:6, name:"デジタル署名とPKI・証明書", desc:"署名検証・CA・証明書チェーン・失効(CRL/OCSP)" },
   { id:"b4", cat:"B", phase:1, trend:"S", hours:6, name:"TLSの仕組み", desc:"ハンドシェイク・サーバー証明書・TLS1.3。科目Bで頻繁に登場" },
-  { id:"b5", cat:"B", phase:1, trend:"B", hours:3, name:"暗号技術の応用と危殆化", desc:"乱数・鍵管理・暗号スイート・耐量子・暗号資産の基礎（R7秋出題）" },
+  { id:"b5", cat:"B", phase:1, trend:"S", hours:5, name:"暗号技術の応用と危殆化", desc:"CRYPTREC・耐量子暗号・FIPS 140-3・サイドチャネル。過去問出題数2位の最重点" },
   // Phase2: 認証とアクセス制御
   { id:"c1", cat:"C", phase:1, trend:"A", hours:4, name:"パスワードと多要素認証・FIDO", desc:"認証の3要素・ワンタイムパスワード・パスキー" },
   { id:"c2", cat:"C", phase:1, trend:"S", hours:6, name:"SSOと認証連携（SAML/OAuth/OIDC）", desc:"科目A頻出（SAML・OAuth2.0）。SaaS問題の前提知識" },
@@ -97,9 +97,9 @@ const UNITS = [
   // Phase6: 試験演習
   { id:"i1", cat:"I", phase:5, trend:"S", hours:6, name:"科目A過去問演習①（直近2回分）", desc:"まず2回分を解いて出題感覚をつかむ。正答率を記録する" },
   { id:"i2", cat:"I", phase:5, trend:"S", hours:8, name:"科目A過去問演習②（さらに4回分）", desc:"過去問再出題率約5割。計6回分で8割正答を目指す" },
-  { id:"i3", cat:"I", phase:5, trend:"S", hours:6, name:"科目B長文問題の読み方トレーニング", desc:"設問先読み・登場人物と構成図の整理・記述の型を学ぶ" },
-  { id:"i4", cat:"I", phase:5, trend:"S", hours:10, name:"科目B過去問演習①（技術系テーマ）", desc:"Web・NW・認証系の過去問3〜4問を時間を計って解く" },
-  { id:"i5", cat:"I", phase:5, trend:"S", hours:10, name:"科目B過去問演習②（管理・運用系テーマ）", desc:"インシデント対応・脆弱性管理・クラウド系の過去問3〜4問" },
+  { id:"i3", cat:"I", phase:3, trend:"S", hours:6, name:"科目B長文問題の読み方トレーニング", desc:"設問の指示語・読解の型・字数感覚を教材で学ぶ（早めに着手して記述に慣れる）" },
+  { id:"i4", cat:"I", phase:5, trend:"S", hours:10, name:"科目B過去問演習①（技術系テーマ）", desc:"科目B演習タブの収録過去問から技術寄りのテーマ（Web・暗号など）を時間を計って解く" },
+  { id:"i5", cat:"I", phase:5, trend:"S", hours:10, name:"科目B過去問演習②（管理・運用系テーマ）", desc:"科目B演習タブの収録過去問から管理寄りのテーマ（インシデント対応・脆弱性管理など）を解く" },
   { id:"i6", cat:"I", phase:5, trend:"S", hours:8, name:"総仕上げ・弱点復習・模擬演習", desc:"間違えた問題の再演習と本番形式の通し演習" },
 ];
 

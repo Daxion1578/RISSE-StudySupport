@@ -26,6 +26,7 @@ function unitAdjustedHours(unit) {
 
 function computeRoadmap() {
   const start = mondayOf(new Date());
+  const examA = toDate(state.settings.dateA);
   const examB = toDate(state.settings.dateB);
   const weeks = [];
   let cursor = new Date(start);
@@ -36,22 +37,44 @@ function computeRoadmap() {
   if (weeks.length === 0) weeks.push({ start, end: addDays(start, 6), units: [], hours: 0 });
 
   const capacity = state.settings.hoursPerWeek;
-  const ordered = [...UNITS].sort((a, b) => a.phase - b.phase || UNITS.indexOf(a) - UNITS.indexOf(b));
+  // 科目A対策（i4/i5/i6以外の全単元）は科目A試験日の2週間前までに終える（中間締切）
+  const aDeadline = addDays(examA, -14);
+  let aLimit = weeks.findIndex(w => w.start >= aDeadline);
+  if (aLimit === -1) aLimit = weeks.length;
+  aLimit = Math.max(1, aLimit);
 
-  let wi = 0;
-  let overflow = false;
-  for (const u of ordered) {
-    const h = unitAdjustedHours(u);
-    // 今の週に入り切らなければ次の週へ（最終週に達したら詰め込む＝漏れは絶対に出さない）
-    while (wi < weeks.length - 1 && weeks[wi].hours + h > capacity && weeks[wi].units.length > 0) wi++;
-    weeks[wi].units.push({ unit: u, hours: h });
-    weeks[wi].hours += h;
-    if (wi === weeks.length - 1 && weeks[wi].hours > capacity) overflow = true;
+  const ordered = [...UNITS].sort((a, b) => a.phase - b.phase || UNITS.indexOf(a) - UNITS.indexOf(b));
+  const lateIds = ["i4", "i5", "i6"]; // 科目B直前演習は科目A試験後の期間に配置
+
+  // 空きのある最も早い週に置く（best-fit）。どの週にも入らない場合は範囲内で最も軽い週へ
+  // → 中盤の端数時間も使われ、最終週に積み残しが集中しない。全単元が必ずどこかに入る（漏れゼロ原則）
+  function place(u, h, from, to) {
+    let idx = -1;
+    for (let i = from; i < to; i++) {
+      if (weeks[i].hours + h <= capacity) { idx = i; break; }
+    }
+    if (idx === -1) {
+      idx = from;
+      for (let i = from; i < to; i++) if (weeks[i].hours < weeks[idx].hours) idx = i;
+    }
+    weeks[idx].units.push({ unit: u, hours: h });
+    weeks[idx].hours += h;
   }
+
+  ordered.forEach(u => {
+    const h = unitAdjustedHours(u);
+    if (lateIds.includes(u.id)) place(u, h, Math.min(aLimit, weeks.length - 1), weeks.length);
+    else place(u, h, 0, aLimit);
+  });
+
+  // 週内の表示はフェーズ順に整える
+  weeks.forEach(w => w.units.sort((x, y) => x.unit.phase - y.unit.phase || UNITS.indexOf(x.unit) - UNITS.indexOf(y.unit)));
 
   const totalHours = ordered.reduce((s, u) => s + unitAdjustedHours(u), 0);
   const neededPerWeek = Math.ceil(totalHours / weeks.length * 10) / 10;
-  return { weeks, totalHours, neededPerWeek, overflow, capacity };
+  const maxWeekHours = Math.max(...weeks.map(w => w.hours));
+  const overflow = maxWeekHours > capacity;
+  return { weeks, totalHours, neededPerWeek, overflow, capacity, maxWeekHours, aLimit };
 }
 
 function isDone(unitId) { return !!(state.progress[unitId] && state.progress[unitId].done); }
@@ -103,8 +126,9 @@ function renderHome() {
     <div class="tile"><div class="v">${dB}</div><div class="l">科目B試験まで（日）</div><div class="s">${state.settings.dateB} 開始</div></div>
     <div class="tile"><div class="v">${dA}</div><div class="l">科目A試験まで（日）</div><div class="s">${state.settings.dateA} 開始</div></div>
     <div class="tile"><div class="v">${doneCount}<span style="font-size:14px;color:var(--muted)"> / ${UNITS.length}</span></div><div class="l">消化した単元</div><div class="s">カバレッジ ${pct}%</div></div>
-    <div class="tile"><div class="v">${drillHomePct()}</div><div class="l">ドリル通算正答率</div><div class="s">目標: 80%以上</div></div>
-    <div class="tile"><div class="v">${rm.neededPerWeek}<span style="font-size:14px;color:var(--muted)">h</span></div><div class="l">必要な週あたり学習時間</div><div class="s">設定: 週${rm.capacity}h</div></div>
+    <div class="tile"><div class="v">${drillHomePct()}</div><div class="l">ドリル通算正答率</div><div class="s">合格ライン60%・目標80%</div></div>
+    ${typeof examBHomeTileHtml === "function" ? examBHomeTileHtml() : ""}
+    <div class="tile"><div class="v">${rm.neededPerWeek}<span style="font-size:14px;color:var(--muted)">h</span></div><div class="l">必要な週あたり学習時間</div><div class="s">設定: 週${rm.capacity}h・最大負荷週${rm.maxWeekHours}h</div></div>
   </div>`;
 
   html += `<div class="card"><h2>全体進捗</h2>
@@ -177,7 +201,9 @@ function startDiag() { activeTab = "diag"; diagInProgress = true; animateNext = 
 
 function renderDiag() {
   if (!diagInProgress && state.diagnosis) {
+    const rmD = computeRoadmap();
     return `<div class="card"><h2>レベル診断 結果</h2>${scoreBars()}
+      <div class="small" style="margin-top:10px">この診断結果での総学習時間の目安: <b>${rmD.totalHours}時間</b>（週あたり平均${rmD.neededPerWeek}h・最大負荷週${rmD.maxWeekHours}h）</div>
       <h3>診断の見方</h3>
       <div class="small">正答率40%未満の分野は「弱点」として、ロードマップで学習時間を1.25倍に増やしています。80%以上の分野は0.75倍に圧縮し、その分を弱点に回しています。</div>
       <div style="margin-top:10px"><button class="primary" onclick="startDiag()">もう一度診断する</button>
@@ -246,8 +272,10 @@ function renderRoadmap() {
   let html = `<div class="card"><h2>合格ロードマップ</h2>
     <div class="small">目標: 科目A ${state.settings.dateA}〜 ／ 科目B ${state.settings.dateB}〜（設定タブで変更可）<br>
     総学習時間の目安: <b>${rm.totalHours}時間</b> ／ 残り${rm.weeks.length}週 → 週あたり<b>${rm.neededPerWeek}時間</b>必要（現在の設定: 週${rm.capacity}時間）</div>`;
-  if (rm.neededPerWeek > rm.capacity) {
-    html += `<div class="alert" style="margin-top:10px">設定の週${rm.capacity}時間では全単元が期間内に収まりません。設定で週あたり時間を<b>${rm.neededPerWeek}時間以上</b>に増やすか、学習ペースを上げてください。<b>単元は絶対に削りません</b>（漏れゼロ原則）。終盤の週に超過分が詰まれています。</div>`;
+  if (rm.overflow) {
+    html += `<div class="alert" style="margin-top:10px">設定の週${rm.capacity}時間に収まらない週があります（<b>最大負荷週: ${rm.maxWeekHours}時間</b>・必要平均: 週${rm.neededPerWeek}時間）。設定で週あたり時間を増やすか、重い週の単元を前後の空いた週へ前倒し・後ろ倒しして消化してください。<b>単元は絶対に削りません</b>（漏れゼロ原則）。</div>`;
+  } else if (rm.neededPerWeek > rm.capacity) {
+    html += `<div class="alert" style="margin-top:10px">設定の週${rm.capacity}時間では全単元が期間内に収まりません（必要平均: 週${rm.neededPerWeek}時間）。設定で増やすか、学習ペースを上げてください。</div>`;
   }
   if (!state.diagnosis) {
     html += `<div class="notice" style="margin-top:10px">レベル診断が未実施のため、標準時間で配分しています。<button class="ghost" onclick="startDiag()">診断を受ける</button></div>`;
@@ -256,6 +284,9 @@ function renderRoadmap() {
 
   let lastPhase = -1;
   rm.weeks.forEach((w, i) => {
+    if (i === rm.aLimit) {
+      html += `<div class="notice" style="margin-top:16px"><b>― ここから科目A試験期間（${state.settings.dateA}〜）後の仕上げ ―</b> ここより上の単元は科目A試験の2週間前までに終える計画です。</div>`;
+    }
     const cls = i === st.currentIdx ? "current" : (i < st.currentIdx && w.units.some(x => !isDone(x.unit.id)) ? "past-open" : "");
     const phaseOfWeek = w.units.length ? w.units[0].unit.phase : null;
     if (phaseOfWeek !== null && phaseOfWeek !== lastPhase) {
@@ -271,7 +302,8 @@ function renderRoadmap() {
         return `<div class="${overdue?"unit overdue":"unit"} ${isDone(x.unit.id)?"done":""}" style="border-bottom:1px solid var(--grid)">
           <input type="checkbox" ${isDone(x.unit.id)?"checked":""} onchange="toggleUnit('${x.unit.id}')">
           <div class="u-name">${unitNameLink(x.unit)} <span class="badge rank">${x.unit.trend}</span>
-            <div class="u-meta">${x.hours}h　${esc(x.unit.desc)}</div></div>
+            <div class="u-meta">${x.hours}h　${esc(x.unit.desc)}</div>
+            ${["i4","i5"].includes(x.unit.id) && typeof examBProgressText === "function" && examBProgressText() ? `<div class="u-meta" style="color:var(--indigo)">${esc(examBProgressText())}</div>` : ""}</div>
         </div>`;
       }).join("");
     }
@@ -307,7 +339,8 @@ function renderUnits() {
       const hasMat = window.MATERIALS && window.MATERIALS[u.id];
       const und = typeof understanding === "function" ? understanding(u.id) : null;
       const ds = typeof drillUnitStats === "function" ? drillUnitStats(u.id) : { tries: 0 };
-      const drillInfo = und !== null ? `　理解度 ${und}%${ds.tries ? `（ドリル${ds.tries}回）` : ""}` : "";
+      const bInfo = ["i4", "i5"].includes(u.id) && typeof examBProgressText === "function" ? examBProgressText() : "";
+      const drillInfo = (und !== null ? `　理解度 ${und}%${ds.tries ? `（ドリル${ds.tries}回）` : ""}` : "") + (bInfo ? "　" + bInfo : "");
       const nameHtml = hasMat
         ? `<a href="javascript:void(0)" onclick="openMaterial('${u.id}')" style="color:var(--indigo);text-decoration:none">${esc(u.name)}</a>`
         : esc(u.name);

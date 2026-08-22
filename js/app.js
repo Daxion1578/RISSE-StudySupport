@@ -117,10 +117,21 @@ function renderConfig() {
     </div>
     <div class="muted" style="margin-top:6px">CBTは期間内で受験日を選べます。開始日を基準に逆算しています。正式日程はIPA公式サイトで必ず確認してください。</div></div>`;
 
+  const rmC = computeRoadmap();
   html += `<div class="card"><h2>学習ペース</h2>
     週あたりの学習時間: <input type="number" id="cfgHours" min="3" max="40" value="${s.hoursPerWeek}" style="width:5em"> 時間
     <div class="muted" style="margin-top:6px">平日1時間＋休日2時間ずつなら週9時間です。</div>
+    ${rmC.neededPerWeek > s.hoursPerWeek || rmC.overflow ? `<div class="alert" style="margin-top:10px">現在の設定（週${s.hoursPerWeek}h）では計画${rmC.totalHours}hに対して不足します（必要平均: 週${rmC.neededPerWeek}h・最大負荷週: ${rmC.maxWeekHours}h）。時間を増やすか、不足を理解した上でS級単元を優先してください。</div>` : ""}
     <div style="margin-top:10px"><button class="primary" onclick="saveConfig()">設定を保存してロードマップを再計算</button></div></div>`;
+
+  const ai = loadAiCfg();
+  html += `<div class="card"><h2>AI自動採点（任意）</h2>
+    <div class="small">Claude APIキーを保存すると、科目B演習の採点がボタン一つで自動記録されます（コピー方式は引き続き使えます）。キーは<b>この端末のブラウザ内にのみ</b>保存され、同期・エクスポートには含まれません。APIは従量課金です（採点1回あたり数円程度）。キーは <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a> で発行できます。</div>
+    <div style="margin-top:8px"><input type="password" id="aiKey" placeholder="${ai.apiKey ? "APIキー保存済み（変更する場合のみ入力）" : "sk-ant-... を貼り付け"}" style="width:min(340px,100%)"></div>
+    <div style="margin-top:8px">
+      <button class="primary" onclick="saveAiSettings()">保存</button>
+      ${ai.apiKey ? `<button class="ghost danger" onclick="clearAiSettings()">キーを削除</button>` : ""}
+    </div></div>`;
 
   const sc = loadSyncCfg();
   html += `<div class="card"><h2>クラウド同期（PC⇄スマホ）</h2>
@@ -160,6 +171,21 @@ function renderConfig() {
     <button class="ghost danger" onclick="resetData()">すべての学習データを削除</button>
     <div class="muted" style="margin-top:6px">診断結果・進捗・記録がすべて消えます。元に戻せません。</div></div>`;
   return html;
+}
+
+function saveAiSettings() {
+  const v = document.getElementById("aiKey").value.trim();
+  const cfg = loadAiCfg();
+  if (v) cfg.apiKey = v;
+  saveAiCfg(cfg);
+  addLog("config", "AI採点の設定を変更");
+  saveState();
+  render();
+}
+function clearAiSettings() {
+  if (!confirm("この端末のAPIキーを削除しますか？")) return;
+  localStorage.removeItem(AI_KEY);
+  render();
 }
 
 function onPresetChange() {

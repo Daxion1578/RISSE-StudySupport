@@ -293,6 +293,7 @@ function renderDrillResult() {
   const pct = Math.round(100 * s.correct / s.qids.length);
   let html = `<div class="card"><h2>${s.mode === "exam" ? "本試験モード 結果" : s.mode === "unit" ? "単元別ドリル 結果" : "ドリル結果"}</h2>
     <div class="tiles"><div class="tile"><div class="v">${s.correct}<span style="font-size:14px;color:var(--muted)"> / ${s.qids.length}</span></div><div class="l">正解数（${pct}%）</div></div>
+    ${s.mode === "exam" ? `<div class="tile"><div class="v" style="background:none;-webkit-background-clip:initial;color:${pct >= 60 ? "var(--emerald)" : "var(--crit)"}">${pct >= 60 ? "合格圏" : "未達"}</div><div class="l">合格ライン（60%）との比較</div><div class="s">${pct}% / 60%</div></div>` : ""}
     ${s.mode === "unit" ? `<div class="tile"><div class="v">${understanding(s.unitId) ?? "—"}<span style="font-size:14px;color:var(--muted)">%</span></div><div class="l">この単元の理解度</div></div>` : ""}</div>`;
   html += s.qids.map((qid, i) => {
     const q = qs.find(x => x.id === qid);
