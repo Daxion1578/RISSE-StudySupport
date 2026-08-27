@@ -18,6 +18,33 @@ function openMaterial(unitId) {
   window.scrollTo(0, 0);
 }
 
+/* ドリルの回答後などから「この問題の解説が書かれている節」へ直接飛ぶ。
+   問題文・正解選択肢・解説に出てくる語句と最も重なりが大きい節を選び、
+   スクロールして数秒ハイライトする（見つからなければ教材の先頭を表示） */
+function openMaterialForQuestion(qid) {
+  const q = (window.QUESTIONS_A || []).find(x => x.id === qid);
+  if (!q || !materialsOf()[q.unitId]) return;
+  const m = materialsOf()[q.unitId];
+  const src = q.question + " " + q.choices[q.answer] + " " + q.explanation;
+  const tokens = new Set(src.match(/[A-Za-z0-9./-]{2,}|[ァ-ヶー]{3,}|[一-龠々]{2,}/g) || []);
+  let best = null, bestScore = 0;
+  (m.sections || []).forEach((s, i) => {
+    const text = s.heading + (s.body || "").replace(/<[^>]*>/g, "");
+    let score = 0;
+    tokens.forEach(t => { if (text.includes(t)) score++; });
+    if (score > bestScore) { bestScore = score; best = i; }
+  });
+  openMaterial(q.unitId);
+  if (best !== null) {
+    const el = document.getElementById("mat-sec-" + best);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      el.classList.add("mat-hit");
+      setTimeout(() => el.classList.remove("mat-hit"), 2600);
+    }
+  }
+}
+
 function closeMaterial() { materialUnit = null; render(); window.scrollTo(0, 0); }
 
 function renderMaterials() {
@@ -57,9 +84,10 @@ function renderMaterialDetail(m) {
     <div class="muted small"><a href="javascript:void(0)" onclick="closeMaterial()" style="color:var(--indigo)">← 教材一覧に戻る</a>　${u ? esc(CATS[u.cat]) : ""}</div>
     <h2 style="margin-top:8px">${esc(m.title)} <span class="badge rank">${u ? u.trend : ""}</span></h2>`;
 
-  (m.sections || []).forEach(s => {
-    html += `<h3>${esc(s.heading)}</h3><div class="small" style="line-height:1.9">${s.body}</div>`;
+  (m.sections || []).forEach((s, i) => {
+    html += `<div id="mat-sec-${i}" class="mat-sec"><h3>${esc(s.heading)}</h3><div class="small" style="line-height:1.9">${s.body}</div>`;
     if (s.svg) html += `<div style="margin:12px 0;padding:14px;border:1px solid var(--grid);border-radius:12px;background:rgba(255,255,255,0.02)">${s.svg}</div>`;
+    html += `</div>`;
   });
 
   if (m.terms && m.terms.length) {
@@ -69,9 +97,10 @@ function renderMaterialDetail(m) {
   }
 
   const done = isDone(m.unitId);
+  const inDrill = typeof drillSession !== "undefined" && drillSession; // ドリル中断中なら戻る導線を出す
   html += `<div style="margin-top:16px">
     <button class="primary" onclick="toggleUnit('${m.unitId}'); openMaterial('${m.unitId}')">${done ? "完了を取り消す" : "この単元を学習完了にする ✓"}</button>
-    <button class="ghost" onclick="startDrillForUnit('${m.unitId}')">この単元のドリルを解く</button>
+    ${inDrill ? `<button class="ghost" onclick="switchTab('drill')">← ドリルに戻る</button>` : `<button class="ghost" onclick="startDrillForUnit('${m.unitId}')">この単元のドリルを解く</button>`}
     <button class="ghost" onclick="closeMaterial()">一覧に戻る</button>
   </div></div>`;
   return html;

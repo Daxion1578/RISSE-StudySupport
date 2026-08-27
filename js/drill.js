@@ -279,7 +279,7 @@ function renderDrillQuestion() {
     html += `<div class="${ok ? "notice" : "alert"}" style="margin-top:14px"><b>${ok ? "正解！" : "不正解（正解は「" + KANA[q.answer] + "」）"}</b><br>${esc(q.explanation)}</div>
       <div class="muted">${esc(q.source)}</div>
       <div style="margin-top:12px"><button class="primary" onclick="drillNext()">${s.idx + 1 >= s.qids.length ? "結果を見る" : "次の問題へ"}</button>
-      ${hasMat ? `<button class="ghost" onclick="openMaterial('${q.unitId}')">📖 この単元の教材を読む</button>` : ""}</div>`;
+      ${hasMat ? `<button class="ghost" onclick="openMaterialForQuestion('${q.id}')">📖 教材の解説箇所を読む</button>` : ""}</div>`;
   } else {
     html += `<div class="muted" style="margin-top:10px">${esc(q.source)}</div>`;
   }
@@ -299,9 +299,11 @@ function renderDrillResult() {
     const q = qs.find(x => x.id === qid);
     const last = ((state.drill[qid] || {}).attempts || []).slice(-1)[0] || {};
     const u = drillUnit(q);
+    const matLink = window.MATERIALS && window.MATERIALS[q.unitId]
+      ? `　<a href="javascript:void(0)" onclick="openMaterialForQuestion('${q.id}')" style="color:var(--indigo)">📖 教材で確認</a>` : "";
     return `<div class="small" style="padding:4px 0;border-bottom:1px solid var(--grid)">
       ${last.ok ? "<span style='color:var(--emerald)'>○</span>" : "<span style='color:var(--crit)'>✕</span>"}
-      問${i + 1}　${esc(q.question.slice(0, 40))}…　<span class="muted">${u ? esc(u.name) : ""}</span></div>`;
+      問${i + 1}　${esc(q.question.slice(0, 40))}…　<span class="muted">${u ? esc(u.name) : ""}</span>${matLink}</div>`;
   }).join("");
   html += `<div style="margin-top:12px"><button class="primary" onclick="endDrill()">出題設定に戻る</button>
     ${s.mode === "unit" ? `<button class="ghost" onclick="startDrillForUnit('${s.unitId}')">もう一度この単元を解く</button>` : ""}</div></div>`;
