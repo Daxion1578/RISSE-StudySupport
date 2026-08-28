@@ -25,6 +25,7 @@ const CATS = {
   G: "セキュリティ管理・運用",
   H: "法規・制度",
   I: "試験演習",
+  J: "科目A-1対策（共通知識）",
 };
 
 const PHASES = [
@@ -94,6 +95,15 @@ const UNITS = [
   { id:"h3", cat:"H", phase:4, trend:"A", hours:4, name:"基準・ガイドライン", desc:"NIST CSF・CIS Controls・ISMAP・PCI DSS。科目Aで出題実績" },
   { id:"h4", cat:"H", phase:4, trend:"B", hours:2, name:"支援士制度と倫理", desc:"支援士の義務・罰則・登録制度" },
   { id:"h5", cat:"H", phase:4, trend:"B", hours:2, name:"周辺法規（知財・労働ほか）", desc:"著作権・派遣/請負・下請法などの頻出ポイントのみ" },
+  // 科目A-1対策（旧午前I・応用情報レベルの共通知識。根拠: trend-analysis.md 6章）
+  { id:"j1", cat:"J", phase:0, trend:"B", hours:4, name:"基礎理論（数学・情報理論・AI）", desc:"2進数・確率・符号化・待ち行列・機械学習の基礎。A-1で毎回2〜3問" },
+  { id:"j2", cat:"J", phase:0, trend:"A", hours:5, name:"アルゴリズムとプログラミング", desc:"探索・整列・データ構造・計算量。初学者は手を動かして慣れる" },
+  { id:"j3", cat:"J", phase:0, trend:"B", hours:4, name:"コンピュータシステム", desc:"CPU・メモリ・RAID・仮想化・組込み・システム構成と信頼性計算" },
+  { id:"j4", cat:"J", phase:0, trend:"A", hours:4, name:"データベース（SQL・正規化）", desc:"SQL・正規化・トランザクション。A-1で毎回2問前後" },
+  { id:"j5", cat:"J", phase:3, trend:"B", hours:4, name:"開発技術とプロジェクトマネジメント", desc:"開発プロセス・テスト・見積り・スケジュール（アローダイアグラム等）" },
+  { id:"j6", cat:"J", phase:3, trend:"B", hours:3, name:"サービスマネジメント・監査", desc:"ITIL・SLA・インシデント管理・システム監査の基本" },
+  { id:"j7", cat:"J", phase:4, trend:"A", hours:4, name:"システム戦略・経営戦略", desc:"経営戦略・マーケティング・技術経営。A-1ストラテジ系の主力" },
+  { id:"j8", cat:"J", phase:4, trend:"A", hours:4, name:"企業と法務・会計", desc:"財務諸表・損益分岐点・知財・労働法制。計算問題は型を覚えれば得点源" },
   // Phase6: 試験演習
   { id:"i1", cat:"I", phase:5, trend:"S", hours:6, name:"科目A過去問演習①（直近2回分）", desc:"まず2回分を解いて出題感覚をつかむ。正答率を記録する" },
   { id:"i2", cat:"I", phase:5, trend:"S", hours:8, name:"科目A過去問演習②（さらに4回分）", desc:"過去問再出題率約5割。計6回分で8割正答を目指す" },

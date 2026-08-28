@@ -2,7 +2,8 @@
 
 /* =========================================================
    科目A-2（旧午前II）過去問ドリル
-   - 問題データは data/questions-a/*.js が window.QUESTIONS_A に積む
+   - 問題データは data/questions-a/*.js が window.QUESTIONS_A に、
+     data/questions-a1/*.js（科目A-1・旧午前I）が window.QUESTIONS_A1 に積む
    - 履歴は state.drill[qid].attempts に記録し、Gist同期される
    - 3つの演習モード:
      ①クイック演習（弱点優先など） ②単元別ドリル ③本試験モード（1回分通し）
@@ -11,7 +12,7 @@
 
 let drillSession = null; // { qids, idx, chosen, correct, mode, unitId?, examLabel?, finished? }
 
-function drillQuestions() { return window.QUESTIONS_A || []; }
+function drillQuestions() { return (window.QUESTIONS_A || []).concat(window.QUESTIONS_A1 || []); }
 function drillUnit(q) { return UNITS.find(u => u.id === q.unitId) || null; }
 
 function drillQStats(qid) {
@@ -68,12 +69,13 @@ function startDrillForUnit(unitId) {
   window.scrollTo(0, 0);
 }
 
-/* 本試験モード: 1回分（25問）を問1から通しで解く */
+/* 本試験モード: 1回分（A-2は25問、A-1は30問）を問1から通しで解く */
 function examSessions() {
   const map = new Map();
   drillQuestions().forEach(q => {
-    const m = q.source.match(/出典: (.+?) 情報処理安全確保支援士試験/);
-    const label = m ? m[1] : "その他";
+    const m = q.source.match(/出典: (令和\d+年度 [春秋]期)/);
+    const kind = q.source.includes("午前II") ? "科目A-2（旧午前II）" : "科目A-1（旧午前I）";
+    const label = m ? `${m[1]} ${kind}` : "その他";
     if (!map.has(label)) map.set(label, []);
     map.get(label).push(q.id);
   });
