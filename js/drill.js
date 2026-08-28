@@ -197,8 +197,8 @@ function renderDrill() {
   const allTries = qs.reduce((s, q) => s + drillQStats(q.id).tries, 0);
   const allOk = qs.reduce((s, q) => s + drillQStats(q.id).ok, 0);
 
-  let html = `<div class="card"><h2>科目A-2 過去問ドリル</h2>
-    <div class="small">IPA公表の過去問（出典付き）で演習します。学習の流れ: <b>教材で知識収集 → 単元別ドリル → 本試験モードで総仕上げ</b>。解答履歴は端末間で同期され、単元別の理解度と週ごとの推移が自動で記録されます。</div>
+  let html = `<div class="card"><h2>科目A 過去問ドリル（A-1・A-2）</h2>
+    <div class="small">IPA公表の過去問（出典付き）で演習します。科目A-2（専門・250問）と科目A-1（旧午前I・共通知識300問）の両方を収録。学習の流れ: <b>教材で知識収集 → 単元別ドリル → 本試験モードで総仕上げ</b>。解答履歴は端末間で同期され、単元別の理解度と週ごとの推移が自動で記録されます。</div>
     <div class="tiles" style="margin-top:12px">
       <div class="tile"><div class="v">${qs.length}</div><div class="l">収録問題数</div></div>
       <div class="tile"><div class="v">${answered.length}<span style="font-size:14px;color:var(--muted)"> / ${qs.length}</span></div><div class="l">解答済みの問題</div></div>
@@ -208,7 +208,7 @@ function renderDrill() {
   // ①クイック演習
   html += `<div class="card"><h2>クイック演習</h2>
     <div class="small" style="margin:6px 0">
-      分野: <select id="drillCat"><option value="">すべて</option>${["A","B","C","D","E","F","G","H"].map(c => `<option value="${c}">${CATS[c]}</option>`).join("")}</select>
+      分野: <select id="drillCat"><option value="">すべて</option>${["A","B","C","D","E","F","G","H","J"].map(c => `<option value="${c}">${CATS[c]}</option>`).join("")}</select>
       問数: <select id="drillCount"><option>5</option><option selected>10</option><option>25</option></select>
     </div>
     <div style="margin-top:10px">
@@ -220,7 +220,7 @@ function renderDrill() {
   // ②本試験モード
   const sessions = examSessions();
   html += `<div class="card"><h2>本試験モード（過去問1回分を通しで解く）</h2>
-    <div class="small">本番と同じ問1→問25の順で解きます。仕上げの実力測定に使ってください。</div>
+    <div class="small">本番と同じ順で1回分を通しで解きます（A-2は25問・A-1は30問）。仕上げの実力測定に使ってください。合格ラインはどちらも60%です。</div>
     <div style="margin-top:10px">
       <select id="examSession">${sessions.map(([label, ids]) => `<option value="${esc(label)}">${esc(label)}（${ids.length}問）</option>`).join("")}</select>
       <button class="primary" onclick="startExamSession()">開始</button>

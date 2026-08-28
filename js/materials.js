@@ -22,7 +22,7 @@ function openMaterial(unitId) {
    問題文・正解選択肢・解説に出てくる語句と最も重なりが大きい節を選び、
    スクロールして数秒ハイライトする（見つからなければ教材の先頭を表示） */
 function openMaterialForQuestion(qid) {
-  const q = (window.QUESTIONS_A || []).find(x => x.id === qid);
+  const q = (window.QUESTIONS_A || []).concat(window.QUESTIONS_A1 || []).find(x => x.id === qid);
   if (!q || !materialsOf()[q.unitId]) return;
   const m = materialsOf()[q.unitId];
   const src = q.question + " " + q.choices[q.answer] + " " + q.explanation;

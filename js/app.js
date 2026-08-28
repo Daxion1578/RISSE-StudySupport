@@ -95,6 +95,14 @@ function renderTrend() {
     <li>→ ロードマップ終盤に「科目A過去問演習」を計6回分（計14時間）確保しています</li>
   </ul></div></div>`;
 
+  html += `<div class="card"><h2>科目A-1（旧午前I）の傾向</h2><div class="small"><ul>
+    <li>高度試験共通の30問（応用情報 午前レベル）。突破基準は60%（18問）</li>
+    <li>構成はほぼ固定: テクノロジ系 問1〜17（うちセキュリティ4〜5問）、マネジメント系 問18〜22、ストラテジ系 問23〜30</li>
+    <li>直近5年・10回分の計300問を収録済み。セキュリティ・ネットワークの設問は既存単元に、それ以外は単元マップの「科目A-1対策」（j1〜j8）に割り当てています</li>
+    <li>免除制度あり: 応用情報合格または過去2年以内の午前I通過で免除（本ロードマップは免除なし前提）</li>
+    <li>計算問題（稼働率・EVM・損益分岐点など）は毎回数問。公式を覚えれば確実な得点源</li>
+  </ul></div></div>`;
+
   html += `<div class="card"><h2>情報源</h2><div class="small"><ul>
     <li><a href="https://www.sc-siken.com/" target="_blank" rel="noopener">情報処理安全確保支援士ドットコム（過去問・テーマ実績）</a></li>
     <li><a href="https://www.tac-school.co.jp/kouza_joho/joho_cbt_2026.html" target="_blank" rel="noopener">TAC: 令和8年度 CBT実施概要・日程</a></li>
