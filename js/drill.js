@@ -285,9 +285,25 @@ function renderDrillQuestion() {
     : s.mode === "unit" ? "単元別ドリル"
     : s.mode === "review" ? "今日の復習（間隔反復）"
     : s.mode === "section" ? "小単元演習" : "";
+  // 選択肢の表示順: 本試験モード以外はシャッフル（位置で覚えるのを防ぐ）。
+  // 記号ア〜エは出典・解説と対応させるため元のまま表示し、並びだけ変える
+  let order = [0, 1, 2, 3];
+  if (s.mode !== "exam") {
+    if (!s.shuffle) s.shuffle = {};
+    if (!s.shuffle[q.id]) {
+      const o = [0, 1, 2, 3];
+      for (let i = o.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [o[i], o[j]] = [o[j], o[i]];
+      }
+      s.shuffle[q.id] = o;
+    }
+    order = s.shuffle[q.id];
+  }
   let html = `<div class="card"><div class="q-no">問${s.idx + 1} / ${s.qids.length}　${modeLabel ? modeLabel + "　" : ""}${u ? esc(CATS[u.cat]) + "・" + esc(u.name) : ""} <span class="badge rank">${u ? u.trend : ""}</span></div>
     <div style="margin:8px 0 12px;font-size:15px">${esc(q.question)}${q.modified ? ' <span class="muted">（一部改変）</span>' : ""}</div>`;
-  html += q.choices.map((c, i) => {
+  html += order.map(i => {
+    const c = q.choices[i];
     let cls = "choice is-btn";
     if (answered) {
       if (i === q.answer) cls += " correct";
