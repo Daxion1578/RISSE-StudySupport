@@ -40,10 +40,10 @@ Object.assign(window.MATERIALS, {
       { term: "対策基準", en: "Standard", desc: "セキュリティポリシーの中間層に位置する文書。部門やシステムごとの具体的なルールを定める。スタンダードとも呼ばれる。" },
       { term: "実施手順", en: "Procedure", desc: "セキュリティポリシーの最下位に位置する文書。現場の作業者が実際に行う操作手順を具体的に記す。プロシージャとも呼ばれる。" },
       { term: "ISMS", en: "Information Security Management System", desc: "情報セキュリティマネジメントシステムの略称。組織全体で継続的にセキュリティレベルを維持・改善する仕組みを指す。ISO/IEC 27001で第三者認証を取得できる。" },
-      { term: "ISO/IEC 27001", desc: "ISMSの要求事項を定めた国際規格。この規格に基づく審査に合格すると、第三者機関からISMS認証を取得できる。" },
+      { term: "ISO/IEC 27001", en: "ISO/IEC 27001 (ISMS Requirements)", desc: "ISMSの要求事項を定めた国際規格。この規格に基づく審査に合格すると、第三者機関からISMS認証を取得できる。" },
       { term: "PDCA", en: "Plan-Do-Check-Act", desc: "Plan・Do・Check・Actの頭文字をとった継続的改善のサイクル。計画・実行・点検・改善を繰り返し、対策を実態に合わせて更新し続ける。" },
       { term: "是正処置", en: "Corrective Action", desc: "監査や点検で見つかった不備の原因を取り除き、再発を防ぐための対応。PDCAのAct（改善）段階で行われる。" },
-      { term: "JIS Q 20000-1", desc: "ITサービスの品質を継続的に管理するサービスマネジメントシステム（SMS）の要求事項を定めた規格。内部監査やマネジメントレビューによって適合状況を確認する。" },
+      { term: "JIS Q 20000-1", en: "Japanese Industrial Standards Q 20000-1 (IT Service Management)", desc: "ITサービスの品質を継続的に管理するサービスマネジメントシステム（SMS）の要求事項を定めた規格。内部監査やマネジメントレビューによって適合状況を確認する。" },
       { term: "NIST CSF", en: "NIST Cybersecurity Framework", desc: "重要インフラ等のセキュリティ対策を体系立てるための枠組み。識別・防御・検知・対応・復旧の5機能に、2.0からは統治（GOVERN）を加えた6機能で構成される。" },
       { term: "サイバーセキュリティ経営ガイドライン", en: "Cybersecurity Management Guidelines", desc: "経済産業省とIPAが策定した、経営者が認識すべき原則とリーダーシップを発揮すべき取組項目をまとめた指針。セキュリティ対策を投資として捉えることを重視する。" },
       { term: "投資利益率（ROI）", en: "Return on Investment", desc: "投資額に対してどれだけ利益を生み出せたかを示す指標。ROI＝利益の増加額÷投資額で算出し、複数のシステム化案を比較する際に用いる。" }
@@ -190,13 +190,13 @@ Object.assign(window.MATERIALS, {
       { term: "パッチ", en: "Patch", desc: "脆弱性などの不具合を修正するために配布される更新プログラムのこと。" },
       { term: "IT資産管理", en: "IT Asset Management", desc: "ハードウェア・ソフトウェアの棚卸しと台帳管理のこと。自社がどの製品を使っているかを把握する、脆弱性管理の前提となる活動。" },
       { term: "資産台帳", en: "Asset Inventory", desc: "保有する機器・ソフトウェアの種類やバージョンを記録した一覧のこと。脆弱性の影響有無を確認する際に照合の基準となる。" },
-      { term: "Exploit（エクスプロイト）", desc: "脆弱性を悪用するために作られた攻撃コードのこと。出回っている脆弱性は対応の緊急度が高いと判断される。" },
+      { term: "Exploit（エクスプロイト）", en: "Exploit", desc: "脆弱性を悪用するために作られた攻撃コードのこと。出回っている脆弱性は対応の緊急度が高いと判断される。" },
       { term: "パッチマネジメント", en: "Patch Management", desc: "パッチの検証・適用計画・展開までを管理する一連のプロセスのこと。" },
       { term: "CWE", en: "Common Weakness Enumeration", desc: "ソフトウェア・ハードウェアに存在しうる脆弱性の「種類」を体系的に分類し一覧化したもの。個々の脆弱性を識別するCVEとは対象が異なる。" },
       { term: "CPE", en: "Common Platform Enumeration", desc: "製品やOSなどのプラットフォームを識別するための名称の一覧のこと。" },
       { term: "CCE", en: "Common Configuration Enumeration", desc: "セキュリティに関連する設定項目を識別するための識別子のこと。" },
       { term: "SCAP", en: "Security Content Automation Protocol", desc: "CVEやCWE、CVSSなどを組み合わせ、脆弱性管理や構成評価を自動化するためにNISTが策定した基準の集まり。" },
-      { term: "MITRE", desc: "CVEの採番・管理を行う事務局であり、攻撃手法のナレッジベースATT&CKを公開する非営利組織。" }
+      { term: "MITRE", en: "MITRE Corporation", desc: "CVEの採番・管理を行う事務局であり、攻撃手法のナレッジベースATT&CKを公開する非営利組織。" }
     ]
   },
   g5: {
@@ -289,14 +289,14 @@ Object.assign(window.MATERIALS, {
       { term: "最小権限の原則", en: "Principle of Least Privilege", desc: "業務に必要な最小限の権限のみを付与するという考え方。権限を広く設定しすぎることによる被害拡大を防ぐ。" },
       { term: "多要素認証", en: "Multi-Factor Authentication", desc: "パスワードに加え生体認証やワンタイムコードなど、異なる種類の要素を複数組み合わせて認証する方式。" },
       { term: "アクセス制御", en: "Access Control", desc: "権限のある人だけがリソースを利用できるよう制限する仕組みのこと。" },
-      { term: "設定ミス（misconfiguration）", desc: "クラウドの公開範囲やアクセス権限の設定を誤ること。クラウドでの情報漏えい事故の主な原因とされる。" },
-      { term: "JIS Q 27017", desc: "クラウドサービスの提供・利用に固有の情報セキュリティ管理策を、JIS Q 27002を補完する形で追加規定した規格。" },
+      { term: "設定ミス（misconfiguration）", en: "Misconfiguration", desc: "クラウドの公開範囲やアクセス権限の設定を誤ること。クラウドでの情報漏えい事故の主な原因とされる。" },
+      { term: "JIS Q 27017", en: "Japanese Industrial Standards Q 27017 (Cloud Security Controls)", desc: "クラウドサービスの提供・利用に固有の情報セキュリティ管理策を、JIS Q 27002を補完する形で追加規定した規格。" },
       { term: "CASB", en: "Cloud Access Security Broker", desc: "従業員のクラウドサービス利用状況を可視化する仕組み。IT部門の許可を得ていないシャドーIT利用の特定に使われる。" },
       { term: "CSPM", en: "Cloud Security Posture Management", desc: "クラウドサービスの設定内容を継続的に監視し、公開範囲の誤りなどの設定ミスを検知する仕組み。" },
       { term: "ISMAP", en: "Information system Security Management and Assessment Program", desc: "政府が求めるセキュリティ要求を満たすクラウドサービスをあらかじめ評価・登録する制度。政府機関のクラウド調達で使われる。" },
       { term: "ISMAP-LIU", en: "ISMAP for Low-Impact Use", desc: "リスクの小さな業務・情報を扱うSaaSサービスを対象とした、ISMAPの簡易版の登録制度。" },
       { term: "コンテナ", en: "Container", desc: "アプリケーションを実行環境ごと箱詰めする軽量な仮想化技術。クラウド上でのアプリ実行基盤として広く使われる。" },
-      { term: "Kubernetes", desc: "多数のコンテナをまとめて管理・運用するための基盤ソフトウェア。イメージの脆弱性スキャンなどセキュリティ管理も重要になる。" }
+      { term: "Kubernetes", en: "Kubernetes (Container Orchestration)", desc: "多数のコンテナをまとめて管理・運用するための基盤ソフトウェア。イメージの脆弱性スキャンなどセキュリティ管理も重要になる。" }
     ]
   },
   g7: {
@@ -369,7 +369,7 @@ Object.assign(window.MATERIALS, {
     ],
     terms: [
       { term: "デジタルフォレンジックス", en: "Digital Forensics", desc: "デジタルデータを法的証拠として扱えるよう収集・分析する技術と手続きのこと。客観性と再現性が重視される。" },
-      { term: "chain of custody（証拠保全の連鎖）", desc: "証拠の受け渡し記録を途切れさせず、誰がいつ何に触れたかを記録し続けることで証拠の同一性を保証すること。" },
+      { term: "chain of custody（証拠保全の連鎖）", en: "Chain of Custody", desc: "証拠の受け渡し記録を途切れさせず、誰がいつ何に触れたかを記録し続けることで証拠の同一性を保証すること。" },
       { term: "ディスクイメージ", en: "Disk Image", desc: "対象機器のディスクをビット単位で複製したデータのこと。分析は原本ではなくこの複製を使って行う。" },
       { term: "ハッシュ値", en: "Hash Value", desc: "データから算出される固定長の値のこと。証拠保全の前後で値が一致すれば改ざんがないことを確認できる。" },
       { term: "タイムライン分析", en: "Timeline Analysis", desc: "出来事を時系列に並べて事象の流れを再構成する分析手法のこと。侵入から被害拡大までの経路を明らかにする。" },
@@ -415,13 +415,13 @@ Object.assign(window.MATERIALS, {
       { term: "IT/OT分離", en: "IT/OT Segmentation", desc: "業務系ネットワークと制御系ネットワークを分けて接続を制限する考え方のこと。IT側の感染がOT側へ波及するのを防ぐ。" },
       { term: "DMZ", en: "Demilitarized Zone", desc: "外部と内部の中間に置く緩衝ネットワーク領域のこと。IT/OTの境界にも用いられる。" },
       { term: "ゲートウェイ", en: "Gateway", desc: "異なるネットワーク間の通信を中継・制御する機器のこと。通信を必要最小限に絞る役割を担う。" },
-      { term: "可用性優先", desc: "OTシステムにおいて、機密性よりもシステムを止めないことが優先されるという考え方。" },
+      { term: "可用性優先", en: "Availability First", desc: "OTシステムにおいて、機密性よりもシステムを止めないことが優先されるという考え方。" },
       { term: "ファームウェア", en: "Firmware", desc: "機器に組み込まれた基本ソフトウェアのこと。更新が後回しにされやすく、脆弱性が放置される原因になる。" },
       { term: "シャドーIT", en: "Shadow IT", desc: "情報システム部門が把握・許可していない機器やサービスを、現場が独自の判断で利用してしまうこと。" },
-      { term: "Telnet", desc: "機器の遠隔操作に使われる古いプロトコル（TCP23番ポート）。通信が暗号化されず初期パスワードのまま狙われやすい。" },
+      { term: "Telnet", en: "Teletype Network", desc: "機器の遠隔操作に使われる古いプロトコル（TCP23番ポート）。通信が暗号化されず初期パスワードのまま狙われやすい。" },
       { term: "NOTICE", en: "National Operation Towards IoT Clean Environment", desc: "総務省とNICTが実施する取組み。国内IoT機器に推測しやすいパスワードでログインを試み、該当機器の利用者にISP経由で注意喚起する。" },
       { term: "ペネトレーションテスト", en: "Penetration Testing", desc: "実際に脆弱性を利用して攻撃・侵入を試みることで、システムの安全性を検証するテスト手法。" },
-      { term: "IEC 62443", desc: "制御システム（OT）のセキュリティに関する国際規格群。ITのISMSと似た位置づけで、可用性・安全性を重視した要求事項を定める。" },
+      { term: "IEC 62443", en: "International Electrotechnical Commission 62443 (Industrial Network Security)", desc: "制御システム（OT）のセキュリティに関する国際規格群。ITのISMSと似た位置づけで、可用性・安全性を重視した要求事項を定める。" },
       { term: "CSMS認証", en: "Cyber Security Management System", desc: "IEC 62443に基づき、制御システム向けのセキュリティマネジメント体制を評価・認証する制度。" }
     ]
   },

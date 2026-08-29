@@ -77,7 +77,7 @@ Object.assign(window.MATERIALS, {
       { term: "OCSP", en: "Online Certificate Status Protocol", desc: "証明書が失効していないかを1件ずつオンラインで問い合わせる仕組み。CRLより確認の即時性が高い。" },
       { term: "否認防止", en: "Non-repudiation", desc: "後から本人が「自分は行っていない」と否定できないようにする性質。デジタル署名によって実現される。" },
       { term: "RA（登録局）", en: "Registration Authority", desc: "証明書発行を申請した利用者の本人確認を行い、申請の承認・却下を判断する役割。証明書へのデジタル署名自体はCAが行う。" },
-      { term: "VA（Validation Authority）", desc: "発行済みのデジタル証明書が失効していないかどうかの問合せに、OCSPなどを使って応答する役割。" },
+      { term: "VA（Validation Authority）", en: "Validation Authority", desc: "発行済みのデジタル証明書が失効していないかどうかの問合せに、OCSPなどを使って応答する役割。" },
       { term: "CPS（認証局運用規程）", en: "Certification Practice Statement", desc: "認証局が証明書の発行・失効・管理といった認証業務をどのように運用するかを詳細に定めた文書。" },
       { term: "XMLデジタル署名", en: "XML Digital Signature", desc: "XML文書に対するデジタル署名の規格。署名データを対象の要素とは別に独立させて同じ文書に含めるデタッチ署名などの形式がある。" },
       { term: "ECDSA・EdDSA", en: "Elliptic Curve Digital Signature Algorithm / Edwards-curve Digital Signature Algorithm", desc: "楕円曲線暗号を用いたデジタル署名アルゴリズム。同じ楕円曲線暗号を使う鍵交換技術のECDHとは目的が異なるので区別する。" }
@@ -99,7 +99,7 @@ Object.assign(window.MATERIALS, {
       { term: "TLS", en: "Transport Layer Security", desc: "通信の暗号化と、通信相手(主にサーバー)の認証を行うプロトコル。HTTPSはHTTPをTLSで保護したものである。" },
       { term: "TLSハンドシェイク", en: "TLS Handshake", desc: "実データの送受信を始める前に、使用する暗号方式の決定・サーバー証明書の検証・鍵交換を行う一連の準備手順。" },
       { term: "暗号スイート", en: "Cipher Suite", desc: "TLSで使用する鍵交換方式・暗号化アルゴリズム・ハッシュ関数などの組み合わせのセット。" },
-      { term: "TLS1.3", desc: "現在推奨されている最新のTLSバージョン。弱い暗号方式を廃止し、ハンドシェイクの往復回数を減らして高速化した。" },
+      { term: "TLS1.3", en: "Transport Layer Security 1.3", desc: "現在推奨されている最新のTLSバージョン。弱い暗号方式を廃止し、ハンドシェイクの往復回数を減らして高速化した。" },
       { term: "サーバー証明書", en: "Server Certificate", desc: "サーバーの公開鍵とその持ち主の情報を認証局が署名して保証した証明書。TLSハンドシェイクの中でサーバーから提示される。" },
       { term: "中間者攻撃（MITM）", en: "Man-in-the-Middle Attack", desc: "通信の経路上に割り込み、盗聴や改ざんを行う攻撃。証明書の検証を省略・無視すると成立しやすくなる。" },
       { term: "セッション鍵", en: "Session Key", desc: "TLSハンドシェイクを経て確立される、その通信だけで使われる一時的な共通鍵。" },
@@ -135,7 +135,7 @@ Object.assign(window.MATERIALS, {
       { term: "CRYPTREC", en: "Cryptography Research and Evaluation Committees", desc: "暗号技術の安全性や実装性能を評価し、電子政府での利用にふさわしい暗号技術を検討する活動。策定する「CRYPTREC暗号リスト」は電子政府推奨・推奨候補・運用監視の3区分に分かれる。" },
       { term: "FIPS PUB 140-3", en: "Federal Information Processing Standards Publication 140-3", desc: "米国NISTが定めた、暗号処理を行うハードウェアやソフトウェア（暗号モジュール）が満たすべきセキュリティ要求事項の規格。" },
       { term: "サイドチャネル攻撃", en: "Side-Channel Attack", desc: "暗号処理中に装置から漏れる消費電力・処理時間・電磁波などの物理的な副次情報を観測し、内部の鍵を推測する攻撃の総称。" },
-      { term: "テンペスト（TEMPEST）攻撃", desc: "機器が処理中に放射する微弱な電磁波を観測・解析して内部の情報を盗み取る、サイドチャネル攻撃の一種。" },
+      { term: "テンペスト（TEMPEST）攻撃", en: "TEMPEST Attack (Compromising Emanations)", desc: "機器が処理中に放射する微弱な電磁波を観測・解析して内部の情報を盗み取る、サイドチャネル攻撃の一種。" },
       { term: "量子鍵配送（QKD・量子暗号）", en: "Quantum Key Distribution", desc: "量子通信路を使って安全に共有した乱数列を使い捨ての鍵として用いる技術。盗聴されると通信内容に変化が生じるため検知でき、原理的に解読されない通信を実現する。PQCとは別の技術。" }
     ]
   }

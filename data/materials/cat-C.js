@@ -48,7 +48,7 @@ Object.assign(window.MATERIALS, {
       { term: "FIDO", en: "Fast IDentity Online", desc: "公開鍵暗号を用いてパスワードに依存しない認証を実現する標準規格。秘密鍵を端末の外に出さない設計でフィッシングに強い。" },
       { term: "パスキー", en: "Passkey", desc: "FIDOの仕組みを利用しやすく実装した認証情報。スマートフォンなどに保存され、複数端末の間で同期できる。" },
       { term: "フィッシング耐性", en: "Phishing Resistance", desc: "偽サイトに誘導されても認証情報が盗まれたり不正利用されたりしない性質。FIDOはログイン先のドメインに署名を紐づけることで実現する。" },
-      { term: "Identity Proofing（身元確認）", desc: "システムに利用者を新規登録する際、写真付き身分証明書などと照合して本人であることを確認する手続き。ログインのたびに行う認証とは別の、登録時のみの手続き。" }
+      { term: "Identity Proofing（身元確認）", en: "Identity Proofing", desc: "システムに利用者を新規登録する際、写真付き身分証明書などと照合して本人であることを確認する手続き。ログインのたびに行う認証とは別の、登録時のみの手続き。" }
     ]
   },
   c2: {
@@ -83,8 +83,8 @@ Object.assign(window.MATERIALS, {
     ],
     terms: [
       { term: "SSO（シングルサインオン）", en: "Single Sign-On", desc: "1回の認証だけで複数のサービスにログイン済みの状態にできる仕組み。サービスごとにパスワードを覚える手間と使い回しのリスクを減らせる。" },
-      { term: "IdP（Identity Provider）", desc: "利用者の本人確認（認証）を行い、その結果を他のサービスに伝える役割を持つ主体。社内のID管理サービスなどが該当する。" },
-      { term: "SP（Service Provider）", desc: "IdPから受け取った認証結果を信じて、利用者にログインを許可するサービス側。SaaSなどが該当する。" },
+      { term: "IdP（Identity Provider）", en: "Identity Provider", desc: "利用者の本人確認（認証）を行い、その結果を他のサービスに伝える役割を持つ主体。社内のID管理サービスなどが該当する。" },
+      { term: "SP（Service Provider）", en: "Service Provider", desc: "IdPから受け取った認証結果を信じて、利用者にログインを許可するサービス側。SaaSなどが該当する。" },
       { term: "エージェント方式", en: "Agent-based SSO", desc: "SSOの対象となる各サーバにエージェントと呼ばれるモジュールを組み込む実装方式。サーバ側の改修が必要になる。" },
       { term: "代理認証方式", en: "Proxy Authentication (Credential Replay)", desc: "クライアントPCに導入したソフトが対象システムのログイン画面を監視し、認証情報を利用者に代わって自動入力するSSOの実装方式。サーバ側の改修が不要。" },
       { term: "リバースプロキシ方式", en: "Reverse Proxy SSO", desc: "利用者とWebサーバの間に置いた中継サーバで認証を集中させるSSOの実装方式。全トラフィックが集中するため単一障害点になり得る。" },
@@ -92,10 +92,10 @@ Object.assign(window.MATERIALS, {
       { term: "SAML", en: "Security Assertion Markup Language", desc: "認証結果（アサーション）をXML形式でIdPからSPへ伝える規格。デジタル署名により改ざんを検知できる。" },
       { term: "OASIS", en: "Organization for the Advancement of Structured Information Standards", desc: "SAMLなど、組織間で認証・属性・認可の情報を安全に交換するための標準規格を策定する標準化団体。" },
       { term: "アサーション", en: "Assertion", desc: "SAMLにおいて「この利用者は認証済みである」ことを示す証明データ。IdPが作成しSPへ送られる。" },
-      { term: "OAuth 2.0", desc: "パスワードそのものを渡すことなく、限定的な権限（スコープ）だけを他のアプリに許可するための認可の規格。認証の規格ではない。" },
+      { term: "OAuth 2.0", en: "Open Authorization 2.0", desc: "パスワードそのものを渡すことなく、限定的な権限（スコープ）だけを他のアプリに許可するための認可の規格。認証の規格ではない。" },
       { term: "スコープ", en: "Scope", desc: "OAuthにおいて、アプリに許可するアクセス範囲の指定。必要最小限に絞ることで漏えい時の被害を抑えられる。" },
       { term: "アクセストークン", en: "Access Token", desc: "OAuthで発行される、APIへのアクセスに使う一時的な権限証明のデータ。有効期限が設定されることが多い。" },
-      { term: "OpenID Connect（OIDC）", desc: "OAuth 2.0にIDトークンを追加し、権限の委譲だけでなく本人確認（認証）も可能にした規格。" },
+      { term: "OpenID Connect（OIDC）", en: "OpenID Connect", desc: "OAuth 2.0にIDトークンを追加し、権限の委譲だけでなく本人確認（認証）も可能にした規格。" },
       { term: "IDトークン", en: "ID Token", desc: "OIDCで発行される、利用者が誰であるかという情報を含むトークン。これによりアプリは本人を特定できる。" }
     ]
   },
@@ -140,10 +140,10 @@ Object.assign(window.MATERIALS, {
       { term: "特権ID", en: "Privileged Account", desc: "システム管理者権限など、通常の利用者よりはるかに広範な操作が可能なアカウント。乗っ取られた際の被害が大きい。" },
       { term: "PAM（特権アクセス管理）", en: "Privileged Access Management", desc: "特権IDのパスワードを厳重に保管し、必要な時だけ一時的に払い出して操作を記録・監視する仕組みや製品。" },
       { term: "アカウンタビリティ（責任追跡性）", en: "Accountability", desc: "誰がいつどの操作を行ったかを、後から記録によって特定できる性質。共有アカウントの利用はこれを損なう。" },
-      { term: "AAA（Authentication/Authorization/Accounting）", desc: "認証・認可・アカウンティング（利用状況の記録）の3要素からなる管理の枠組み。RADIUSやDiameterが提供する。" },
-      { term: "アカウンティング（Accounting）", desc: "利用者がいつ何をしたかという利用状況を記録すること。課金の根拠やアカウンタビリティの証跡になる。" },
-      { term: "WITH GRANT OPTION（付与権）", desc: "SQLのGRANT文に付ける指定。与えられた権限を、さらに他の利用者へ付与できる権限まで一緒に渡すことになる。" },
-      { term: "直接修正", desc: "アプリケーションソフトウェアの機能を経由せず、特権IDを使ってデータベースのデータを追加・変更・削除すること。監査上の統制が特に重要になる。" }
+      { term: "AAA（Authentication/Authorization/Accounting）", en: "Authentication, Authorization and Accounting", desc: "認証・認可・アカウンティング（利用状況の記録）の3要素からなる管理の枠組み。RADIUSやDiameterが提供する。" },
+      { term: "アカウンティング（Accounting）", en: "Accounting", desc: "利用者がいつ何をしたかという利用状況を記録すること。課金の根拠やアカウンタビリティの証跡になる。" },
+      { term: "WITH GRANT OPTION（付与権）", en: "WITH GRANT OPTION (SQL)", desc: "SQLのGRANT文に付ける指定。与えられた権限を、さらに他の利用者へ付与できる権限まで一緒に渡すことになる。" },
+      { term: "直接修正", en: "Direct Modification", desc: "アプリケーションソフトウェアの機能を経由せず、特権IDを使ってデータベースのデータを追加・変更・削除すること。監査上の統制が特に重要になる。" }
     ]
   }
 });

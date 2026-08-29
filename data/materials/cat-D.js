@@ -46,7 +46,7 @@ Object.assign(window.MATERIALS, {
       { term: "ルートキット", en: "Rootkit", desc: "侵入後に組み込んだ不正なツール一式の存在を、プロセス一覧やファイル一覧から見えなくする攻撃ツール群。" },
       { term: "ビヘイビア法", en: "Behavior-Based Detection", desc: "実行時のファイルの読み書きや通信といった振る舞いを監視してマルウェアを検出する手法。未知の亜種にも対応しやすい。" },
       { term: "クリプトジャッキング", en: "Cryptojacking", desc: "不正アクセスしたPCやサーバーの計算資源を無断で使い、暗号資産のマイニングを行わせる攻撃。" },
-      { term: "Mirai", desc: "初期設定のままのIoT機器を狙って感染を広げ、ボットネット化してDDoS攻撃を行わせるマルウェア。" },
+      { term: "Mirai", en: "Mirai (IoT Botnet Malware)", desc: "初期設定のままのIoT機器を狙って感染を広げ、ボットネット化してDDoS攻撃を行わせるマルウェア。" },
       { term: "コネクトバック", en: "Connect-back", desc: "侵害したシステム側から攻撃者のサーバへ通信を開始させ、遠隔操作の通信路を確立する手口。アウトバウンド通信の許可を悪用する。" },
       { term: "ドメインフロンティング", en: "Domain Fronting", desc: "CDNが複数ドメインの接続先を共有する仕組みを悪用し、宛先を正規サイトに見せかけながら実際は攻撃者サーバへ通信させる手口。" }
     ]
@@ -128,7 +128,7 @@ Object.assign(window.MATERIALS, {
       { term: "レートリミット", en: "Rate Limiting", desc: "単位時間あたりに許可するログイン試行回数などを制限する仕組み。機械的な大量試行を抑え込む。" },
       { term: "ハッシュ化", en: "Hashing", desc: "元の文字列を、逆算では元に戻せない別の文字列に変換する処理。パスワードを平文のまま保存しないために使われる。" },
       { term: "ソルト", en: "Salt", desc: "パスワードをハッシュ化する際に加えるランダムな値。同じパスワードでも人によって異なるハッシュ値になるようにする。" },
-      { term: "Pass the Hash攻撃", desc: "認証に使われるパスワードのハッシュ値を盗み出し、平文に戻さずそのまま使ってログインする攻撃。" },
+      { term: "Pass the Hash攻撃", en: "Pass the Hash Attack", desc: "認証に使われるパスワードのハッシュ値を盗み出し、平文に戻さずそのまま使ってログインする攻撃。" },
       { term: "パスワードスプレー攻撃", en: "Password Spraying", desc: "よく使われる少数のパスワードを、時刻や送信元を変えながら多数の利用者IDに同時に試す攻撃。アカウントロックアウトを回避しやすい。" }
     ]
   },
@@ -175,11 +175,11 @@ Object.assign(window.MATERIALS, {
       { term: "増幅（amplification）攻撃", en: "Amplification Attack", desc: "小さなリクエストに対して大きな応答が返る性質を悪用し、攻撃者が送るデータ量以上のトラフィックを標的に送り込む手口。" },
       { term: "オープンリゾルバ", en: "Open Resolver", desc: "外部の誰からの問い合わせにも無条件に応答してしまうDNSサーバー。DRDoSの踏み台に悪用されやすい。" },
       { term: "可用性", en: "Availability", desc: "情報セキュリティの3要素（CIA）の1つで、必要なときにシステムやデータを使える状態を保つこと。DoS/DDoS攻撃はこれを直接狙う。" },
-      { term: "RDoS（Ransom DoS）", desc: "DDoS攻撃を仕掛けたうえで、攻撃をやめてほしければ金銭を払うよう要求する脅迫の手口。" },
-      { term: "Smurf攻撃", desc: "送信元を偽装したICMPエコー要求をブロードキャストアドレス宛てに送り、大量の応答を攻撃対象に集中させる攻撃。" },
+      { term: "RDoS（Ransom DoS）", en: "Ransom Denial of Service", desc: "DDoS攻撃を仕掛けたうえで、攻撃をやめてほしければ金銭を払うよう要求する脅迫の手口。" },
+      { term: "Smurf攻撃", en: "Smurf Attack", desc: "送信元を偽装したICMPエコー要求をブロードキャストアドレス宛てに送り、大量の応答を攻撃対象に集中させる攻撃。" },
       { term: "バックスキャッター", en: "Backscatter", desc: "送信元を偽装された攻撃の巻き添えで、誰も使っていないIPアドレス空間に届いてしまう意図しない応答。攻撃の兆候を外部から推定する手がかりになる。" },
       { term: "NTPリフレクション攻撃", en: "NTP Reflection Attack", desc: "送信元を偽装し、NTPサーバの応答が大きくなる機能を悪用して増幅した応答を標的に送りつける攻撃。" },
-      { term: "Memcached", desc: "本来はキャッシュ用途のサーバソフトウェアだが、UDPで小さな要求に大きな応答を返す性質からリフレクタ攻撃の踏み台に悪用されやすい。" }
+      { term: "Memcached", en: "Memcached (In-memory Cache)", desc: "本来はキャッシュ用途のサーバソフトウェアだが、UDPで小さな要求に大きな応答を返す性質からリフレクタ攻撃の踏み台に悪用されやすい。" }
     ]
   },
   d5u: {
@@ -216,12 +216,12 @@ Object.assign(window.MATERIALS, {
       { term: "盗聴", en: "Eavesdropping", desc: "通信内容を第三者にのぞき見られること。暗号化されていない通信の経路上であれば誰でも読み取れてしまう。" },
       { term: "中間者攻撃（MITM）", en: "Man-in-the-Middle Attack", desc: "通信する両者の間に攻撃者が割り込み、中継しながら盗聴・改ざんする攻撃。当事者は直接通信していると思い込む。" },
       { term: "ARPスプーフィング", en: "ARP Spoofing", desc: "偽のARP応答を流し、同一LAN内の通信を本来のあて先ではなく攻撃者の端末に誘導する手口。" },
-      { term: "偽アクセスポイント（Evil Twin）", desc: "正規のものに似せた偽の無線LANアクセスポイントで利用者を接続させ、通信を盗聴する手口。" },
+      { term: "偽アクセスポイント（Evil Twin）", en: "Evil Twin Access Point", desc: "正規のものに似せた偽の無線LANアクセスポイントで利用者を接続させ、通信を盗聴する手口。" },
       { term: "セッションハイジャック", en: "Session Hijacking", desc: "セッションIDを盗み取り、正規の利用者になりすましてサービスを不正利用する攻撃。" },
-      { term: "セッションID", desc: "ログイン後に利用者を識別するために発行される値。多くの場合Cookieに保存され、盗まれると乗っ取りの原因になる。" },
-      { term: "Secure属性", desc: "Cookieに付ける属性の1つ。通信がHTTPSで暗号化されているときだけそのCookieを送信するようにする。" },
-      { term: "HttpOnly属性", desc: "Cookieに付ける属性の1つ。JavaScriptからそのCookieを読み取れないようにし、盗み取りを防ぐ。" },
-      { term: "MITB（Man-in-the-Browser）攻撃", desc: "PC内のマルウェアがブラウザの通信内容を書き換える攻撃。利用者が正しく入力しても送信直前に内容が改ざんされる。" },
+      { term: "セッションID", en: "Session Identifier", desc: "ログイン後に利用者を識別するために発行される値。多くの場合Cookieに保存され、盗まれると乗っ取りの原因になる。" },
+      { term: "Secure属性", en: "Secure Attribute", desc: "Cookieに付ける属性の1つ。通信がHTTPSで暗号化されているときだけそのCookieを送信するようにする。" },
+      { term: "HttpOnly属性", en: "HttpOnly Attribute", desc: "Cookieに付ける属性の1つ。JavaScriptからそのCookieを読み取れないようにし、盗み取りを防ぐ。" },
+      { term: "MITB（Man-in-the-Browser）攻撃", en: "Man-in-the-Browser Attack", desc: "PC内のマルウェアがブラウザの通信内容を書き換える攻撃。利用者が正しく入力しても送信直前に内容が改ざんされる。" },
       { term: "トランザクション署名", en: "Transaction Signing", desc: "送金操作を行うPCとは別のデバイスで取引情報を確認・送信させ、MITB攻撃による内容の改ざんを別経路で検知する対策。" }
     ]
   },
@@ -265,7 +265,7 @@ Object.assign(window.MATERIALS, {
       { term: "CVSS", en: "Common Vulnerability Scoring System", desc: "脆弱性の深刻度を数値で表す共通の評価指標。パッチ適用の優先順位付けに使われる。" },
       { term: "セキュアコーディング", en: "Secure Coding", desc: "脆弱性を生み出しにくい安全な書き方でプログラムを実装する取り組み。危険な関数を避けることなどが含まれる。" },
       { term: "多層防御", en: "Defense in Depth", desc: "1つの対策が突破されても別の対策で被害を食い止められるよう、複数の防御手段を重ねて備える考え方。" },
-      { term: "Adversarial Examples攻撃", desc: "人間には知覚できない微小なノイズを画像などに加え、AIの認識アルゴリズムをだまして誤判定させる攻撃。" },
+      { term: "Adversarial Examples攻撃", en: "Adversarial Examples Attack", desc: "人間には知覚できない微小なノイズを画像などに加え、AIの認識アルゴリズムをだまして誤判定させる攻撃。" },
       { term: "モデルインバージョン攻撃", en: "Model Inversion Attack", desc: "AIモデルへの入力を工夫しながら出力を繰り返し観察し、学習に使われた元のデータを推測して復元しようとする攻撃。" },
       { term: "データポイズニング攻撃", en: "Data Poisoning Attack", desc: "AIの学習段階で悪意あるデータを混入させ、誤った学習をさせる攻撃。" },
       { term: "モデル抽出攻撃", en: "Model Extraction Attack", desc: "複数の入力と出力の観察だけでAIモデルの性能を模倣し、同等の性能をもつモデルを作り出す攻撃。" },

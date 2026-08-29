@@ -101,7 +101,7 @@ Object.assign(window.MATERIALS, {
     terms: [
       { term: "HTTPメソッド", en: "HTTP Method", desc: "HTTPリクエストの種類を表す指定。データを取得するGET、フォーム送信などでデータを送るPOSTが代表的である。" },
       { term: "ステータスコード", en: "Status Code", desc: "HTTPレスポンスの結果を表す3桁の数字。200番台は成功、400番台はクライアント側のエラー、500番台はサーバー側のエラーを示す。" },
-      { term: "Cookie", desc: "サーバーがブラウザに保存させる小さなデータ。ログイン状態の維持など、HTTPの弱点であるステートレス性を補うために使われる。" },
+      { term: "Cookie", en: "HTTP Cookie", desc: "サーバーがブラウザに保存させる小さなデータ。ログイン状態の維持など、HTTPの弱点であるステートレス性を補うために使われる。" },
       { term: "セッションID", en: "Session ID", desc: "ログイン中の利用者を識別するためにサーバーが発行する一時的な合言葉。Cookieに格納され、以降のリクエストで自動的に送り返される。" },
       { term: "同一オリジンポリシー", en: "Same-Origin Policy", desc: "スクリプトが別オリジン(別サイト)のデータへ自由にアクセスすることを制限する、ブラウザの基本ルール。" },
       { term: "ステートレス", en: "Stateless", desc: "1回ごとのやり取りで、サーバーが前回の状態を覚えていない性質。HTTPはこの性質を持つため、ログイン状態の維持にはCookie等が必要になる。" },
@@ -109,7 +109,7 @@ Object.assign(window.MATERIALS, {
       { term: "リクエスト", en: "Request", desc: "ブラウザなどのクライアントがサーバーに送る要求。取得したいページや送信したいデータの内容を含む。" },
       { term: "レスポンス", en: "Response", desc: "サーバーがリクエストに応じて返す応答。ステータスコードと、HTML等の実際のデータを含む。" },
       { term: "Ajax", en: "Asynchronous JavaScript and XML", desc: "JavaScriptを使ってページ全体を再読み込みせずに、サーバーと非同期にデータをやり取りする技術。地図の高速スクロールや検索候補の逐次表示などに使われる。" },
-      { term: "Cache-Control", desc: "HTTPレスポンスヘッダーの一つで、ブラウザやプロキシにその内容をキャッシュしてよいかを指示する。no-storeは一切保存させない指定、no-cacheは保存はするが利用前の再検証を必須にする指定である。" }
+      { term: "Cache-Control", en: "Cache-Control Header", desc: "HTTPレスポンスヘッダーの一つで、ブラウザやプロキシにその内容をキャッシュしてよいかを指示する。no-storeは一切保存させない指定、no-cacheは保存はするが利用前の再検証を必須にする指定である。" }
     ]
   },
 
@@ -128,8 +128,8 @@ Object.assign(window.MATERIALS, {
       { term: "POP3", en: "Post Office Protocol Version 3", desc: "メールサーバー上のメールを自分の端末にダウンロードして受信するプロトコル。" },
       { term: "IMAP", en: "Internet Message Access Protocol", desc: "メールをサーバー上に残したまま、複数端末で同じ状態を同期して閲覧できる受信プロトコル。" },
       { term: "メールヘッダー", en: "Mail Header", desc: "送信者・経路・件名などの情報が記録された、メール本文の前に付くメタデータ部分。" },
-      { term: "From", desc: "メールの差出人を示すヘッダー項目。標準のSMTPでは本人確認の仕組みがなく、自由に書き換えられてしまう。" },
-      { term: "Received", desc: "メールが実際に経由した各メールサーバーの記録が、転送のたびに1行ずつ追記されるヘッダー項目。送信元の実態調査に使われる。" },
+      { term: "From", en: "From Header", desc: "メールの差出人を示すヘッダー項目。標準のSMTPでは本人確認の仕組みがなく、自由に書き換えられてしまう。" },
+      { term: "Received", en: "Received Header", desc: "メールが実際に経由した各メールサーバーの記録が、転送のたびに1行ずつ追記されるヘッダー項目。送信元の実態調査に使われる。" },
       { term: "BEC（ビジネスメール詐欺）", en: "Business Email Compromise", desc: "取引先や経営層になりすまし、送金や機密情報の提供をだまし取るメール詐欺の手口。" },
       { term: "送信ドメイン認証", en: "Sender Domain Authentication", desc: "SPF・DKIM・DMARCなど、メールの送信元ドメインが正当かどうかを技術的に検証する仕組みの総称。" },
       { term: "フィッシング", en: "Phishing", desc: "実在の組織を装ったメールやサイトを使い、利用者から認証情報などをだまし取る攻撃手口。" },

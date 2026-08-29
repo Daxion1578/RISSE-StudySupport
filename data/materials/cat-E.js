@@ -60,12 +60,12 @@ Object.assign(window.MATERIALS, {
       { term: "エスケープ処理", en: "Escaping", desc: "文字列中の特殊文字を、プログラムの命令ではなく単なる文字として解釈されるよう別の表記に変換する処理。例えば<のような文字を別の文字列に変換する。XSS対策の基本となる。" },
       { term: "サニタイジング", en: "Sanitization", desc: "入力値や出力値から、危険なコードとして働く可能性のある文字列や構造を取り除く、または無害化すること。エスケープ処理より広い意味で使われる。" },
       { term: "CSP", en: "Content Security Policy", desc: "Content Security Policyの略。Webサーバーがブラウザに対し、実行を許可するスクリプトの読み込み元などを指示するHTTPレスポンスヘッダー。エスケープ漏れがあっても被害を軽減できる。" },
-      { term: "HttpOnly属性", desc: "Cookieに付与する属性の一つ。この属性が付いたCookieはJavaScriptから読み取れなくなるため、XSSが発生してもCookieの窃取を防げる。" },
+      { term: "HttpOnly属性", en: "HttpOnly Attribute", desc: "Cookieに付与する属性の一つ。この属性が付いたCookieはJavaScriptから読み取れなくなるため、XSSが発生してもCookieの窃取を防げる。" },
       { term: "反射型XSS", en: "Reflected XSS", desc: "URLのパラメータなど、その場限りの入力がサーバーの応答にそのまま反映されて実行されるタイプのXSS。悪意のあるリンクを個別にクリックさせる必要がある。" },
       { term: "格納型XSS", en: "Stored XSS", desc: "掲示板の投稿など、悪意のあるスクリプトがサーバーに保存され、そのページを閲覧した利用者全員のブラウザで実行されるタイプのXSS。被害が拡散しやすい。" },
       { term: "DOM型XSS", en: "DOM-based XSS", desc: "サーバーを経由せず、ブラウザ内で動くJavaScriptが入力値を安全に扱わずページの一部を書き換えることで発生するXSS。サーバー側の対策だけでは防げない。" },
       { term: "スクリプト", en: "Script", desc: "ブラウザ上で動く小さなプログラム。多くはJavaScriptという言語で書かれ、画面の書き換えやデータの送信など様々な処理を行える。" },
-      { term: "Cookie", desc: "Webサイトがブラウザに保存させる小さなデータ。ログイン状態の維持などに使われるため、盗まれると本人になりすまされる恐れがある。" }
+      { term: "Cookie", en: "HTTP Cookie", desc: "Webサイトがブラウザに保存させる小さなデータ。ログイン状態の維持などに使われるため、盗まれると本人になりすまされる恐れがある。" }
     ]
   },
 
@@ -192,14 +192,14 @@ Object.assign(window.MATERIALS, {
       { term: "CSRF", en: "Cross-Site Request Forgery", desc: "ログイン中の利用者を罠サイト経由で操り、本人になりすました処理を正規サイトに実行させる攻撃。Cookieが自動送信される仕組みを悪用する。" },
       { term: "SSRF", en: "Server-Side Request Forgery", desc: "サーバー自身に、本来アクセスできないはずの内部システムや特殊なアドレスへリクエストさせる攻撃。信頼された立場からのアクセスとして扱われやすい。" },
       { term: "クリックジャッキング", en: "Clickjacking", desc: "透明なiframe等で別サイトの画面を重ね、利用者に意図しないボタンをクリックさせる攻撃。見た目と実際のクリック先が食い違う点を悪用する。" },
-      { term: "CSRFトークン", desc: "正規の画面から送信されたリクエストであることを確認するための、予測不能な値。フォームに埋め込みリクエストごとにサーバー側と照合する。" },
-      { term: "SameSite属性", desc: "他サイトのページから送られたリクエストにCookieを送信するかどうかを制御するCookieの属性。CSRF対策として設定する。" },
-      { term: "X-Frame-Options", desc: "自サイトのページを他サイトのiframeに埋め込むことを制限するレスポンスヘッダー。クリックジャッキング対策に使う。" },
-      { term: "iframe", desc: "Webページの中に別のページを埋め込むためのHTMLの枠組み。クリックジャッキングでは透明にして悪用される。" },
-      { term: "Webhook", desc: "特定の出来事が起きたときに、あらかじめ登録されたURLへ自動的に通知（リクエスト）を送る仕組み。SSRFの悪用経路になり得る。" },
+      { term: "CSRFトークン", en: "Cross-Site Request Forgery Token", desc: "正規の画面から送信されたリクエストであることを確認するための、予測不能な値。フォームに埋め込みリクエストごとにサーバー側と照合する。" },
+      { term: "SameSite属性", en: "SameSite Attribute", desc: "他サイトのページから送られたリクエストにCookieを送信するかどうかを制御するCookieの属性。CSRF対策として設定する。" },
+      { term: "X-Frame-Options", en: "X-Frame-Options Header", desc: "自サイトのページを他サイトのiframeに埋め込むことを制限するレスポンスヘッダー。クリックジャッキング対策に使う。" },
+      { term: "iframe", en: "Inline Frame", desc: "Webページの中に別のページを埋め込むためのHTMLの枠組み。クリックジャッキングでは透明にして悪用される。" },
+      { term: "Webhook", en: "Webhook", desc: "特定の出来事が起きたときに、あらかじめ登録されたURLへ自動的に通知（リクエスト）を送る仕組み。SSRFの悪用経路になり得る。" },
       { term: "許可リスト（ホワイトリスト）", en: "Allowlist", desc: "アクセスを許可する対象だけをあらかじめ列挙し、それ以外はすべて拒否する制御方式。SSRF対策の基本となる。" },
       { term: "HSTS", en: "HTTP Strict Transport Security", desc: "Strict-Transport-Securityの略。一度アクセスしたブラウザに対し、以降は必ずHTTPSで接続するよう指示するHTTPレスポンスヘッダー。HTTPへのダウングレードを防ぐ。クリックジャッキング対策のX-Frame-Optionsとは目的が異なる。" },
-      { term: "Referer", desc: "ブラウザがリクエストを送る際、直前にどのページから遷移してきたかを伝えるHTTPヘッダー。CSRF対策として、正規の画面からの遷移かどうかの確認に使われることがある。" }
+      { term: "Referer", en: "Referer Header", desc: "ブラウザがリクエストを送る際、直前にどのページから遷移してきたかを伝えるHTTPヘッダー。CSRF対策として、正規の画面からの遷移かどうかの確認に使われることがある。" }
     ]
   },
 
@@ -248,9 +248,9 @@ Object.assign(window.MATERIALS, {
     ],
     terms: [
       { term: "セッションID", en: "Session ID", desc: "ログイン後にサーバーが発行し、以降のリクエストで利用者を識別するために使われる文字列。漏えいするとなりすましの原因になる。" },
-      { term: "Secure属性", desc: "HTTPS通信のときだけCookieを送信するように制限するCookieの属性。通信の盗聴によるCookie漏えいを防ぐ。" },
-      { term: "HttpOnly属性", desc: "JavaScriptからのCookie読み取りを禁止するCookieの属性。XSSが発生してもCookieの窃取を防げる。" },
-      { term: "SameSite属性", desc: "他サイトのページから送られたリクエストにCookieを送信するかどうかを制御するCookieの属性。CSRF対策にもなる。" },
+      { term: "Secure属性", en: "Secure Attribute", desc: "HTTPS通信のときだけCookieを送信するように制限するCookieの属性。通信の盗聴によるCookie漏えいを防ぐ。" },
+      { term: "HttpOnly属性", en: "HttpOnly Attribute", desc: "JavaScriptからのCookie読み取りを禁止するCookieの属性。XSSが発生してもCookieの窃取を防げる。" },
+      { term: "SameSite属性", en: "SameSite Attribute", desc: "他サイトのページから送られたリクエストにCookieを送信するかどうかを制御するCookieの属性。CSRF対策にもなる。" },
       { term: "IDOR", en: "Insecure Direct Object Reference", desc: "安全でない直接オブジェクト参照の略。URLやパラメータのIDを書き換えるだけで、他人のデータにアクセスできてしまう欠陥。" },
       { term: "セッションハイジャック", en: "Session Hijacking", desc: "他人のセッションIDを盗み出し、そのIDを使って本人になりすます攻撃。通信の盗聴やXSSが侵入経路になりやすい。" },
       { term: "セッション固定化攻撃", en: "Session Fixation", desc: "攻撃者があらかじめ用意したセッションIDで利用者にログインさせ、ログイン後にそのIDを使って乗っ取る攻撃。" },
@@ -378,7 +378,7 @@ Object.assign(window.MATERIALS, {
       { term: "リバースエンジニアリング", en: "Reverse Engineering", desc: "配布されたアプリなどを解析し、内部の処理の流れやデータ、埋め込まれた文字列を復元・抽出する行為。" },
       { term: "アクセストークン", en: "Access Token", desc: "APIへのアクセスが許可されていることを示す、有効期限が短い認証情報。漏えい時の被害期間を限定する目的がある。" },
       { term: "リフレッシュトークン", en: "Refresh Token", desc: "アクセストークンの有効期限が切れた際に、新しいアクセストークンを再発行するために使う情報。パスワードの都度送信を避けられる。" },
-      { term: "Keychain/Keystore", desc: "スマートフォンOSが提供する、トークンなどの機密情報を安全に保存するための専用領域。アプリの一般的な保存領域より保護が強い。" },
+      { term: "Keychain/Keystore", en: "Keychain / Keystore", desc: "スマートフォンOSが提供する、トークンなどの機密情報を安全に保存するための専用領域。アプリの一般的な保存領域より保護が強い。" },
       { term: "API認可", en: "API Authorization", desc: "APIへのリクエストごとに、要求元が対象データへアクセスする権限を実際に持っているかどうかを検証すること。" },
       { term: "シークレット管理", en: "Secret Management", desc: "APIキーや暗号鍵などの機密情報を、安全に保管・受け渡しする仕組み全般。アプリ内への直接埋め込みは避けるべきとされる。" },
       { term: "API", en: "Application Programming Interface", desc: "アプリケーションプログラミングインタフェースの略。アプリなど別のプログラムからサーバーの機能を呼び出すための窓口。" },

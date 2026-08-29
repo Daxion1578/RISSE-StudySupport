@@ -28,13 +28,13 @@ Object.assign(window.MATERIALS, {
     ],
     terms: [
       { term: "不正アクセス禁止法", en: "Act on Prohibition of Unauthorized Computer Access", desc: "他人のID・パスワードの無断使用やログイン、認証回避を処罰する法律。被害の有無にかかわらず、不正なログインの時点で成立する。" },
-      { term: "不正指令電磁的記録に関する罪", desc: "ウイルスの作成・提供を処罰する刑法上の罪。通称ウイルス作成罪と呼ばれる。" },
-      { term: "電子計算機損壊等業務妨害罪", desc: "サーバなどへの攻撃で業務を妨害する行為を処罰する刑法上の罪。DDoS攻撃はこの罪の対象になり得る。" },
+      { term: "不正指令電磁的記録に関する罪", en: "Crime of Unauthorized Command Electromagnetic Records (Malware Creation)", desc: "ウイルスの作成・提供を処罰する刑法上の罪。通称ウイルス作成罪と呼ばれる。" },
+      { term: "電子計算機損壊等業務妨害罪", en: "Obstruction of Business by Destroying Computers", desc: "サーバなどへの攻撃で業務を妨害する行為を処罰する刑法上の罪。DDoS攻撃はこの罪の対象になり得る。" },
       { term: "サイバーセキュリティ基本法", en: "Basic Act on Cybersecurity", desc: "国や重要インフラ事業者のセキュリティ対策の責務を定める法律。個人の犯罪行為を直接処罰するものではない。" },
       { term: "電子署名法", en: "Act on Electronic Signatures and Certification Business", desc: "電子契約に手書き署名・押印と同等の法的効力を与える法律。" },
       { term: "識別符号", en: "Identification Code", desc: "ID・パスワードなど本人確認に使われる符号のこと。不正アクセス禁止法で用いられる用語である。" },
       { term: "アクセス管理者", en: "Access Administrator", desc: "コンピュータの利用権限を管理する立場の者のこと。不正アクセス禁止法では、この者が許可した範囲を超えた利用が規制の対象になる。" },
-      { term: "識別符号の不正取得", desc: "フィッシングなどによって他人のID・パスワードを不正に入手する行為のこと。不正アクセス禁止法で禁止されている。" }
+      { term: "識別符号の不正取得", en: "Illegal Acquisition of Identification Codes", desc: "フィッシングなどによって他人のID・パスワードを不正に入手する行為のこと。不正アクセス禁止法で禁止されている。" }
     ]
   },
   h2: {
@@ -70,7 +70,7 @@ Object.assign(window.MATERIALS, {
       { term: "匿名加工情報", en: "Anonymously Processed Information", desc: "特定の個人を識別できないよう加工し、元の個人情報に復元することもできないようにした情報のこと。" },
       { term: "個人情報保護委員会", en: "Personal Information Protection Commission", desc: "個人情報保護法を所管し、漏えい等の報告の受付や事業者の監督を行う行政機関のこと。" },
       { term: "安全管理措置", en: "Security Control Measures", desc: "個人データの漏えい等を防ぐために講じる、組織的・人的・物理的・技術的な対策の総称。" },
-      { term: "委託先の監督義務", desc: "個人データの取扱いを委託した際、委託先が適切に扱っているかを委託元が監督する義務のこと。" },
+      { term: "委託先の監督義務", en: "Duty to Supervise Contractors", desc: "個人データの取扱いを委託した際、委託先が適切に扱っているかを委託元が監督する義務のこと。" },
       { term: "漏えい等の報告義務", en: "Data Breach Notification Obligation", desc: "一定の条件に該当する漏えいが発生した際、個人情報保護委員会への報告と本人への通知を行う法律上の義務のこと。" }
     ]
   },
@@ -106,7 +106,7 @@ Object.assign(window.MATERIALS, {
     ],
     terms: [
       { term: "NIST CSF", en: "NIST Cybersecurity Framework", desc: "識別・防御・検知・対応・復旧という考え方を示すサイバーセキュリティの枠組みのこと。業種を問わず参考にされる。" },
-      { term: "CIS Controls", desc: "優先順位付けされた具体的な対策項目のチェックリストのこと。実際に何を導入・運用すべきかの実務的な指針になる。" },
+      { term: "CIS Controls", en: "Center for Internet Security Controls", desc: "優先順位付けされた具体的な対策項目のチェックリストのこと。実際に何を導入・運用すべきかの実務的な指針になる。" },
       { term: "ISMAP", en: "Information system Security Management and Assessment Program", desc: "政府機関のクラウドサービス調達における安全性評価制度のこと（日本の制度）。" },
       { term: "PCI DSS", en: "Payment Card Industry Data Security Standard", desc: "クレジットカード情報を扱う事業者向けの業界標準セキュリティ基準のこと。" },
       { term: "ガイドライン", en: "Guideline", desc: "具体的な実施方法や手順を示す指針文書のこと。" },
@@ -114,7 +114,7 @@ Object.assign(window.MATERIALS, {
       { term: "第三者認証", en: "Third-Party Certification", desc: "外部の審査機関が基準への適合を確認し証明する仕組みのこと。ISMS(ISO/IEC 27001)などで取得できる。" },
       { term: "業界標準", en: "Industry Standard", desc: "特定の業界内で広く採用され、事実上の基準として扱われるルールのこと。PCI DSSはカード業界の代表例である。" },
       { term: "ISO/IEC 15408", en: "Common Criteria", desc: "IT製品やシステムのセキュリティ機能・保証レベルを第三者機関が評価・認証する国際規格。通称コモンクライテリア。" },
-      { term: "SECURITY ACTION", desc: "IPAの中小企業向けガイドラインに沿った対策への取組みを、中小企業などが自ら宣言する制度。" },
+      { term: "SECURITY ACTION", en: "SECURITY ACTION (IPA Self-Declaration Program)", desc: "IPAの中小企業向けガイドラインに沿った対策への取組みを、中小企業などが自ら宣言する制度。" },
       { term: "IT全般統制", en: "IT General Controls", desc: "システムの開発・保守に係る管理など、システム基盤全体に共通して関わる内部統制のこと。" },
       { term: "ITの統制目標", en: "IT Control Objectives", desc: "内部統制実施基準における可用性・機密性・準拠性・信頼性の4つの目標のこと。取引の記録漏れ・重複がないことは信頼性に含まれる。" }
     ]
@@ -151,10 +151,10 @@ Object.assign(window.MATERIALS, {
     terms: [
       { term: "情報処理安全確保支援士", en: "Registered Information Security Specialist", desc: "試験合格後に登録して名乗れる、セキュリティ専門家の国家資格のこと。合格しただけでは名乗ることができない。" },
       { term: "秘密保持義務", en: "Duty of Confidentiality", desc: "業務上知り得た秘密を正当な理由なく漏らしてはならないという義務のこと。" },
-      { term: "信用失墜行為の禁止", desc: "資格の信用を傷つける行為をしてはならないという義務のこと。" },
+      { term: "信用失墜行為の禁止", en: "Prohibition of Acts Damaging Credibility", desc: "資格の信用を傷つける行為をしてはならないという義務のこと。" },
       { term: "登録更新", en: "Registration Renewal", desc: "支援士の登録は3年ごとに更新が必要であるという制度のこと。" },
       { term: "継続教育（講習）", en: "Continuing Education", desc: "登録更新のために受講が義務付けられている講習のこと。" },
-      { term: "登録の任意性", desc: "試験合格後に登録するかどうかは本人の自由な選択に委ねられているという性質のこと。" },
+      { term: "登録の任意性", en: "Voluntary Registration", desc: "試験合格後に登録するかどうかは本人の自由な選択に委ねられているという性質のこと。" },
       { term: "行政処分", en: "Administrative Disposition", desc: "義務違反があった場合に行政機関が行う、登録取消しや名称使用停止などの処分のこと。" },
       { term: "情報処理の促進に関する法律", en: "Act on the Promotion of Information Processing", desc: "情報処理安全確保支援士制度の根拠となる法律のこと。試験の実施や資格制度全般の枠組みを定めている。" }
     ]
