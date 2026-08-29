@@ -305,7 +305,7 @@ window.QUESTIONS_A.push(
     id: "r07h_am2_q21",
     source: "出典: 令和7年度 春期 情報処理安全確保支援士試験 午前II 問21",
     unitId: "a1",
-    question: "“従業員”表に対して，SQL 文を実行して得られる結果はどれか。ここで，実線の下線は主キーを表し，表中の NULL は値が存在しないことを表す。〔従業員表〕従業員コード・上司・従業員名の列があり，データは (S001, NULL, A), (S002, S001, B), (S003, S001, C), (S004, S003, D), (S005, NULL, E), (S006, S005, F), (S007, S006, G) である。〔SQL文〕 SELECT 従業員コード FROM 従業員 X WHERE NOT EXISTS (SELECT * FROM 従業員 Y WHERE X.従業員コード = Y.上司)",
+    question: "“従業員”表に対して，SQL 文を実行して得られる結果はどれか。ここで，主キーは従業員コードであり（原問では実線の下線で表記），表中の NULL は値が存在しないことを表す。〔従業員表〕従業員コード・上司・従業員名の列があり，データは (S001, NULL, A), (S002, S001, B), (S003, S001, C), (S004, S003, D), (S005, NULL, E), (S006, S005, F), (S007, S006, G) である。〔SQL文〕 SELECT 従業員コード FROM 従業員 X WHERE NOT EXISTS (SELECT * FROM 従業員 Y WHERE X.従業員コード = Y.上司)",
     choices: [
       "S001, S003, S005, S006",
       "S001, S005",
