@@ -250,3 +250,6 @@ button.choice.wrong[disabled]:hover { border-color: var(--crit); background: rgb
 .badge.due { border-color: rgba(251,113,133,0.5); color: var(--crit); background: rgba(251,113,133,0.08); }
 .sec-quiz { margin-top: 18px; padding: 14px; border: 1px solid var(--grid); border-radius: 12px; background: rgba(52,211,153,0.04); }
 .sec-quiz h3 { margin-top: 0; }
+
+/* 解答後に並記する元の選択肢記号（ア〜エ） */
+.kana-orig { display: inline-block; margin-left: 4px; font-size: 11px; color: var(--muted); }

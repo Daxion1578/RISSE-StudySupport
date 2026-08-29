@@ -302,19 +302,25 @@ function renderDrillQuestion() {
   }
   let html = `<div class="card"><div class="q-no">問${s.idx + 1} / ${s.qids.length}　${modeLabel ? modeLabel + "　" : ""}${u ? esc(CATS[u.cat]) + "・" + esc(u.name) : ""} <span class="badge rank">${u ? u.trend : ""}</span></div>
     <div style="margin:8px 0 12px;font-size:15px">${esc(q.question)}${q.modified ? ' <span class="muted">（一部改変）</span>' : ""}</div>`;
-  html += order.map(i => {
+  // ラベル: シャッフル時は表示位置の①〜④（元の記号は解答後にだけ並記し、
+  // 「答えはウ」という記号の記憶では選べないようにする）。本試験モードはア〜エのまま
+  const NUM = ["①", "②", "③", "④"];
+  const shuffled = s.mode !== "exam";
+  html += order.map((i, pos) => {
     const c = q.choices[i];
     let cls = "choice is-btn";
     if (answered) {
       if (i === q.answer) cls += " correct";
       else if (i === s.chosen) cls += " wrong";
     }
-    return `<button class="${cls}" ${answered ? "disabled" : ""} onclick="drillAnswer(${i})"><span class="kana">${KANA[i]}</span>${esc(c)}</button>`;
+    const label = shuffled ? (answered ? `${NUM[pos]}<span class="kana-orig">${KANA[i]}</span>` : NUM[pos]) : KANA[i];
+    return `<button class="${cls}" ${answered ? "disabled" : ""} onclick="drillAnswer(${i})"><span class="kana">${label}</span>${esc(c)}</button>`;
   }).join("");
   if (answered) {
     const ok = s.chosen === q.answer;
     const hasMat = window.MATERIALS && window.MATERIALS[q.unitId];
-    html += `<div class="${ok ? "notice" : "alert"}" style="margin-top:14px"><b>${ok ? "正解！" : "不正解（正解は「" + KANA[q.answer] + "」）"}</b><br>${esc(q.explanation)}</div>
+    const ansLabel = shuffled ? `${NUM[order.indexOf(q.answer)]}（${KANA[q.answer]}）` : `「${KANA[q.answer]}」`;
+    html += `<div class="${ok ? "notice" : "alert"}" style="margin-top:14px"><b>${ok ? "正解！" : "不正解（正解は " + ansLabel + "）"}</b>${shuffled ? `<span class="muted small">　※解説のア〜エは各選択肢に並記した元の記号に対応</span>` : ""}<br>${esc(q.explanation)}</div>
       <div class="muted">${esc(q.source)}</div>
       <div style="margin-top:12px"><button class="primary" onclick="drillNext()">${s.idx + 1 >= s.qids.length ? "結果を見る" : "次の問題へ"}</button>
       ${hasMat ? `<button class="ghost" onclick="openMaterialForQuestion('${q.id}')">📖 教材の解説箇所を読む</button>` : ""}</div>`;
