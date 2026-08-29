@@ -8,7 +8,8 @@
 
 - `index.html` — 画面骨格とscript読み込みのみ（薄く保つ）
 - `css/app.css` — テーマ（オーロラ×グラスモーフィズム）
-- `js/` — 機能ごとに分割: `app.js`(タブ・共通) / `state.js`(保存・同期・マージ) / `roadmap.js`(診断・計画) / `drill.js`(科目A-2ドリル) / `materials.js`(教材) / `exam-b.js`(科目B演習)
+- `js/` — 機能ごとに分割: `app.js`(タブ・共通) / `state.js`(保存・同期・マージ) / `roadmap.js`(診断・計画) / `drill.js`(科目A-1/A-2ドリル) / `review.js`(間隔反復・復習キュー・ストリーク) / `materials.js`(教材・小単元ページ) / `exam-b.js`(科目B演習) / `glossary.js`(用語集・ホバー解説)
+- 間隔反復(`review.js`)は保存構造を持たない。次回復習日は既存の `state.drill[qid].attempts` から純関数で計算する（1→3→7→14→30→60日、不正解で1日に戻る）。**この「履歴から計算する」方式を保ち、SRS用の新しい保存キーを追加しない**（同期・マージ・移行が不要になる設計上の要）
 - `data/` — 問題・教材データ。**fetch()のJSONではなく `window.XXX =` 代入の .js ファイル**にする（file://で動かすため）
 - `tools/` — データ生成用Pythonスクリプト（ユーザーが後日過去問を追加する用）
 - `docs/trend-analysis.md` — 出題傾向分析。ロードマップの重要度ランク（S/A/B）の根拠

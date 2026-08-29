@@ -57,6 +57,16 @@ function startDrill(mode) {
   window.scrollTo(0, 0);
 }
 
+/* 指定した問題idだけでセッションを開始（教材の小単元演習から使う） */
+function startDrillForQids(qids, label) {
+  if (!qids || !qids.length) return;
+  drillSession = { qids: qids.slice(), idx: 0, chosen: null, correct: 0, mode: "section", label: label || "" };
+  activeTab = "drill";
+  animateNext = true;
+  render();
+  window.scrollTo(0, 0);
+}
+
 /* 単元別ドリル: その単元の過去問を弱点順に（最大15問） */
 function startDrillForUnit(unitId) {
   const pool = drillQuestions().filter(q => q.unitId === unitId);
@@ -111,7 +121,9 @@ function drillNext() {
   if (s.idx + 1 >= s.qids.length) {
     const what = s.mode === "exam" ? `本試験モード（${s.examLabel}）`
       : s.mode === "unit" ? `単元別ドリル「${(UNITS.find(u => u.id === s.unitId) || {}).name}」`
-      : "科目A-2ドリル";
+      : s.mode === "review" ? "復習セッション（間隔反復）"
+      : s.mode === "section" ? `小単元演習「${s.label || ""}」`
+      : "科目Aドリル";
     addLog("drill", `${what}: ${s.qids.length}問中${s.correct}問正解`);
     saveState();
     s.finished = true;
@@ -205,7 +217,10 @@ function renderDrill() {
       <div class="tile"><div class="v">${allTries ? Math.round(100 * allOk / allTries) : "--"}<span style="font-size:14px;color:var(--muted)">%</span></div><div class="l">通算正答率</div><div class="s">目標: 80%以上</div></div>
     </div></div>`;
 
-  // ①クイック演習
+  // ①今日の復習（間隔反復）
+  html += reviewCardHtml();
+
+  // ②クイック演習
   html += `<div class="card"><h2>クイック演習</h2>
     <div class="small" style="margin:6px 0">
       分野: <select id="drillCat"><option value="">すべて</option>${["A","B","C","D","E","F","G","H","J"].map(c => `<option value="${c}">${CATS[c]}</option>`).join("")}</select>
@@ -229,6 +244,7 @@ function renderDrill() {
   // ③単元別ドリル（理解度つき）
   html += `<div class="card"><h2>単元別ドリル（理解度）</h2>
     <div class="small">理解度 = 教材の学習完了20点＋その単元の問題の網羅率20点＋各問題の最新解答での正答率60点。</div></div>`;
+  const dueMap = dueCountByUnit();
   for (const catId of Object.keys(CATS)) {
     if (catId === "I") continue;
     const units = UNITS.filter(u => u.cat === catId);
@@ -242,8 +258,9 @@ function renderDrill() {
       const pool = qs.filter(q => q.unitId === u.id);
       const und = understanding(u.id);
       const tr = trendText(u.id);
+      const due = dueMap[u.id] || 0;
       return `<div class="unit">
-        <div class="u-name">${unitNameLink(u)} <span class="badge rank">${u.trend}</span>
+        <div class="u-name">${unitNameLink(u)} <span class="badge rank">${u.trend}</span>${due ? ` <span class="badge due">要復習${due}</span>` : ""}
           <div class="u-meta">過去問${pool.length}問${tr ? "　" + esc(tr) : ""}</div>
           <div style="display:flex;align-items:center;gap:10px;margin-top:4px;max-width:300px">
             <div class="bar-track" style="flex:1"><div class="bar-fill" style="width:${und || 0}%"></div></div>
@@ -264,7 +281,10 @@ function renderDrillQuestion() {
   const q = qs.find(x => x.id === s.qids[s.idx]);
   const u = drillUnit(q);
   const answered = s.chosen !== null;
-  const modeLabel = s.mode === "exam" ? esc(s.examLabel) + "・通し演習" : s.mode === "unit" ? "単元別ドリル" : "";
+  const modeLabel = s.mode === "exam" ? esc(s.examLabel) + "・通し演習"
+    : s.mode === "unit" ? "単元別ドリル"
+    : s.mode === "review" ? "今日の復習（間隔反復）"
+    : s.mode === "section" ? "小単元演習" : "";
   let html = `<div class="card"><div class="q-no">問${s.idx + 1} / ${s.qids.length}　${modeLabel ? modeLabel + "　" : ""}${u ? esc(CATS[u.cat]) + "・" + esc(u.name) : ""} <span class="badge rank">${u ? u.trend : ""}</span></div>
     <div style="margin:8px 0 12px;font-size:15px">${esc(q.question)}${q.modified ? ' <span class="muted">（一部改変）</span>' : ""}</div>`;
   html += q.choices.map((c, i) => {
@@ -293,7 +313,7 @@ function renderDrillResult() {
   const qs = drillQuestions();
   const s = drillSession;
   const pct = Math.round(100 * s.correct / s.qids.length);
-  let html = `<div class="card"><h2>${s.mode === "exam" ? "本試験モード 結果" : s.mode === "unit" ? "単元別ドリル 結果" : "ドリル結果"}</h2>
+  let html = `<div class="card"><h2>${s.mode === "exam" ? "本試験モード 結果" : s.mode === "unit" ? "単元別ドリル 結果" : s.mode === "review" ? "今日の復習 結果" : s.mode === "section" ? "小単元演習 結果" : "ドリル結果"}</h2>
     <div class="tiles"><div class="tile"><div class="v">${s.correct}<span style="font-size:14px;color:var(--muted)"> / ${s.qids.length}</span></div><div class="l">正解数（${pct}%）</div></div>
     ${s.mode === "exam" ? `<div class="tile"><div class="v" style="background:none;-webkit-background-clip:initial;color:${pct >= 60 ? "var(--emerald)" : "var(--crit)"}">${pct >= 60 ? "合格圏" : "未達"}</div><div class="l">合格ライン（60%）との比較</div><div class="s">${pct}% / 60%</div></div>` : ""}
     ${s.mode === "unit" ? `<div class="tile"><div class="v">${understanding(s.unitId) ?? "—"}<span style="font-size:14px;color:var(--muted)">%</span></div><div class="l">この単元の理解度</div></div>` : ""}</div>`;

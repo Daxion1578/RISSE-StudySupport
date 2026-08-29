@@ -129,7 +129,11 @@ function renderHome() {
     <div class="tile"><div class="v">${drillHomePct()}</div><div class="l">ドリル通算正答率</div><div class="s">合格ライン60%・目標80%</div></div>
     ${typeof examBHomeTileHtml === "function" ? examBHomeTileHtml() : ""}
     <div class="tile"><div class="v">${rm.neededPerWeek}<span style="font-size:14px;color:var(--muted)">h</span></div><div class="l">必要な週あたり学習時間</div><div class="s">設定: 週${rm.capacity}h・最大負荷週${rm.maxWeekHours}h</div></div>
+    <div class="tile" style="cursor:pointer" onclick="switchTab('drill')"><div class="v">${dueQuestionIds().length}</div><div class="l">今日の復習（問）</div><div class="s">間隔反復キュー・クリックで移動</div></div>
+    <div class="tile"><div class="v">${studyStreakDays()}<span style="font-size:14px;color:var(--muted)">日</span></div><div class="l">連続学習</div><div class="s">毎日少しずつが定着への近道</div></div>
   </div>`;
+
+  if (dueQuestionIds().length) html += reviewCardHtml();
 
   html += `<div class="card"><h2>全体進捗</h2>
     <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
@@ -328,6 +332,7 @@ function renderUnits() {
     <div style="margin-top:8px" class="bar-track"><div class="bar-fill" style="width:${Math.round(100*doneCount/UNITS.length)}%"></div></div>
     <div class="muted">${doneCount} / ${UNITS.length} 単元完了</div></div>`;
 
+  const dueMap = dueCountByUnit();
   for (const catId of Object.keys(CATS)) {
     const units = UNITS.filter(u => u.cat === catId);
     if (!units.length) continue;
@@ -346,7 +351,7 @@ function renderUnits() {
         : esc(u.name);
       return `<div class="unit ${done?"done":""}">
         <input type="checkbox" ${done?"checked":""} onchange="toggleUnit('${u.id}')">
-        <div class="u-name">${nameHtml} <span class="badge rank">${u.trend}</span>
+        <div class="u-name">${nameHtml} <span class="badge rank">${u.trend}</span>${dueMap[u.id] ? ` <span class="badge due">要復習${dueMap[u.id]}</span>` : ""}
           <div class="u-meta">目安${u.hours}h　${esc(u.desc)}${drillInfo}</div></div>
         <span class="status-chip ${done?"done":"todo"}">${done?"✓ "+doneAt:"未学習"}</span>
       </div>`;
